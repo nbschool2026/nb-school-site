@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "history_items",
+  "info": {
+    "singularName": "history-item",
+    "pluralName": "history-items",
+    "displayName": "History Item"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "year": {
+      "type": "string",
+      "required": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "text": {
+      "type": "text"
+    },
+    "icon": {
+      "type": "string",
+      "default": "history_edu"
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

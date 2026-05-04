@@ -1,0 +1,9 @@
+node_modules/
+dist/
+build/
+.cache/
+.tmp/
+.home/
+.config/
+.env
+strapi.log

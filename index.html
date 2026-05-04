@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Новобілоуський ліцей | Quality Education</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: {
+            colors: {
+                "primary": "#dd6d06",
+                "background-light": "#f6f6f8",
+                "background-dark": "#101622",
+            },
+            fontFamily: {
+                "display": ["Lexend"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+    },
+}
+</script>
+<style>
+    body {
+        font-family: 'Lexend', sans-serif;
+    }
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<!-- Header Section -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <div class="flex items-center gap-3">
+                <div class="bg-primary p-2 rounded-lg text-white">
+                    <span class="material-symbols-outlined text-2xl">school</span>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight text-primary">Новобілоуський ліцей</h1>
+            </div>
+            <nav class="hidden md:flex items-center gap-8">
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Головна</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="about.html">Про нас</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="events.html">Події</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="public-info.html">Публічна інформація</a>
+            </nav>
+            <div class="hidden md:flex items-center ml-4 pl-4 border-l border-primary/20">
+                <div class="flex items-center gap-1 bg-primary/10 p-1 rounded-lg">
+                    <button class="px-2 py-1 text-xs font-bold rounded bg-primary text-white shadow-sm">UA</button>
+                    <button class="px-2 py-1 text-xs font-bold rounded text-primary hover:bg-primary/5">EN</button>
+                </div>
+            </div>
+            <div class="md:hidden">
+                <span class="material-symbols-outlined text-3xl cursor-pointer">menu</span>
+            </div>
+            <div class="mobileMenu absolute hidden top-full left-2 right-2 mt-2 w-full-2 bg-white dark:bg-primary/5 rounded-lg shadow-lg border border-primary/10 p-4">
+                <nav class="flex flex-col items-center gap-8">
+                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Головна</a>
+                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="about.html">Про нас</a>
+                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="events.html">Події</a>
+                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="public-info.html">Публічна інформація</a>
+                    <div class="flex items-center gap-1 bg-primary/10 p-1 rounded-lg">
+                        <button class="px-2 py-1 text-xs font-bold rounded bg-primary text-white shadow-sm">UA</button>
+                        <button class="px-2 py-1 text-xs font-bold rounded text-primary hover:bg-primary/5">EN</button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Hero Section -->
+<section class="relative w-full h-[600px] flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000" data-alt="Modern school building with glass windows and green lawn" style="background-image: linear-gradient(rgba(16, 22, 34, 0.6), rgba(16, 22, 34, 0.4)), url('image/background.png');">
+    </div>
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+        <h2 class="text-white text-4xl md:text-6xl font-extrabold leading-tight mb-6">Ласкаво просимо до Новобілоуського ліцею</h2>
+        <p class="text-white/90 text-lg md:text-xl font-light mb-10 max-w-2xl mx-auto">Розширюємо можливості наступного покоління за допомогою якісної освіти для світлого та сталого майбутнього.</p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <button class="bg-primary text-white px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform">Відкрийте нашу програму</button>
+            <button class="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition-all">Віртуальний тур</button>
+        </div>
+    </div>
+</section>
+<!-- Latest Events Section -->
+<section class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div class="flex items-end justify-between mb-12"><div>
+    <span class="text-primary font-bold tracking-widest uppercase text-sm">Останні новини</span>
+    <h2 class="text-3xl md:text-4xl font-extrabold mt-2">Події</h2>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+<!-- Event Card 1 -->
+<div class="group bg-white dark:bg-primary/5 rounded-2xl overflow-hidden border border-primary/5 shadow-sm hover:shadow-xl transition-all">
+<div class="h-48 overflow-hidden">
+<img alt="Science Fair" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Students participating in a science experiment laboratory" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtOmFsZI_rR2X422CVSvo5vcIe32UcYE3Uv5EgA7xUV0xQ2h9XuOkMzAlfIBay8RW3lMe4g5wydQxLUFMBYanmKVFZfCDpVoItLzbVlmlTXl24dOcYvTMJKUqEHGRUsEZRYlfCcaQ6qp8s716DHgLEDwgKXP9poFCnI7THvABJnQgXW3NIWDSXt-dD5HrT78ZdTT1nealjce5kprXCEsAgcS6PBgqwIcdyxuVdLr00m8abhEhn88Op5Gablim2zmrF1GPxs_wgUXEg"/>
+</div>
+<div class="p-6">
+<span class="text-primary text-xs font-bold uppercase tracking-tighter">Академічні</span>
+<h3 class="text-lg font-bold mt-2 mb-1">Щорічна олімпіада з математики 2026</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mb-4 flex items-center gap-2">
+March 15, 2026
+</p>
+<button class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">Читати далі <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+</div>
+</div>
+<!-- Event Card 2 -->
+<div class="group bg-white dark:bg-primary/5 rounded-2xl overflow-hidden border border-primary/5 shadow-sm hover:shadow-xl transition-all">
+<div class="h-48 overflow-hidden">
+<img alt="Sports Day" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Students cheering at a school sports competition" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtOjTwUCQjpN8IIxtsmLv6mwvffBL7m30AZFkdDgPYYbjTGvnMpVvkMX8W9wCvBPOSMJxN-96PHg5DvgV3NhgWHdX02siIBdBjonU5m7M_SlG6uMuRoXpC-XYpFcs23X2bkLxWhVtxOkKRW_2zSlx2h3-gkr2VRwZf4zqYbw8g40HjL0zUmn9e-q_HPu63X3UDKbZ2C4rI68tXJL-P2nl9IFEiXbh_SJun7yK4Ph_sqLmCCVwPGAQQOp8BSzCnqGSQgOmPx-W460GO"/>
+</div>
+<div class="p-6">
+<span class="text-primary text-xs font-bold uppercase tracking-tighter">Спорт</span>
+<h3 class="text-lg font-bold mt-2 mb-1">Обласний чемпіонат з баскетболу 2026</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mb-4 flex items-center gap-2">
+ April 10, 2026
+                    </p>
+<button class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">Читати далі <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+</div>
+</div>
+<!-- Event Card 3 -->
+<div class="group bg-white dark:bg-primary/5 rounded-2xl overflow-hidden border border-primary/5 shadow-sm hover:shadow-xl transition-all">
+<div class="h-48 overflow-hidden">
+<img alt="Art Exhibition" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Art gallery exhibition with student paintings" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwwNMCl3Qg6hQSUxUBBOXFcuul4EYS-ZiuCGU11MOqznhbCjyjDmqOEI9dFjVLRIl6BHybbQrb-CpKd6cuZcRI2G0d2pY91B3EWib7YdoDr6LfOjIHIuZf3XrhrSOaypDCqV0g3ZbJkuRLg-Gv4tKRBseK5RYjSoS7ns03pHH1YB42xa2wU_3VrSSVrfVCimPqdYfYLASJjuIYQ3VumM8ZhKo83rKkRb35PV4h53Zun8Y0XD1grZhshqTTCGDnD7zjW8khJZWpUilL"/>
+</div>
+<div class="p-6">
+<span class="text-primary text-xs font-bold uppercase tracking-tighter">Мистецтво</span>
+<h3 class="text-lg font-bold mt-2 mb-1">Виставка робіт молодших класів</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mb-4 flex items-center gap-2">
+ May 05, 2026
+                    </p>
+<button class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">Читати далі <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+</div>
+</div>
+<!-- Event Card 4 -->
+<div class="group bg-white dark:bg-primary/5 rounded-2xl overflow-hidden border border-primary/5 shadow-sm hover:shadow-xl transition-all">
+<div class="h-48 overflow-hidden">
+<img alt="Open Day" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Group of high school students in a classroom" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNpC2NfYLdkZNNf5Tr77RiHP-QgprXxoDec0GNdH3XxNBa7HlNMYHwwPVFB25p2MoPnmELuwO6KtX9RIXI7UdJxBSWiLj9QrF8E-XCxd18N-G_bC8seke-Ky-uHrzS88lpflfBBpF29YxWfEn-kq22N4pSkdek7bYQ2mDKUiniMcGo_ltCF2AjOKHyr7nBKQvmZUgm7Y5LpP3SdPRilScdbj_uPN3o_Yje4sEtxaKrXne-czOWo-RGY_9mICMJs-eHnHX0JF7HdfU4"/>
+</div>
+<div class="p-6">
+<span class="text-primary text-xs font-bold uppercase tracking-tighter">Вступ</span>
+<h3 class="text-lg font-bold mt-2 mb-1">День відкритих дверей 2026</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mb-4 flex items-center gap-2">
+ June 01, 2026
+                    </p>
+<button class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">Читати далі <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+</div>
+</div>
+</div>
+<div class="flex justify-center">
+<button class="bg-primary/10 text-primary hover:bg-primary hover:text-white px-10 py-4 rounded-xl font-bold transition-all flex items-center gap-2">Всі події <span class="material-symbols-outlined">grid_view</span></button>
+</div>
+</section><section class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-primary/5" id="schedule">
+<div class="mb-12">
+<span class="text-primary font-bold tracking-widest uppercase text-sm">Навчання</span>
+<h2 class="text-3xl md:text-4xl font-extrabold mt-2">Розклад уроків</h2>
+</div>
+<!-- Filter Bar -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10 bg-white dark:bg-primary/5 p-6 rounded-2xl shadow-sm border border-primary/5">
+<div class="flex flex-col gap-2">
+<label class="text-sm font-bold text-slate-700 dark:text-slate-300">Клас</label>
+<select class="bg-background-light dark:bg-background-dark border-primary/20 rounded-lg focus:ring-primary focus:border-primary text-sm p-2.5">
+<option>Оберіть клас</option>
+<option>1 Клас</option>
+<option>5 Клас</option>
+<option>9 Клас</option>
+<option selected="">11 Клас</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-sm font-bold text-slate-700 dark:text-slate-300">Клас</label>
+<select class="bg-background-light dark:bg-background-dark border-primary/20 rounded-lg focus:ring-primary focus:border-primary text-sm p-2.5">
+<option>Всі предмети</option>
+<option>Математика</option>
+<option>Фізика</option>
+<option>Українська мова</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-sm font-bold text-slate-700 dark:text-slate-300">Клас</label>
+<select class="bg-background-light dark:bg-background-dark border-primary/20 rounded-lg focus:ring-primary focus:border-primary text-sm p-2.5">
+<option>Всі вчителі</option>
+<option>Іван Іванов</option>
+<option>Олена Кравченко</option>
+</select>
+</div>
+</div>
+<!-- Weekly Schedule Grid -->
+<div class="overflow-x-auto">
+<div class="min-w-[800px] grid grid-cols-5 gap-4">
+<!-- Monday -->
+<div class="space-y-4">
+<div class="bg-primary text-white p-3 rounded-xl text-center font-bold">Понеділок</div>
+<div class="space-y-3">
+<div class="bg-white dark:bg-primary/5 p-4 rounded-xl border-l-4 border-primary shadow-sm">
+<span class="text-[10px] text-slate-500 font-bold uppercase">08:30 - 09:15</span>
+<h4 class="font-bold text-sm mt-1">Математика</h4>
+<p class="text-xs text-slate-500">Іван Іванов</p>
+</div>
+<div class="bg-white dark:bg-primary/5 p-4 rounded-xl border-l-4 border-primary shadow-sm opacity-60">
+<span class="text-[10px] text-slate-500 font-bold uppercase">09:25 - 10:10</span>
+<h4 class="font-bold text-sm mt-1">Фізика</h4>
+<p class="text-xs text-slate-500">Олена Кравченко</p>
+</div>
+</div>
+</div>
+<!-- Tuesday -->
+<div class="space-y-4">
+<div class="bg-slate-200 dark:bg-slate-800 p-3 rounded-xl text-center font-bold text-slate-600 dark:text-slate-400">Вівторок</div>
+<div class="space-y-3">
+<div class="bg-white dark:bg-primary/5 p-4 rounded-xl border-l-4 border-primary/20 shadow-sm">
+<span class="text-[10px] text-slate-500 font-bold uppercase">08:30 - 09:15</span>
+<h4 class="font-bold text-sm mt-1">Історія</h4>
+<p class="text-xs text-slate-500">Микола Сидоренко</p>
+</div>
+</div>
+</div>
+<!-- Wednesday -->
+<div class="space-y-4">
+<div class="bg-slate-200 dark:bg-slate-800 p-3 rounded-xl text-center font-bold text-slate-600 dark:text-slate-400">Середа</div>
+<div class="space-y-3">
+<div class="bg-white dark:bg-primary/5 p-4 rounded-xl border-l-4 border-primary/20 shadow-sm">
+<span class="text-[10px] text-slate-500 font-bold uppercase">08:30 - 09:15</span>
+<h4 class="font-bold text-sm mt-1">Англійська</h4>
+<p class="text-xs text-slate-500">Анна Коваль</p>
+</div>
+</div>
+</div>
+<!-- Thursday -->
+<div class="space-y-4">
+<div class="bg-slate-200 dark:bg-slate-800 p-3 rounded-xl text-center font-bold text-slate-600 dark:text-slate-400">Четвер</div>
+<div class="space-y-3">
+<div class="bg-white dark:bg-primary/5 p-4 rounded-xl border-l-4 border-primary/20 shadow-sm">
+<span class="text-[10px] text-slate-500 font-bold uppercase">08:30 - 09:15</span>
+<h4 class="font-bold text-sm mt-1">Фізкультура</h4>
+<p class="text-xs text-slate-500">Олег Петров</p>
+</div>
+</div>
+</div>
+<!-- Friday -->
+<div class="space-y-4">
+<div class="bg-slate-200 dark:bg-slate-800 p-3 rounded-xl text-center font-bold text-slate-600 dark:text-slate-400">П'ятниця</div>
+<div class="space-y-3">
+<div class="bg-white dark:bg-primary/5 p-4 rounded-xl border-l-4 border-primary/20 shadow-sm">
+<span class="text-[10px] text-slate-500 font-bold uppercase">08:30 - 09:15</span>
+<h4 class="font-bold text-sm mt-1">Біологія</h4>
+<p class="text-xs text-slate-500">Юлія Лисак</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-center">
+<button class="text-primary font-bold flex items-center gap-2 hover:underline">
+<span class="material-symbols-outlined">download</span> Завантажити повний розклад (PDF)
+        </button>
+</div>
+</section>
+<!-- Contacts & Leadership Section -->
+<section class="bg-primary/5 py-20 px-4 sm:px-6 lg:px-8">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<!-- Contact Info -->
+<div class="order-2 lg:order-1">
+<h2 class="text-3xl font-extrabold mb-8">Контакти</h2>
+<div class="space-y-6">
+<div class="flex items-start gap-4">
+<div class="bg-primary/20 p-3 rounded-lg text-primary">
+<a href="https://maps.app.goo.gl/eh5ZCAyBr3FVmDbz8" target="_blank"><span class="material-symbols-outlined">location_on</span></a>
+</div>
+<div>
+<h4 class="font-bold text-lg">Адреса</h4>
+<p class="text-slate-600 dark:text-slate-400">15501,  Чернігівська область,
+ Чернігівський район, 
+с.Новий Білоус, вул. Троїцька, 3 А 
+</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="bg-primary/20 p-3 rounded-lg text-primary">
+<span class="material-symbols-outlined">call</span>
+</div>
+<div>
+<h4 class="font-bold text-lg">Номер телефону</h4>
+<p class="text-slate-600 dark:text-slate-400">+380 (44) 123-4567</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="bg-primary/20 p-3 rounded-lg text-primary">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<div>
+<h4 class="font-bold text-lg">Електронна пошта</h4>
+<p class="text-slate-600 dark:text-slate-400">bilousnew@ukr.net</p>
+</div>
+</div>
+<div class="pt-6 border-t border-primary/10">
+<h4 class="font-bold text-sm uppercase text-primary tracking-widest mb-4">Графік роботи</h4>
+<div class="flex justify-between text-sm max-w-xs">
+<span class="text-slate-500">Пн - Пт:</span>
+<span class="font-semibold">8:00 - 17:00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Principal Portrait -->
+<div class="order-1 lg:order-2">
+<div class="relative">
+<div class="absolute -inset-4 bg-primary/10 rounded-3xl -rotate-3"></div>
+<div class="relative bg-white dark:bg-background-dark p-6 rounded-3xl shadow-xl border border-primary/5">
+<img alt="Principal Portrait" class="w-full h-[400px] object-cover rounded-2xl mb-6 grayscale hover:grayscale-0 transition-all duration-700" data-alt="Professional portrait of a school principal in a business suit" src="image/principal1.png"/>
+<div class="text-center">
+<h3 class="text-2xl font-bold">Ракута Вікторія Миколаївна</h3>
+<p class="text-primary font-medium">Шкільний директор</p>
+<p class="mt-4 text-slate-500 dark:text-slate-400 italic text-sm">"Наша місія — створити середовище, де кожен учень зможе розкрити свій максимальний потенціал через інновації та традиції."</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-slate-950 text-slate-400 py-12 px-4 border-t border-white/5">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    
+<div class="flex items-center gap-2 opacity-80">
+<span class="material-symbols-outlined text-primary">school</span>
+<span class="text-white font-bold text-lg">Новобілоуський ліцей</span>
+</div>
+<p class="text-sm font-light">© 2026 Новобілоуський ліцей. Всі права захищені.</p>
+<div class="flex gap-6"><div class="flex items-center gap-1 mr-4 pr-4 border-r border-white/10">
+<button class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary text-white">UA</button>
+<button class="text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-400 hover:text-white transition-colors">EN</button>
+</div>
+<a class="hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">mail</span></a>
+<a class="hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">share</span></a>
+</div>
+</div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuButton = document.querySelector('header .material-symbols-outlined.text-3xl');
+        const mobileMenu = document.querySelector('header .mobileMenu');
+
+        menuButton.addEventListener('click', function(e) {
+            e.stopPropagation(); // чтобы клик по кнопке не считался "вне меню"
+
+            mobileMenu.classList.toggle('hidden');
+        });
+
+
+        document.addEventListener('click', function (e) {
+            const isClickInsideMenu = mobileMenu.contains(e.target);
+            const isClickOnButton = menuButton.contains(e.target);
+
+            if (!isClickInsideMenu && !isClickOnButton) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+        
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="light" lang="uk"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Події - Новобілоуський ліцей</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: {
+            colors: {
+                "primary": "#dd6d06",
+                "background-light": "#f6f6f8",
+                "background-dark": "#101622",
+            },
+            fontFamily: {
+                "display": ["Lexend"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+    },
+}
+</script>
+<style>
+    body {
+        font-family: 'Lexend', sans-serif;
+    }
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="relative flex min-h-screen flex-col overflow-x-hidden">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <div class="flex items-center gap-3">
+                <div class="bg-primary p-2 rounded-lg text-white">
+                    <span class="material-symbols-outlined text-2xl">school</span>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight text-primary">Новобілоуський ліцей</h1>
+            </div>
+            <nav class="hidden md:flex items-center gap-8">
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="index.html">Головна</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="about.html">Про нас</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors text-primary" href="events.html">Події</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="public-info.html">Публічна інформація</a>
+            </nav>
+            <div class="hidden md:flex items-center ml-4 pl-4 border-l border-primary/20">
+                <div class="flex items-center gap-1 bg-primary/10 p-1 rounded-lg">
+                    <button class="px-2 py-1 text-xs font-bold rounded bg-primary text-white shadow-sm">UA</button>
+                    <button class="px-2 py-1 text-xs font-bold rounded text-primary hover:bg-primary/5">EN</button>
+                </div>
+            </div>
+            <div class="md:hidden">
+                <span class="material-symbols-outlined text-3xl cursor-pointer">menu</span>
+            </div>
+            <div class="mobileMenu absolute hidden top-full left-2 right-2 mt-2 w-full-2 bg-white dark:bg-primary/5 rounded-lg shadow-lg border border-primary/10 p-4">
+                <nav class="flex flex-col items-center gap-8">
+                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="index.html">Головна</a>
+                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="about.html">Про нас</a>
+                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="events.html">Події</a>
+                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="public-info.html">Публічна інформація</a>
+                    <div class="flex items-center gap-1 bg-primary/10 p-1 rounded-lg">
+                        <button class="px-2 py-1 text-xs font-bold rounded bg-primary text-white shadow-sm">UA</button>
+                        <button class="px-2 py-1 text-xs font-bold rounded text-primary hover:bg-primary/5">EN</button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<main class="mx-auto flex w-full max-w-[1280px] flex-1 flex-col px-6 py-8 lg:px-10">
+<!-- Hero Section / Title -->
+<div class="mb-10 flex flex-col gap-4">
+<h1 class="text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-slate-100">Наші події</h1>
+<p class="max-w-2xl text-lg text-slate-600 dark:text-slate-400">Дізнайтеся про майбутні заходи, академічні конкурси, спортивні змагання та культурне життя нашого ліцею.</p>
+</div>
+<!-- Filters & Calendar Layout -->
+<div class="mb-12 flex flex-col gap-8 lg:flex-row">
+<!-- Category Sidebar -->
+<div class="w-full lg:w-64 flex flex-col gap-6">
+<div>
+<h3 class="mb-4 text-sm font-bold uppercase tracking-wider text-slate-500">Категорії</h3>
+<div class="flex flex-wrap gap-2 lg:flex-col">
+<button class="flex items-center gap-3 rounded-lg bg-primary px-4 py-2.5 text-white transition-all">
+<span class="material-symbols-outlined text-lg">apps</span>
+<span class="text-sm font-medium">Усі події</span>
+</button>
+<button class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-slate-700 dark:text-slate-300 hover:bg-primary/10 transition-all">
+<span class="material-symbols-outlined text-lg">auto_stories</span>
+<span class="text-sm font-medium">Академічні</span>
+</button>
+<button class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-slate-700 dark:text-slate-300 hover:bg-primary/10 transition-all">
+<span class="material-symbols-outlined text-lg">sports_basketball</span>
+<span class="text-sm font-medium">Спорт</span>
+</button>
+<button class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-slate-700 dark:text-slate-300 hover:bg-primary/10 transition-all">
+<span class="material-symbols-outlined text-lg">palette</span>
+<span class="text-sm font-medium">Мистецтво</span>
+</button>
+<button class="flex items-center gap-3 rounded-lg px-4 py-2.5 text-slate-700 dark:text-slate-300 hover:bg-primary/10 transition-all">
+<span class="material-symbols-outlined text-lg">person_add</span>
+<span class="text-sm font-medium">Вступ</span>
+</button>
+</div>
+</div>
+<!-- Compact Calendar -->
+<div class="rounded-xl border border-primary/10 bg-white p-4 dark:bg-slate-800/50 shadow-sm">
+<div class="mb-4 flex items-center justify-between">
+<button class="p-1 hover:text-primary transition-colors"><span class="material-symbols-outlined">chevron_left</span></button>
+<span class="text-sm font-bold uppercase tracking-tighter">Жовтень 2023</span>
+<button class="p-1 hover:text-primary transition-colors"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+<div class="grid grid-cols-7 text-center text-[10px] font-bold text-slate-400">
+<span>ПН</span><span>ВТ</span><span>СР</span><span>ЧТ</span><span>ПТ</span><span>СБ</span><span>НД</span>
+</div>
+<div class="mt-2 grid grid-cols-7 gap-1 text-center">
+<div class="py-1 text-xs text-slate-300">25</div>
+<div class="py-1 text-xs text-slate-300">26</div>
+<div class="py-1 text-xs text-slate-300">27</div>
+<div class="py-1 text-xs text-slate-300">28</div>
+<div class="py-1 text-xs text-slate-300">29</div>
+<div class="py-1 text-xs text-slate-300">30</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">1</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">2</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">3</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">4</div>
+<div class="flex items-center justify-center rounded-full bg-primary py-1 text-xs font-bold text-white shadow-md">5</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">6</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">7</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">8</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">8</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">9</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">10</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">11</div>
+<div class="flex items center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">12</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">13</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">14</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">15</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">16</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">17</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">18</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">19</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">20</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">21</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">22</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">23</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">24</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">25</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">26</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">27</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">28</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">29</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">30</div>
+<div class="flex items-center justify-center rounded-full py-1 text-xs font-medium hover:bg-primary/10">31</div>
+<div class="py-1 text-xs text-slate-300">1</div>
+<div class="py-1 text-xs text-slate-300">2</div>
+<div class="py-1 text-xs text-slate-300">3</div>
+<div class="py-1 text-xs text-slate-300">4</div>
+</div>
+</div>
+</div>
+<!-- Events Grid -->
+<div class="flex-1">
+<div class="grid grid-cols-1 gap-6 md:grid-cols-2" id="events-grid">
+<!-- Card 1 -->
+<article class="group overflow-hidden rounded-xl border border-primary/10 bg-white dark:bg-slate-800/50 transition-all hover:shadow-lg">
+<div class="relative h-48 w-full overflow-hidden">
+<img class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Студенти проводять науковий експеримент у лабораторії" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0IUDKsLuSoO9ra4-5pMkIS7FLSraU2wO5JdI8yHcF6wAy1JCJPA3kJq0Udl3GEwBdcpmeq92Apvu8FLmy2d9o9b5PqvOUJ4GoGJIldq3ED9TTNgAStoxgxu5QQFlrHRujaC8bNGIZTMHiKRdRJYKbvAYj9cPzJvTvork_eWKVIGT25hSfLO6s71Y6eKXznZFLw5dbl6FrXkFxuI5iSN104nd0MniL5XvTgCm8zau1c20AvoMZGQFJSI9kvMAC1YPr2tbM0L4uC71t"/>
+<span class="absolute left-4 top-4 rounded-lg bg-primary px-3 py-1 text-xs font-bold text-white">Академічні</span>
+</div>
+<div class="flex flex-col p-6">
+<div class="mb-2 flex items-center gap-2 text-sm text-slate-500">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>15 Жовтня, 2023</span>
+</div>
+<h3 class="mb-3 text-xl font-bold text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors">Науковий ярмарок 2023</h3>
+<p class="mb-6 line-clamp-2 text-sm text-slate-600 dark:text-slate-400">Запрошуємо всіх учнів продемонструвати свої інноваційні проекти та експерименти. Найкращі роботи отримають призи.</p>
+<a class="mt-auto inline-flex items-center gap-2 text-sm font-bold text-primary hover:gap-3 transition-all" href="#">
+                                    Читати більше
+                                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</a>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="group overflow-hidden rounded-xl border border-primary/10 bg-white dark:bg-slate-800/50 transition-all hover:shadow-lg">
+<div class="relative h-48 w-full overflow-hidden">
+<img class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Баскетбольний матч у спортивному залі школи" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnNj8Rm4-0q3df9KayLUA7G82Mr160ypJXt68m7sDr0cXGoBLHMVKhkcTCXhaPP_BQqM7AU8EGvq5RywX19bNEpnQ_bz6yZ_xhrprB4InIBQKWOy4QQ3X8thZ66cRlTwZKiXLkU0jmh1HnfsX3h24pVsfnprfqsFb0kelHwOcYbERk98fjRQ3ouDffbKrp9woi7FuXy_bHseoLu5VdIwtURvO1dw6rw0O0DYIh2biL6jsn7UYVRAGFjRLJweNzYZKKUxeEInIMgTOG"/>
+<span class="absolute left-4 top-4 rounded-lg bg-blue-600 px-3 py-1 text-xs font-bold text-white">Спорт</span>
+</div>
+<div class="flex flex-col p-6">
+<div class="mb-2 flex items-center gap-2 text-sm text-slate-500">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>18 Жовтня, 2023</span>
+</div>
+<h3 class="mb-3 text-xl font-bold text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors">Баскетбольний турнір</h3>
+<p class="mb-6 line-clamp-2 text-sm text-slate-600 dark:text-slate-400">Міжшкільні змагання серед учнів 9-11 класів. Підтримайте нашу команду на домашній арені!</p>
+<a class="mt-auto inline-flex items-center gap-2 text-sm font-bold text-primary hover:gap-3 transition-all" href="#">
+                                    Читати більше
+                                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</a>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="group overflow-hidden rounded-xl border border-primary/10 bg-white dark:bg-slate-800/50 transition-all hover:shadow-lg">
+<div class="relative h-48 w-full overflow-hidden">
+<img class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Виступ шкільного хору на сцені" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA06p3Z015-O-MKVZxvL8XOLnDQR-xVL6xufEq6E5yM_nYH5m8ULxLhI8PGCQ8ApxuzaHQZ2qi24N5OyqkNQl1v3wyzn2iyv05dtsE6PIzkS3U6tAiXCzOD3oAzXQv6CB_fTttuLv1tCRXyZIG4yw2nivgYPzxypr8yqjjKvMLgb-csq9OmLgPiaXhwicxJXoNgYGVuI97hiSTlSaGm-D0hws1gdMGTmfDZAPH5egBBpuaygHHK4d3XEndtcdaReRj6IHbwboKM9VT1"/>
+<span class="absolute left-4 top-4 rounded-lg bg-purple-600 px-3 py-1 text-xs font-bold text-white">Мистецтво</span>
+</div>
+<div class="flex flex-col p-6">
+<div class="mb-2 flex items-center gap-2 text-sm text-slate-500">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>22 Жовтня, 2023</span>
+</div>
+<h3 class="mb-3 text-xl font-bold text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors">Осінній концерт</h3>
+<p class="mb-6 line-clamp-2 text-sm text-slate-600 dark:text-slate-400">Вечір музики та талантів нашого ліцею. У програмі виступи хору, інструментальні номери та танці.</p>
+<a class="mt-auto inline-flex items-center gap-2 text-sm font-bold text-primary hover:gap-3 transition-all" href="#">
+                                    Читати більше
+                                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</a>
+</div>
+</article>
+<!-- Card 4 -->
+<article class="group overflow-hidden rounded-xl border border-primary/10 bg-white dark:bg-slate-800/50 transition-all hover:shadow-lg">
+<div class="relative h-48 w-full overflow-hidden">
+<img class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Батьки та майбутні учні на дні відкритих дверей" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzbczcqctILwsW6EbETTifELDPWyS6A9Hs_TCcCQyJ8NhwunuuECCvrfP_LHAoOlYxNE0skhLBoDdLRKFazNh7Z1ClQNH2VBUek4SkvwnTuG61avMpGH0Y59kC5OJQNsnjhNLVYpb5MMzUDqEsT7JYOkdEd4npBUvPrW6CG1pzsemIrQm-3sCcSnjbcM31E8ot_UhLoc1hxim4R9iC-7VPrATqgHrXHZPXae4OEfhVZ_jsJINnQcLBq37iIQrILPklxv0GTNT9Rh3R"/>
+<span class="absolute left-4 top-4 rounded-lg bg-green-600 px-3 py-1 text-xs font-bold text-white">Вступ</span>
+</div>
+<div class="flex flex-col p-6">
+<div class="mb-2 flex items-center gap-2 text-sm text-slate-500">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+<span>25 Жовтня, 2023</span>
+</div>
+<h3 class="mb-3 text-xl font-bold text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors">День відкритих дверей</h3>
+<p class="mb-6 line-clamp-2 text-sm text-slate-600 dark:text-slate-400">Дізнайтеся про умови навчання, освітні програми та познайомтеся з нашими викладачами.</p>
+<a class="mt-auto inline-flex items-center gap-2 text-sm font-bold text-primary hover:gap-3 transition-all" href="#">
+                                    Читати більше
+                                    <span class="material-symbols-outlined text-lg">arrow_forward</span>
+</a>
+</div>
+</article>
+</div>
+<!-- Pagination -->
+<div class="mt-12 flex items-center justify-center gap-2">
+<button class="flex size-10 items-center justify-center rounded-lg border border-primary/10 bg-white dark:bg-slate-800 hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="flex size-10 items-center justify-center rounded-lg bg-primary font-bold text-white shadow-md">1</button>
+<button class="flex size-10 items-center justify-center rounded-lg border border-primary/10 bg-white dark:bg-slate-800 hover:bg-primary/10 transition-colors">2</button>
+<button class="flex size-10 items-center justify-center rounded-lg border border-primary/10 bg-white dark:bg-slate-800 hover:bg-primary/10 transition-colors">3</button>
+<span class="px-2 text-slate-400">...</span>
+<button class="flex h-10 items-center gap-2 rounded-lg border border-primary/10 bg-white px-4 dark:bg-slate-800 hover:bg-primary/10 transition-colors">
+<span>Наступна</span>
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-950 text-slate-400 py-12 px-4 border-t border-white/5">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-center gap-1 mr-4 pr-4 border-r border-white/10">
+<button class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary text-white">EN</button>
+<button class="text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-400 hover:text-white transition-colors">UA</button>
+</div>
+<div class="flex items-center gap-2 opacity-80">
+<span class="material-symbols-outlined text-primary">school</span>
+<span class="text-white font-bold text-lg">Novobilouskyi Lyceum</span>
+</div>
+<p class="text-sm font-light">© 2026 Новобілоуський ліцей. Всі права захищені.</p>
+<div class="flex gap-6">
+<div class="flex items-center gap-1 mr-4 pr-4 border-r border-white/10">
+<button class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary text-white">EN</button>
+<button class="text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-400 hover:text-white transition-colors">UA</button>
+</div>
+<a class="hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">mail</span></a>
+<a class="hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">share</span></a>
+</div>
+</div>
+</footer>
+</div>
+<script src="js/cms-client.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuButton = document.querySelector('header .material-symbols-outlined.text-3xl');
+        const mobileMenu = document.querySelector('header .mobileMenu');
+
+        menuButton.addEventListener('click', function(e) {
+            e.stopPropagation(); // чтобы клик по кнопке не считался "вне меню"
+
+            mobileMenu.classList.toggle('hidden');
+        });
+
+
+        document.addEventListener('click', function (e) {
+            const isClickInsideMenu = mobileMenu.contains(e.target);
+            const isClickOnButton = menuButton.contains(e.target);
+
+            if (!isClickInsideMenu && !isClickOnButton) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+        
+    });
+</script>
+</body>
+</html>

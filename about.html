@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html lang="uk"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#dd6d06",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23190f",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Lexend', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            <div class="flex items-center gap-3">
+                <div class="bg-primary p-2 rounded-lg text-white">
+                    <span class="material-symbols-outlined text-2xl">school</span>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight text-primary">Новобілоуський ліцей</h1>
+            </div>
+            <nav class="hidden md:flex items-center gap-8">
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="index.html">Головна</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors text-primary" href="about.html">Про нас</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="events.html">Події</a>
+                <a class="text-sm font-semibold hover:text-primary transition-colors" href="public-info.html">Публічна інформація</a>
+            </nav>
+            <div class="hidden md:flex items-center ml-4 pl-4 border-l border-primary/20">
+                <div class="flex items-center gap-1 bg-primary/10 p-1 rounded-lg">
+                    <button class="px-2 py-1 text-xs font-bold rounded bg-primary text-white shadow-sm">UA</button>
+                    <button class="px-2 py-1 text-xs font-bold rounded text-primary hover:bg-primary/5">EN</button>
+                </div>
+            </div>
+            <div class="md:hidden">
+                <span class="material-symbols-outlined text-3xl cursor-pointer">menu</span>
+            </div>
+            <div class="mobileMenu absolute hidden top-full left-2 right-2 mt-2 w-full-2 bg-white dark:bg-primary/5 rounded-lg shadow-lg border border-primary/10 p-4">
+                <nav class="flex flex-col items-center gap-8">
+                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="index.html">Головна</a>
+                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="about.html">Про нас</a>
+                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="events.html">Події</a>
+                    <a class="text-sm font-semibold hover:text-primary transition-colors" href="public-info.html">Публічна інформація</a>
+                    <div class="flex items-center gap-1 bg-primary/10 p-1 rounded-lg">
+                        <button class="px-2 py-1 text-xs font-bold rounded bg-primary text-white shadow-sm">UA</button>
+                        <button class="px-2 py-1 text-xs font-bold rounded text-primary hover:bg-primary/5">EN</button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<main class="flex-1">
+<!-- Hero Section -->
+<section class="relative px-6 md:px-20 py-10">
+<div class="relative min-h-[500px] flex flex-col items-center justify-center text-center p-8 rounded-xl overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center z-0" data-alt="Modern high school building with green campus" style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('image/background\ 2.jpg');"></div>
+<div class="relative z-10 max-w-3xl">
+<h1 class="text-white text-4xl md:text-6xl font-black mb-6 tracking-tight">Про Наш Ліцей</h1>
+<p class="text-white/90 text-lg md:text-xl font-light leading-relaxed">
+                                Наша місія — створення сучасного освітнього простору для всебічного розвитку особистості, плекання патріотизму та прагнення до знань. Ми будуємо майбутнє разом.
+                            </p>
+</div>
+</div>
+</section>
+<!-- Our History Timeline -->
+<section class="px-6 md:px-20 py-16 bg-white dark:bg-background-dark/50">
+<div class="max-w-4xl mx-auto">
+<h2 class="text-3xl font-bold mb-12 text-center">Наша історія</h2>
+<div class="space-y-8">
+<div class="flex gap-6 items-start">
+<div class="flex flex-col items-center">
+<div class="bg-primary/20 p-2 rounded-full">
+<span class="material-symbols-outlined text-primary">history_edu</span>
+</div>
+<div class="w-px h-full bg-primary/20 my-2"></div>
+</div>
+<div class="pb-8">
+<h3 class="text-xl font-bold">1985 рік</h3>
+<p class="text-slate-600 dark:text-slate-400 mt-2">Заснування школи як ключового освітнього осередку громади. Початок формування педагогічних традицій.</p>
+</div>
+</div>
+<div class="flex gap-6 items-start">
+<div class="flex flex-col items-center">
+<div class="bg-primary/20 p-2 rounded-full">
+<span class="material-symbols-outlined text-primary">architecture</span>
+</div>
+<div class="w-px h-full bg-primary/20 my-2"></div>
+</div>
+<div class="pb-8">
+<h3 class="text-xl font-bold">2010 рік</h3>
+<p class="text-slate-600 dark:text-slate-400 mt-2">Масштабна реконструкція та оновлення матеріально-технічної бази. Відкриття нових спеціалізованих кабінетів.</p>
+</div>
+</div>
+<div class="flex gap-6 items-start">
+<div class="flex flex-col items-center">
+<div class="bg-primary/20 p-2 rounded-full">
+<span class="material-symbols-outlined text-primary">verified</span>
+</div>
+</div>
+<div>
+<h3 class="text-xl font-bold">2021 рік</h3>
+<p class="text-slate-600 dark:text-slate-400 mt-2">Отримання статусу ліцею. Перехід на нові стандарти профільної освіти та розширення міжнародного співробітництва.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Values Section -->
+<section class="px-6 md:px-20 py-16">
+<h2 class="text-3xl font-bold mb-12 text-center">Наші цінності</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-sm border border-primary/5 text-center">
+<span class="material-symbols-outlined text-5xl text-primary mb-4">workspace_premium</span>
+<h3 class="text-xl font-bold mb-3">Досконалість</h3>
+<p class="text-slate-600 dark:text-slate-400">Прагнемо до найвищих результатів у навчанні та вихованні.</p>
+</div>
+<div class="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-sm border border-primary/5 text-center">
+<span class="material-symbols-outlined text-5xl text-primary mb-4">groups</span>
+<h3 class="text-xl font-bold mb-3">Спільнота</h3>
+<p class="text-slate-600 dark:text-slate-400">Створюємо атмосферу взаємопідтримки та поваги між усіма учасниками.</p>
+</div>
+<div class="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-sm border border-primary/5 text-center">
+<span class="material-symbols-outlined text-5xl text-primary mb-4">lightbulb</span>
+<h3 class="text-xl font-bold mb-3">Інновації</h3>
+<p class="text-slate-600 dark:text-slate-400">Впроваджуємо сучасні методики та технології в освітній процес.</p>
+</div>
+</div>
+</section>
+<!-- Administration Section -->
+<section class="px-6 md:px-20 py-16 bg-white dark:bg-background-dark/50">
+<h2 class="text-3xl font-bold mb-12 text-center">Адміністрація</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+<div class="group flex flex-col">
+<div class="aspect-[3/4] rounded-xl overflow-hidden mb-4 relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" data-alt="Portrait of the female principal" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0nMW3mNhUEEyO-YyW4lHTB-TH8TEqsEsOTGV2zJvU0JxYTK276haCW5wc5SRzo9teL51SYuvbICDprf2iiQg6XpYngXo1n03wWD5W8UBl4T5AIxPk2dAqHEcIeRRMaY_P0RgKchNu0olj3mfUpklYMTahfVkOpMixABq8ZGmPpteXWFvOr6LaA5kWDT4QVDYS4X-S0rzvEDVI0z80hcpPdbTWHzhJN6WpKQZk4sLBQAcA4FfvDwpmIkuktLcHjqnwIQPAtYLZ_BRA"/>
+</div>
+<h3 class="text-xl font-bold">Олена Петренко</h3>
+<p class="text-primary font-medium">Директор ліцею</p>
+</div>
+<div class="group flex flex-col">
+<div class="aspect-[3/4] rounded-xl overflow-hidden mb-4 relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" data-alt="Portrait of vice-principal male" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwWuqSyjCGsKsL7F8Yrodqc9faiv5cf0v27CcPgJc4ywxMA5jPzIcW-6zahU4gCVzD05G66RDN0I8SmpleP8G06-AVqq7MwGbNG-dxdtqaOAvfiSyvFBz7swHGpOTJIycynNG0o3vhAS_nOEHCuueG9QZ6xOqWave9aEuxRxIs922ZQx470MYTF45jiWnSjqC4QNU_5o0JhZc3sZ827Arx9Bt1xFe6wvSa6xMh6m2KgCHRRknE6ha_-_vUrsP4pADT1RzjFo5Ls3cc"/>
+</div>
+<h3 class="text-xl font-bold">Ігор Сидоренко</h3>
+<p class="text-primary font-medium">Заступник з навчальної роботи</p>
+</div>
+<div class="group flex flex-col">
+<div class="aspect-[3/4] rounded-xl overflow-hidden mb-4 relative">
+<img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" data-alt="Portrait of vice-principal female" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0I0WsoI0yjCHyps37pm28f-LTq-MTk1p7mzOcYYFMe6VxFEscGdMJAP8LRvz13GU1_zhJXbFi1qDo1_61XxWYhk0UW8wSMaqxQsNWUYmXI9aPKrokFFeqtFxNWY92CR1bUpkmdfn9L0m_OrXeH8zL6qMPiQ38bupkCFkrI_NEO85c1jVxd9Nq1WDQFx2O2kXtpXUYHT8haJawfQh3gvySimrmBpjv4TGJ715fM4HaDxUARieXEFVTcQCGmet9WYDrG0iZX3inO23f"/>
+</div>
+<h3 class="text-xl font-bold">Марія Іванова</h3>
+<p class="text-primary font-medium">Заступник з виховної роботи</p>
+</div>
+</div>
+</section>
+<!-- Gallery Section -->
+<section class="px-6 md:px-20 py-16">
+<h2 class="text-3xl font-bold mb-12 text-center">Наше шкільне життя</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="aspect-square rounded-lg overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="Students studying together in a classroom" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjHWIHrFSBdf0Xxlx5nHWskuWBi59zPtf1s-wEvSRa3bV0CdUaDNQ7muYx7o8BLXejMS6NJ1nTtcneIVsv1G5tbfxJvMSTocHrrsuRUN9IKniQEWJHvHPmId4Z9FbtWcfnk6KIAKZRVkU3cwYCzUAwSS21R0oFQGiplPNoCi7biMzeB6NNJBMo3OlqgQXqMCgLxmuzaU4PHRxVHIqLLSOwLl0RVd6boZA5xfN-5NQVcaIbmAxcc9uSpisRPKYUkhg-bClYUlO7U1yN"/>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="Children playing sports in gymnasium" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeh95pQhpSppivULlvpQjVAN8xcQGJOWXYtuWPgxsPv9bh7g4o1LIaq9G-mSWRoAFUJtzyKNpHfGiku8xUcaqwRxQMs0Rf_Os7u1jht1J-2ereLGYJ7ne22GO_9GFpZ9Q8366C4AorUH7f6f9u9l9fzlP-yvS4tToOuKF6UL4UNS7ivaUoi6CUufQ08-IyTugGNIJetLlKytZaA4rx432pT4mvlVCQrSuqxCkOW3Ns9zSfcq4BySWfaIrwK6jaC-tM2zcY7EqEYZ-y"/>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="Art class with creative students" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACGVAfMhzMyV4nt7cCq2DJMbY4j5yw-cUlsHXtKRVCkjJIK2CnYud0nDlAuaZ-IDEoRRZIwlUtDBje7ngcvwhCGB3fJx_zqS523Muu81jkyUsIczPqPlOkUUVHERusiSSr1-psHmmMm7jHosLzO2XhHSmOcTctI33F2s2k-fMhyik19Aw8GaHckBKzARMcx6bpRGTKKB2ZFONyJTLvLnuX7xRCjtz7PTSykAK371hI3raG7jcrat-D-8zFeh2RxpMuG_qS_1yjFscy"/>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden bg-slate-200">
+<img class="w-full h-full object-cover" data-alt="School chemistry experiment in lab" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAY6T4qni91OzqiZD_Ox_OEQDzxVRvQM9n-7CJkQF2kj48Lta7ETAbCwZmN_Q0qldZMo-pymBIVeStHTow6LpVomFmkaJ-HHFBaiuDoRb74v1NxsmPqIvr14rxLTwzZppg1x_3mlDO734vslh2GkcKOubLOoJP483-W1-SicuK3CCHO6dv-oz_A6Gzu_YasUWEFwol5nFC0OdIpmCmOEzLzW0mstn4ryAlgV9rwL5C2QhyRK3WUrIn3tdgPx2aziTxJrMaRiB8_DUf6"/>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-white dark:bg-background-dark border-t border-primary/10 px-6 md:px-20 py-12">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+<div class="col-span-1 md:col-span-2">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary text-3xl">school</span>
+<h3 class="text-xl font-bold">Новобілоуський ліцей</h3>
+</div>
+<p class="text-slate-600 dark:text-slate-400 max-w-sm">Ми виховуємо покоління успішних, свідомих та творчих українців, готових до викликів сучасного світу.</p>
+</div>
+<div>
+<h4 class="font-bold mb-4">Навігація</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Про нас</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Освітній процес</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Новини</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Досягнення</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-bold mb-4">Контакти</h4>
+<ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm">location_on</span> с. Новий Білоус</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm">mail</span> info@nb-lyceum.edu.ua</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm">call</span> +38 (0462) 678-910</li>
+</ul>
+</div>
+</div>
+<div class="mt-12 pt-8 border-t border-primary/10 text-center text-sm text-slate-500">
+<p>© 2024 Новобілоуський ліцей. Всі права захищені.</p>
+</div>
+</footer>
+</div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuButton = document.querySelector('header .material-symbols-outlined.text-3xl');
+        const mobileMenu = document.querySelector('header .mobileMenu');
+
+        menuButton.addEventListener('click', function(e) {
+            e.stopPropagation(); // чтобы клик по кнопке не считался "вне меню"
+
+            mobileMenu.classList.toggle('hidden');
+        });
+
+
+        document.addEventListener('click', function (e) {
+            const isClickInsideMenu = mobileMenu.contains(e.target);
+            const isClickOnButton = menuButton.contains(e.target);
+
+            if (!isClickInsideMenu && !isClickOnButton) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+        
+    });
+</script>
+</body>
+</html>

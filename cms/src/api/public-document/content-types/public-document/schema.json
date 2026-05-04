@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "public_documents",
+  "info": {
+    "singularName": "public-document",
+    "pluralName": "public-documents",
+    "displayName": "Public Document",
+    "description": "Public information cards and files"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "pdf",
+        "page",
+        "link"
+      ],
+      "default": "page",
+      "required": true
+    },
+    "icon": {
+      "type": "string",
+      "default": "description"
+    },
+    "url": {
+      "type": "string"
+    },
+    "file": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "files"
+      ]
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

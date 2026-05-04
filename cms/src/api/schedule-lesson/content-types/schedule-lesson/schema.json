@@ -1,0 +1,52 @@
+{
+  "kind": "collectionType",
+  "collectionName": "schedule_lessons",
+  "info": {
+    "singularName": "schedule-lesson",
+    "pluralName": "schedule-lessons",
+    "displayName": "Schedule Lesson",
+    "description": "Class schedule records"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "className": {
+      "type": "string",
+      "required": true
+    },
+    "weekday": {
+      "type": "enumeration",
+      "enum": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday"
+      ],
+      "required": true
+    },
+    "startTime": {
+      "type": "time",
+      "required": true
+    },
+    "endTime": {
+      "type": "time",
+      "required": true
+    },
+    "subject": {
+      "type": "string",
+      "required": true
+    },
+    "teacher": {
+      "type": "string"
+    },
+    "room": {
+      "type": "string"
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

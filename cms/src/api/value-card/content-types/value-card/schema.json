@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "value_cards",
+  "info": {
+    "singularName": "value-card",
+    "pluralName": "value-cards",
+    "displayName": "Value Card"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "text": {
+      "type": "text"
+    },
+    "icon": {
+      "type": "string",
+      "default": "workspace_premium"
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}
