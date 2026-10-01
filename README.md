@@ -35,6 +35,7 @@ npm.cmd run dev
 - [Локальний запуск і перевірка](docs/local-development.md)
 - [Структура й потік даних](docs/architecture.md)
 - [Моделі CMS та редагування вмісту](docs/content-management.md)
+- [Функціональні вимоги власника сайту](docs/product-requirements.md)
 - [Плани, відомі прогалини та правила їх запису](docs/roadmap.md)
 
 ## Поточний стан
