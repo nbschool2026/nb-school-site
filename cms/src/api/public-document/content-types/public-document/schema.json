@@ -4,8 +4,8 @@
   "info": {
     "singularName": "public-document",
     "pluralName": "public-documents",
-    "displayName": "Public Document",
-    "description": "Public information cards and files"
+    "displayName": "Публічний документ",
+    "description": "Документи та відомості для публічної інформації"
   },
   "options": {
     "draftAndPublish": true

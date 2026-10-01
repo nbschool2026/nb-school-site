@@ -36,6 +36,7 @@ npm.cmd run dev
 - [Структура й потік даних](docs/architecture.md)
 - [Моделі CMS та редагування вмісту](docs/content-management.md)
 - [Знімок бази CMS у Git і відновлення](docs/database-backup.md)
+- [Українська мова адмінки Strapi](docs/admin-ukrainian.md)
 - [Функціональні вимоги власника сайту](docs/product-requirements.md)
 - [Поетапний план реалізації](docs/implementation-plan.md)
 - [Перевірка подій через CMS](docs/events-testing.md)

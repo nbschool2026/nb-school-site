@@ -4,7 +4,7 @@
   "info": {
     "singularName": "history-item",
     "pluralName": "history-items",
-    "displayName": "History Item"
+    "displayName": "Історія закладу"
   },
   "options": {
     "draftAndPublish": true

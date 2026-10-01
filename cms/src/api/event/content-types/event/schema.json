@@ -4,8 +4,8 @@
   "info": {
     "singularName": "event",
     "pluralName": "events",
-    "displayName": "Event",
-    "description": "School news and events"
+    "displayName": "Подія",
+    "description": "Новини та події ліцею"
   },
   "options": {
     "draftAndPublish": true

@@ -4,8 +4,8 @@
   "info": {
     "singularName": "staff-member",
     "pluralName": "staff-members",
-    "displayName": "Staff Member",
-    "description": "Administration and school staff"
+    "displayName": "Працівник",
+    "description": "Адміністрація та працівники ліцею"
   },
   "options": {
     "draftAndPublish": true

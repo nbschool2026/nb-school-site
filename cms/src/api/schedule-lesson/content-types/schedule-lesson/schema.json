@@ -4,8 +4,8 @@
   "info": {
     "singularName": "schedule-lesson",
     "pluralName": "schedule-lessons",
-    "displayName": "Schedule Lesson",
-    "description": "Class schedule records"
+    "displayName": "Урок розкладу",
+    "description": "Записи розкладу занять"
   },
   "options": {
     "draftAndPublish": true

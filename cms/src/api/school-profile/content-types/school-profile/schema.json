@@ -4,8 +4,8 @@
   "info": {
     "singularName": "school-profile",
     "pluralName": "school-profiles",
-    "displayName": "School Profile",
-    "description": "Global school information and homepage hero"
+    "displayName": "Профіль ліцею",
+    "description": "Основні відомості, контакти й головний блок сайту"
   },
   "options": {
     "draftAndPublish": true
