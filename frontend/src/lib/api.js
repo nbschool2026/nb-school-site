@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_STRAPI_API_URL || 'http://localhost:1337/api';
+const API_BASE = import.meta.env.VITE_STRAPI_API_URL || '/api';
 const MEDIA_BASE = API_BASE.replace(/\/api\/?$/, '');
 
 export async function fetchCollection(path, query = '') {

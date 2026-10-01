@@ -1,6 +1,6 @@
 import { mediaUrl } from './api.js';
 
-const API_BASE = import.meta.env.VITE_STRAPI_API_URL || 'http://localhost:1337/api';
+const API_BASE = import.meta.env.VITE_STRAPI_API_URL || '/api';
 
 export async function fetchAllEvents() {
   const events = [];
