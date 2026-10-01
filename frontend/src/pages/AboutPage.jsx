@@ -2,12 +2,13 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
-import { fetchCollectionStrict, mediaUrl } from '../lib/api.js';
+import { fetchCollectionStrict, fetchSingleStrict, mediaUrl } from '../lib/api.js';
 
 export default function AboutPage() {
   const [historyItems, setHistoryItems] = useState([]);
   const [valueCards, setValueCards] = useState([]);
   const [staffMembers, setStaffMembers] = useState([]);
+  const [profile, setProfile] = useState(null);
   const [status, setStatus] = useState('loading');
 
   useEffect(() => {
@@ -15,10 +16,12 @@ export default function AboutPage() {
       fetchCollectionStrict('/history-items', 'sort=year:asc&pagination[pageSize]=100'),
       fetchCollectionStrict('/value-cards', 'sort=order:asc&pagination[pageSize]=100'),
       fetchCollectionStrict('/staff-members', 'populate=photo&sort=order:asc&pagination[pageSize]=100'),
-    ]).then(([history, values, staff]) => {
+      fetchSingleStrict('/school-profile', 'populate=aboutImage'),
+    ]).then(([history, values, staff, schoolProfile]) => {
       setHistoryItems(history);
       setValueCards(values);
       setStaffMembers(staff);
+      setProfile(schoolProfile);
       setStatus('ready');
     }).catch(() => setStatus('error'));
   }, []);
@@ -27,10 +30,12 @@ export default function AboutPage() {
     <main>
       {status === 'loading' && <p className="container">Завантаження сторінки «Про нас»…</p>}
       {status === 'error' && <p className="container" role="alert">Не вдалося завантажити сторінку «Про нас» із CMS.</p>}
-      <section className="subhero" style={{ backgroundImage: "linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.62)), url('/image/background-2.jpg')" }}>
+      <section className="subhero" style={{ backgroundImage: mediaUrl(profile?.aboutImage)
+        ? `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.62)), url("${mediaUrl(profile.aboutImage)}")`
+        : 'linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.75))' }}>
         <div>
           <h1>Про Наш Ліцей</h1>
-          <p>Наша місія — створення сучасного освітнього простору для всебічного розвитку особистості, плекання патріотизму та прагнення до знань.</p>
+          {profile?.mission && <p>{profile.mission}</p>}
         </div>
       </section>
 

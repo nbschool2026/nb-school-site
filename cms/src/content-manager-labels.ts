@@ -55,12 +55,14 @@ const labels: Record<string, Record<string, string>> = {
     workingHours: 'Графік роботи',
     mapUrl: 'Посилання на карту',
     heroImage: 'Головне фото',
+    aboutImage: 'Фото сторінки «Про нас»',
   },
   'api::staff-member.staff-member': {
     name: 'ПІБ',
     position: 'Посада',
     bio: 'Опис',
     photo: 'Фото',
+    homepagePhoto: 'Фото для головної',
     order: 'Порядок',
   },
   'api::value-card.value-card': {

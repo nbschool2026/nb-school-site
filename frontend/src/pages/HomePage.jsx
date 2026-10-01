@@ -28,7 +28,7 @@ export default function HomePage() {
       setProfile(data);
       setProfileStatus('ready');
     }).catch(() => setProfileStatus('error'));
-    fetchCollection('/staff-members', 'populate=photo&sort=order:asc&pagination[pageSize]=100').then((data) => {
+    fetchCollection('/staff-members', 'populate[0]=photo&populate[1]=homepagePhoto&sort=order:asc&pagination[pageSize]=100').then((data) => {
       setPrincipal(data[0] || null);
     });
     fetchAllEvents().then((data) => {
@@ -48,11 +48,13 @@ export default function HomePage() {
     }));
   }, [lessons]);
 
-  const heroImage = mediaUrl(profile?.heroImage, '/image/background.png');
+  const heroImage = mediaUrl(profile?.heroImage);
 
   return (
     <main>
-      <section className="hero" style={{ backgroundImage: `linear-gradient(rgba(16, 22, 34, 0.62), rgba(16, 22, 34, 0.35)), url("${heroImage}")` }}>
+      <section className="hero" style={{ backgroundImage: heroImage
+        ? `linear-gradient(rgba(16, 22, 34, 0.62), rgba(16, 22, 34, 0.35)), url("${heroImage}")`
+        : 'linear-gradient(rgba(16, 22, 34, 0.86), rgba(16, 22, 34, 0.7))' }}>
         <div className="hero-content">
           <h1>{profile?.heroTitle || profile?.schoolName || 'Новобілоуський ліцей'}</h1>
           {profile?.heroSubtitle && <p>{profile.heroSubtitle}</p>}
@@ -151,7 +153,8 @@ export default function HomePage() {
             </>}
           </div>
           {principal && <article className="principal-card">
-            {mediaUrl(principal.photo) && <img src={mediaUrl(principal.photo)} alt={principal.name} />}
+            {(mediaUrl(principal.homepagePhoto) || mediaUrl(principal.photo)) &&
+              <img src={mediaUrl(principal.homepagePhoto) || mediaUrl(principal.photo)} alt={principal.name} />}
             <h3>{principal.name}</h3>
             <p className="accent">{principal.position}</p>
             {principal.bio && <p className="quote">{principal.bio}</p>}

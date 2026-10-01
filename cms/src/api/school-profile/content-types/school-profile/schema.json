@@ -46,6 +46,13 @@
       "allowedTypes": [
         "images"
       ]
+    },
+    "aboutImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }

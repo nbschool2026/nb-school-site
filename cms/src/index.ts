@@ -1,4 +1,5 @@
 import { ensureUkrainianContentManagerLabels } from './content-manager-labels';
+import { ensureSeedMedia } from './seed-media';
 
 export default {
   register() {},
@@ -10,6 +11,7 @@ export default {
     await seedCollection(strapi, 'api::history-item.history-item', historyItems);
     await seedCollection(strapi, 'api::value-card.value-card', valueCards);
     await seedSingleType(strapi, 'api::school-profile.school-profile', schoolProfile);
+    await ensureSeedMedia(strapi);
     await ensurePublicReadPermissions(strapi);
     await ensureUkrainianContentManagerLabels(strapi);
   },

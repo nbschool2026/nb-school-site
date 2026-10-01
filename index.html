@@ -76,7 +76,7 @@ tailwind.config = {
 </header>
 <!-- Hero Section -->
 <section class="relative w-full h-[600px] flex items-center justify-center overflow-hidden">
-    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000" data-alt="Modern school building with glass windows and green lawn" style="background-image: linear-gradient(rgba(16, 22, 34, 0.6), rgba(16, 22, 34, 0.4)), url('image/background.png');">
+    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000" data-school-image="heroImage" data-overlay="linear-gradient(rgba(16, 22, 34, 0.6), rgba(16, 22, 34, 0.4))" style="background-image: linear-gradient(rgba(16, 22, 34, 0.6), rgba(16, 22, 34, 0.4));">
     </div>
     <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
         <h2 class="text-white text-4xl md:text-6xl font-extrabold leading-tight mb-6">Ласкаво просимо до Новобілоуського ліцею</h2>
@@ -252,7 +252,7 @@ tailwind.config = {
 <div class="relative">
 <div class="absolute -inset-4 bg-primary/10 rounded-3xl -rotate-3"></div>
 <div class="relative bg-white dark:bg-background-dark p-6 rounded-3xl shadow-xl border border-primary/5">
-<img alt="Principal Portrait" class="w-full h-[400px] object-cover rounded-2xl mb-6 grayscale hover:grayscale-0 transition-all duration-700" data-alt="Professional portrait of a school principal in a business suit" src="image/principal1.png"/>
+<img alt="Портрет директорки" class="w-full h-[400px] object-cover rounded-2xl mb-6 grayscale hover:grayscale-0 transition-all duration-700" data-principal-image=""/>
 <div class="text-center">
 <h3 class="text-2xl font-bold">Ракута Вікторія Миколаївна</h3>
 <p class="text-primary font-medium">Шкільний директор</p>
@@ -305,5 +305,6 @@ tailwind.config = {
         
     });
 </script>
+<script src="js/cms-static-images.js" defer></script>
 </body>
 </html>
