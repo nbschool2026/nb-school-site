@@ -3,9 +3,9 @@ import { useEffect, useMemo, useState } from 'react';
 import EventCard from '../components/EventCard.jsx';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
-import { fetchCollection, fetchSingle } from '../lib/api.js';
+import { fetchCollection, fetchSingleStrict, mediaUrl } from '../lib/api.js';
 import { fetchAllEvents } from '../lib/events.js';
-import { scheduleLessons, schoolProfile as fallbackProfile } from '../lib/fallbackData.js';
+import { scheduleLessons } from '../lib/fallbackData.js';
 
 const weekdays = [
   ['monday', 'Понеділок'],
@@ -16,13 +16,21 @@ const weekdays = [
 ];
 
 export default function HomePage() {
-  const [profile, setProfile] = useState(fallbackProfile);
+  const [profile, setProfile] = useState(null);
+  const [profileStatus, setProfileStatus] = useState('loading');
+  const [principal, setPrincipal] = useState(null);
   const [events, setEvents] = useState([]);
   const [eventsStatus, setEventsStatus] = useState('loading');
   const [lessons, setLessons] = useState(scheduleLessons);
 
   useEffect(() => {
-    fetchSingle('/school-profile').then((data) => data && setProfile(data));
+    fetchSingleStrict('/school-profile', 'populate=heroImage').then((data) => {
+      setProfile(data);
+      setProfileStatus('ready');
+    }).catch(() => setProfileStatus('error'));
+    fetchCollection('/staff-members', 'populate=photo&sort=order:asc&pagination[pageSize]=100').then((data) => {
+      setPrincipal(data[0] || null);
+    });
     fetchAllEvents().then((data) => {
       setEvents(data.slice(0, 4));
       setEventsStatus('ready');
@@ -40,12 +48,14 @@ export default function HomePage() {
     }));
   }, [lessons]);
 
+  const heroImage = mediaUrl(profile?.heroImage, '/image/background.png');
+
   return (
     <main>
-      <section className="hero" style={{ backgroundImage: "linear-gradient(rgba(16, 22, 34, 0.62), rgba(16, 22, 34, 0.35)), url('/image/background.png')" }}>
+      <section className="hero" style={{ backgroundImage: `linear-gradient(rgba(16, 22, 34, 0.62), rgba(16, 22, 34, 0.35)), url("${heroImage}")` }}>
         <div className="hero-content">
-          <h1>{profile.heroTitle}</h1>
-          <p>{profile.heroSubtitle}</p>
+          <h1>{profile?.heroTitle || profile?.schoolName || 'Новобілоуський ліцей'}</h1>
+          {profile?.heroSubtitle && <p>{profile.heroSubtitle}</p>}
           <div className="hero-actions">
             <a className="primary-button" href="#schedule">Відкрити нашу програму</a>
             <a className="ghost-button" href="/about">Віртуальний тур</a>
@@ -122,25 +132,30 @@ export default function HomePage() {
       </section>
 
       <section className="contact-band">
-        <div className="container contact-grid">
+        <div className={`container contact-grid${principal ? '' : ' contact-grid-single'}`}>
           <div>
             <h2>Контакти</h2>
-            <div className="contact-list">
-              <ContactItem icon="location_on" title="Адреса" text={profile.address} href={profile.mapUrl} />
-              <ContactItem icon="call" title="Номер телефону" text={profile.phone} />
-              <ContactItem icon="mail" title="Електронна пошта" text={profile.email} />
-            </div>
-            <div className="hours">
-              <span>Графік роботи</span>
-              <strong>{profile.workingHours}</strong>
-            </div>
+            {profileStatus === 'loading' && <p>Завантаження контактів…</p>}
+            {profileStatus === 'error' && <p role="alert">Не вдалося завантажити контакти з CMS.</p>}
+            {profileStatus === 'ready' && !profile && <p>Контакти ще не додано.</p>}
+            {profile && <>
+              <div className="contact-list">
+                {profile.address && <ContactItem icon="location_on" title="Адреса" text={profile.address} href={profile.mapUrl} />}
+                {profile.phone && <ContactItem icon="call" title="Номер телефону" text={profile.phone} href={`tel:${profile.phone.replace(/[^\d+]/g, '')}`} />}
+                {profile.email && <ContactItem icon="mail" title="Електронна пошта" text={profile.email} href={`mailto:${profile.email}`} />}
+              </div>
+              {profile.workingHours && <div className="hours">
+                <span>Графік роботи</span>
+                <strong>{profile.workingHours}</strong>
+              </div>}
+            </>}
           </div>
-          <article className="principal-card">
-            <img src="/image/principal1.png" alt="Ракута Вікторія Миколаївна" />
-            <h3>Ракута Вікторія Миколаївна</h3>
-            <p className="accent">Шкільний директор</p>
-            <p className="quote">"Наша місія — створити середовище, де кожен учень зможе розкрити свій максимальний потенціал."</p>
-          </article>
+          {principal && <article className="principal-card">
+            {mediaUrl(principal.photo) && <img src={mediaUrl(principal.photo)} alt={principal.name} />}
+            <h3>{principal.name}</h3>
+            <p className="accent">{principal.position}</p>
+            {principal.bio && <p className="quote">{principal.bio}</p>}
+          </article>}
         </div>
       </section>
     </main>

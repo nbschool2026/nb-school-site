@@ -508,6 +508,10 @@ img {
   gap: 64px;
 }
 
+.contact-grid-single {
+  grid-template-columns: 1fr;
+}
+
 .contact-grid h2 {
   margin: 0 0 28px;
   font-size: 2.3rem;
@@ -653,11 +657,23 @@ img {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.staff-card img {
+.staff-card img,
+.staff-photo-placeholder {
   width: 100%;
   aspect-ratio: 3 / 4;
   border-radius: 12px;
   object-fit: cover;
+}
+
+.staff-photo-placeholder {
+  display: grid;
+  place-items: center;
+  background: #e8edf2;
+  color: var(--muted);
+}
+
+.staff-photo-placeholder .material-symbols-outlined {
+  font-size: 5rem;
 }
 
 .staff-card h3 {
@@ -668,6 +684,13 @@ img {
   margin: 6px 0 0;
   color: var(--primary);
   font-weight: 800;
+}
+
+.staff-card .staff-bio {
+  margin-top: 10px;
+  color: var(--muted);
+  font-weight: 400;
+  line-height: 1.6;
 }
 
 .page-main {

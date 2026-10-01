@@ -1,7 +1,8 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MaterialIcon from './MaterialIcon.jsx';
+import { fetchSingle } from '../lib/api.js';
 
 const links = [
   { to: '/', label: 'Головна' },
@@ -12,6 +13,17 @@ const links = [
 
 export default function AppLayout() {
   const [open, setOpen] = useState(false);
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+    fetchSingle('/school-profile').then((data) => {
+      if (active) setProfile(data);
+    });
+    return () => { active = false; };
+  }, []);
+
+  const schoolName = profile?.schoolName || 'Новобілоуський ліцей';
 
   return (
     <div className="app-shell">
@@ -19,7 +31,7 @@ export default function AppLayout() {
         <div className="header-inner">
           <NavLink to="/" className="brand" onClick={() => setOpen(false)}>
             <span className="brand-icon"><MaterialIcon name="school" /></span>
-            <span>Новобілоуський ліцей</span>
+            <span>{schoolName}</span>
           </NavLink>
 
           <nav className="desktop-nav">
@@ -61,13 +73,12 @@ export default function AppLayout() {
         <div className="footer-inner">
           <div className="footer-brand">
             <MaterialIcon name="school" />
-            <span>Новобілоуський ліцей</span>
+            <span>{schoolName}</span>
           </div>
-          <p>© 2026 Новобілоуський ліцей. Всі права захищені.</p>
+          <p>© {new Date().getFullYear()} {schoolName}. Всі права захищені.</p>
           <div className="footer-social">
-            <a href="mailto:bilousnew@ukr.net" aria-label="Email"><MaterialIcon name="mail" /></a>
-            <a href="https://maps.app.goo.gl/eh5ZCAyBr3FVmDbz8" aria-label="Map"><MaterialIcon name="public" /></a>
-            <a href="/" aria-label="Share"><MaterialIcon name="share" /></a>
+            {profile?.email && <a href={`mailto:${profile.email}`} aria-label="Email"><MaterialIcon name="mail" /></a>}
+            {profile?.mapUrl && <a href={profile.mapUrl} aria-label="Map"><MaterialIcon name="public" /></a>}
           </div>
         </div>
       </footer>

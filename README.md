@@ -11,7 +11,7 @@
 ```powershell
 nvm use 22.23.3
 cd cms
-npm.cmd install
+npm.cmd ci
 npm.cmd run build
 npm.cmd run develop
 ```
@@ -20,7 +20,7 @@ npm.cmd run develop
 
 ```powershell
 cd frontend
-npm.cmd install
+npm.cmd ci
 npm.cmd run dev
 ```
 
