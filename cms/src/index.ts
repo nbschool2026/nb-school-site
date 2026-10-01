@@ -1,3 +1,5 @@
+import { ensureUkrainianContentManagerLabels } from './content-manager-labels';
+
 export default {
   register() {},
 
@@ -9,6 +11,7 @@ export default {
     await seedCollection(strapi, 'api::value-card.value-card', valueCards);
     await seedSingleType(strapi, 'api::school-profile.school-profile', schoolProfile);
     await ensurePublicReadPermissions(strapi);
+    await ensureUkrainianContentManagerLabels(strapi);
   },
 };
 
