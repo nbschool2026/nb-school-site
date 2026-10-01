@@ -72,7 +72,8 @@ def main() -> None:
                 snapshot.execute(
                     "DELETE FROM strapi_core_store_settings "
                     "WHERE key NOT IN ('strapi_content_types_schema', "
-                    "'plugin_i18n_default_locale')"
+                    "'plugin_i18n_default_locale', "
+                    "'core_school_site_i18n_migration_v1')"
                 )
             missing_media = []
             for url, formats, provider in snapshot.execute(

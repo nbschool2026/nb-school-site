@@ -28,6 +28,42 @@ export async function fetchSingleStrict(path, query = '') {
   return payload.data ? normalizeEntity(payload.data) : null;
 }
 
+export async function fetchCollectionLocalized(path, query, locale) {
+  if (locale !== 'en') return fetchCollectionStrict(path, withLocale(query, 'uk'));
+  const [ukrainian, translated] = await Promise.all([
+    fetchCollectionStrict(path, withLocale(query, 'uk')),
+    fetchCollectionStrict(path, withLocale(query, 'en')),
+  ]);
+  return mergeLocalizedRecords(ukrainian, translated);
+}
+
+export async function fetchSingleLocalized(path, query, locale) {
+  if (locale === 'en') {
+    const translated = await fetchSingleStrict(path, withLocale(query, 'en'));
+    if (translated) return translated;
+  }
+  const ukrainian = await fetchSingleStrict(path, withLocale(query, 'uk'));
+  return locale === 'en' && ukrainian ? { ...ukrainian, _fallbackLocale: 'uk' } : ukrainian;
+}
+
+export function withLocale(query, locale) {
+  return `${query ? `${query}&` : ''}locale=${locale}`;
+}
+
+export function mergeLocalizedRecords(ukrainian, translated) {
+  const translatedById = new Map(translated.map((item) => [item.documentId, item]));
+  const used = new Set();
+  const records = ukrainian.map((item) => {
+    const match = translatedById.get(item.documentId);
+    if (match) {
+      used.add(item.documentId);
+      return match;
+    }
+    return { ...item, _fallbackLocale: 'uk' };
+  });
+  return records.concat(translated.filter((item) => !used.has(item.documentId)));
+}
+
 async function requestJson(path, query) {
   const url = `${API_BASE}${path}${query ? `?${query}` : ''}`;
   const response = await fetch(url);

@@ -2,7 +2,8 @@ import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import MaterialIcon from './MaterialIcon.jsx';
-import { fetchSingle } from '../lib/api.js';
+import { fetchSingleLocalized } from '../lib/api.js';
+import { useLocale } from '../lib/locale.jsx';
 
 const links = [
   { to: '/', label: 'Головна' },
@@ -12,18 +13,19 @@ const links = [
 ];
 
 export default function AppLayout() {
+  const { locale, setLocale, t } = useLocale();
   const [open, setOpen] = useState(false);
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
     let active = true;
-    fetchSingle('/school-profile').then((data) => {
+    fetchSingleLocalized('/school-profile', '', locale).then((data) => {
       if (active) setProfile(data);
     });
     return () => { active = false; };
-  }, []);
+  }, [locale]);
 
-  const schoolName = profile?.schoolName || 'Новобілоуський ліцей';
+  const schoolName = profile?.schoolName || t('Новобілоуський ліцей');
 
   return (
     <div className="app-shell">
@@ -37,17 +39,17 @@ export default function AppLayout() {
           <nav className="desktop-nav">
             {links.map((link) => (
               <NavLink key={link.to} to={link.to} className={({ isActive }) => (isActive ? 'active' : '')}>
-                {link.label}
+                {t(link.label)}
               </NavLink>
             ))}
           </nav>
 
-          <div className="language-switch desktop-lang" aria-label="Мова">
-            <button type="button" className="selected">UA</button>
-            <button type="button">EN</button>
+          <div className="language-switch desktop-lang" aria-label={t('Мова')}>
+            <button type="button" className={locale === 'uk' ? 'selected' : ''} onClick={() => setLocale('uk')} aria-pressed={locale === 'uk'}>UA</button>
+            <button type="button" className={locale === 'en' ? 'selected' : ''} onClick={() => setLocale('en')} aria-pressed={locale === 'en'}>EN</button>
           </div>
 
-          <button className="menu-button" type="button" aria-label="Відкрити меню" onClick={() => setOpen((value) => !value)}>
+          <button className="menu-button" type="button" aria-label={t(open ? 'Закрити меню' : 'Відкрити меню')} onClick={() => setOpen((value) => !value)}>
             <MaterialIcon name={open ? 'close' : 'menu'} />
           </button>
         </div>
@@ -56,12 +58,12 @@ export default function AppLayout() {
           <nav className="mobile-nav">
             {links.map((link) => (
               <NavLink key={link.to} to={link.to} onClick={() => setOpen(false)} className={({ isActive }) => (isActive ? 'active' : '')}>
-                {link.label}
+                {t(link.label)}
               </NavLink>
             ))}
             <div className="language-switch">
-              <button type="button" className="selected">UA</button>
-              <button type="button">EN</button>
+              <button type="button" className={locale === 'uk' ? 'selected' : ''} onClick={() => { setLocale('uk'); setOpen(false); }} aria-pressed={locale === 'uk'}>UA</button>
+              <button type="button" className={locale === 'en' ? 'selected' : ''} onClick={() => { setLocale('en'); setOpen(false); }} aria-pressed={locale === 'en'}>EN</button>
             </div>
           </nav>
         )}
@@ -75,7 +77,7 @@ export default function AppLayout() {
             <MaterialIcon name="school" />
             <span>{schoolName}</span>
           </div>
-          <p>© {new Date().getFullYear()} {schoolName}. Всі права захищені.</p>
+          <p>© {new Date().getFullYear()} {schoolName}. {t('Всі права захищені.')}</p>
           <div className="footer-social">
             {profile?.email && <a href={`mailto:${profile.email}`} aria-label="Email"><MaterialIcon name="mail" /></a>}
             {profile?.mapUrl && <a href={profile.mapUrl} aria-label="Map"><MaterialIcon name="public" /></a>}

@@ -8,10 +8,12 @@ import EventsPage from './pages/EventsPage.jsx';
 import EventDetailPage from './pages/EventDetailPage.jsx';
 import PublicInfoPage from './pages/PublicInfoPage.jsx';
 import './styles.css';
+import { LocaleProvider } from './lib/locale.jsx';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
+      <LocaleProvider>
       <Routes>
         <Route element={<AppLayout />}>
           <Route index element={<HomePage />} />
@@ -22,6 +24,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
+      </LocaleProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );

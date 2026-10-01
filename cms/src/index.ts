@@ -1,10 +1,12 @@
 import { ensureUkrainianContentManagerLabels } from './content-manager-labels';
 import { ensureSeedMedia } from './seed-media';
+import { ensureContentLocales } from './content-locales';
 
 export default {
   register() {},
 
   async bootstrap({ strapi }) {
+    await ensureContentLocales(strapi);
     await seedCollection(strapi, 'api::public-document.public-document', publicDocuments);
     await seedCollection(strapi, 'api::staff-member.staff-member', staffMembers);
     await seedCollection(strapi, 'api::schedule-lesson.schedule-lesson', scheduleLessons);

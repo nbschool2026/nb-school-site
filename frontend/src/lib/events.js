@@ -1,8 +1,17 @@
-import { mediaUrl } from './api.js';
+import { mediaUrl, mergeLocalizedRecords } from './api.js';
 
 const API_BASE = import.meta.env.VITE_STRAPI_API_URL || '/api';
 
-export async function fetchAllEvents() {
+export async function fetchAllEvents(locale = 'uk') {
+  if (locale !== 'en') return fetchEventsForLocale('uk');
+  const [ukrainian, translated] = await Promise.all([
+    fetchEventsForLocale('uk'), fetchEventsForLocale('en'),
+  ]);
+  return mergeLocalizedRecords(ukrainian, translated).sort((a, b) =>
+    (b.date || '').localeCompare(a.date || '') || (b.id || 0) - (a.id || 0));
+}
+
+async function fetchEventsForLocale(locale) {
   const events = [];
   let page = 1;
   let pageCount = 1;
@@ -15,6 +24,7 @@ export async function fetchAllEvents() {
       'sort[1]': 'id:desc',
       'pagination[page]': String(page),
       'pagination[pageSize]': '100',
+      locale,
     });
     const response = await fetch(`${API_BASE}/events?${query}`);
     if (!response.ok) throw new Error(`Не вдалося завантажити події (${response.status}).`);
@@ -28,16 +38,14 @@ export async function fetchAllEvents() {
   return events;
 }
 
-export async function fetchEventBySlug(slug) {
-  const query = new URLSearchParams({
-    'filters[slug][$eq]': slug,
-    'populate[0]': 'cover',
-    'populate[1]': 'photos',
-  });
-  const response = await fetch(`${API_BASE}/events?${query}`);
-  if (!response.ok) throw new Error(`Не вдалося завантажити подію (${response.status}).`);
-  const payload = await response.json();
-  return payload.data?.[0] ? normalizeEvent(payload.data[0]) : null;
+export async function fetchEventBySlug(slug, locale = 'uk') {
+  const [ukrainian, translated] = await Promise.all([
+    fetchEventsForLocale('uk'), fetchEventsForLocale('en'),
+  ]);
+  const source = [...ukrainian, ...translated].find((event) => event.slug === slug);
+  if (!source) return null;
+  const match = (locale === 'en' ? translated : ukrainian).find((event) => event.documentId === source.documentId);
+  return match || { ...source, _fallbackLocale: source.locale || 'uk' };
 }
 
 function normalizeEvent(entity) {
