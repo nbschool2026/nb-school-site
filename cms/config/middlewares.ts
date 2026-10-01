@@ -18,7 +18,15 @@ export default [
   {
     name: 'strapi::cors',
     config: {
-      origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500', 'http://127.0.0.1:5500', 'null'],
+      origin: [
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+        'http://localhost:5174',
+        'http://127.0.0.1:5174',
+        'http://localhost:5500',
+        'http://127.0.0.1:5500',
+        'null',
+      ],
     },
   },
   'strapi::poweredBy',

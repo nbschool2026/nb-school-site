@@ -1,93 +1,48 @@
-# Новобілоуський ліцей
+# Сайт Новобілоуського ліцею
 
-У кореневій папці `ua` зараз є стара статична версія сайту та дві нові робочі частини проєкту:
+У репозиторії є новий сайт на React/Vite, CMS на Strapi 5 та попередня статична версія сайту. Основний напрям розробки — `frontend/` разом із `cms/`. Файли HTML у корені залишаються для порівняння та перенесення вмісту.
 
-- `cms` - backend і адмінка на Strapi.
-- `frontend` - новий сайт на React, Vite і React Router.
+## Швидкий запуск у Windows
 
-Старі файли `index.html`, `about.html`, `events.html`, `public-info.html`, папки `image` і `js` залишені в корені як попередня статична версія сайту.
+Потрібен Node.js 22. Відкрийте звичайний PowerShell Windows у корені клону й перевірте `node -v`. У PowerShell використовуйте `npm.cmd`: виклик `npm` може бути заблокований політикою виконання скриптів.
 
-## Папка `cms`
+У першому вікні:
 
-`cms` - це Strapi CMS для керування контентом сайту.
-
-Що всередині:
-
-- адмінка Strapi;
-- REST API для frontend;
-- SQLite база даних у `cms/.tmp/data.db`;
-- моделі даних для подій, публічної інформації, документів, розкладу, співробітників, історії, цінностей, галереї та профілю школи;
-- стартові demo-дані;
-- публічні read permissions, щоб React frontend міг читати опублікований контент.
-
-Локальний запуск:
-
-```bash
+```powershell
+nvm use 22.23.3
 cd cms
-nvm use 24.15.0
-npm install
-npm run build
-npm run start
+npm.cmd install
+npm.cmd run build
+npm.cmd run develop
 ```
 
-Адмінка буде доступна за адресою:
+У другому вікні:
 
-```text
-http://localhost:1337/admin
-```
-
-API буде доступне за адресою:
-
-```text
-http://localhost:1337/api
-```
-
-Докладніше про CMS: `cms/README.md`.
-
-## Папка `frontend`
-
-`frontend` - це нова React-версія сайту.
-
-Що всередині:
-
-- Vite;
-- React;
-- React Router;
-- маршрути `/`, `/about`, `/events`, `/public-info`;
-- клієнт для завантаження даних зі Strapi API;
-- fallback-контент на випадок, якщо Strapi зараз не запущений.
-
-Локальний запуск:
-
-```bash
+```powershell
 cd frontend
-nvm use 24.15.0
-npm install
-npm run dev
+npm.cmd install
+npm.cmd run dev
 ```
 
-Frontend буде доступний за адресою:
+- Сайт: <http://localhost:5174/>
+- Адмінка: <http://localhost:1337/admin>
+- API: <http://localhost:1337/api>
 
-```text
-http://localhost:5174/
-```
+Перед першим запуском CMS потрібен файл `cms/.env`; див. [інструкцію з локальної розробки](docs/local-development.md). Він містить секретні ключі й не додається до Git.
 
-Докладніше про frontend: `frontend/README.md`.
+## Документація
 
-## Як це пов'язано
+- [Локальний запуск і перевірка](docs/local-development.md)
+- [Структура й потік даних](docs/architecture.md)
+- [Моделі CMS та редагування вмісту](docs/content-management.md)
+- [Плани, відомі прогалини та правила їх запису](docs/roadmap.md)
 
-Якщо Strapi запущений на `http://localhost:1337`, frontend братиме дані з CMS.
+## Поточний стан
 
-Якщо Strapi вимкнений або API недоступне, сайт не падає і показує fallback-контент з `frontend/src/lib/fallbackData.js`.
+React-сайт має маршрути `/`, `/about`, `/events`, `/public-info`. Він читає опубліковані дані зі Strapi й показує вбудований демонстраційний вміст, якщо відповідь порожня або API недоступне. Strapi містить моделі подій, документів, розкладу, працівників, історії, цінностей, галереї та профілю школи.
 
-За замовчуванням frontend звертається до API:
+Багатомовність ще не реалізована: кнопки UA/EN у шапці не перемикають мову, а моделі CMS наразі одномовні. Докладніше — у [дорожній карті](docs/roadmap.md).
 
-```text
-http://localhost:1337/api
-```
+## Старий сайт
 
-Якщо backend буде запущений на іншій адресі, її можна вказати через змінну оточення:
-
-```bash
-VITE_STRAPI_API_URL=http://your-host:1337/api npm run dev
-```
+`index.html`, `about.html`, `events.html`, `public-info.html`, `image/` та `js/` — попередня статична версія. Її можна відкрити окремим HTTP-сервером, але нові функції слід розробляти у `frontend/` та `cms/`.

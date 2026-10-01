@@ -1,44 +1,18 @@
-# Strapi CMS для сайту ліцею
+# Strapi CMS
 
-Ця папка містить backend CMS для поточного статичного сайту.
+Це backend та адмінка Strapi 5 для сайту Новобілоуського ліцею. Локальна база — SQLite у `.tmp/data.db`.
 
-## Запуск
+Запуск у PowerShell із кореня клону після створення `.env`:
 
-1. Увімкніть Node 22 або 24:
-
-```bash
-nvm use 24.15.0
-```
-
-2. Встановіть залежності:
-
-```bash
+```powershell
 cd cms
-npm install
-cp .env.example .env
-npm run build
-npm run start
+npm.cmd install
+npm.cmd run build
+npm.cmd run develop
 ```
 
-3. Відкрийте адмінку:
+Адмінка: <http://localhost:1337/admin>. API: <http://localhost:1337/api>. Для першого входу створіть локального адміністратора.
 
-```text
-http://localhost:1337/admin
-```
+Файл `.env` і база `.tmp/data.db` ігноруються Git. Схеми контенту містяться в `src/api/*/content-types/*/schema.json`; стартові демонстраційні записи й налаштування публічного читання — у `src/index.ts`.
 
-4. Публічне читання для сайту налаштовується автоматично під час запуску Strapi. Bootstrap додає `find` і `findOne` для потрібних моделей у роль `Public`.
-
-## Контент-моделі
-
-- `Event` - події, новини, категорії, дата, обкладинка.
-- `Public Document` - публічна інформація, PDF/посилання/сторінки.
-- `Staff Member` - адміністрація та працівники.
-- `Schedule Lesson` - розклад уроків.
-- `History Item` - блок історії ліцею.
-- `Value Card` - цінності.
-- `Gallery Item` - фото шкільного життя.
-- `School Profile` - контакти, герой головної сторінки та загальні налаштування.
-
-Статичні сторінки вже підключаються до `http://localhost:1337/api`. Якщо Strapi не запущений, вони залишають поточну HTML-верстку як fallback.
-
-Мультиязычность лучше добавить вторым шагом после базового запуска CMS. Текущие схемы сделаны одноязычными, чтобы публичный API сразу отдавал seed-данные без фильтрации по `locale`.
+Див. [інструкцію з локальної розробки](../docs/local-development.md) і [довідник контенту](../docs/content-management.md).
