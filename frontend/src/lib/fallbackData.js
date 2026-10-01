@@ -10,45 +10,6 @@ export const schoolProfile = {
   mapUrl: 'https://maps.app.goo.gl/eh5ZCAyBr3FVmDbz8',
 };
 
-export const events = [
-  {
-    id: 1,
-    title: 'Щорічна олімпіада з математики 2026',
-    slug: 'math-olympiad-2026',
-    category: 'academic',
-    date: '2026-03-15',
-    summary: 'Учні ліцею змагатимуться у розв’язанні нестандартних математичних задач.',
-    featured: true,
-  },
-  {
-    id: 2,
-    title: 'Обласний чемпіонат з баскетболу 2026',
-    slug: 'basketball-championship-2026',
-    category: 'sport',
-    date: '2026-04-10',
-    summary: 'Підтримайте команду ліцею у спортивних змаганнях серед шкіл області.',
-    featured: true,
-  },
-  {
-    id: 3,
-    title: 'Виставка робіт молодших класів',
-    slug: 'junior-art-exhibition-2026',
-    category: 'art',
-    date: '2026-05-05',
-    summary: 'Творчі роботи учнів молодших класів у шкільній галереї.',
-    featured: true,
-  },
-  {
-    id: 4,
-    title: 'День відкритих дверей 2026',
-    slug: 'open-day-2026',
-    category: 'admission',
-    date: '2026-06-01',
-    summary: 'Знайомство з освітніми програмами, адміністрацією та умовами навчання.',
-    featured: true,
-  },
-];
-
 export const publicDocuments = [
   {
     id: 1,

@@ -23,12 +23,12 @@ const categoryClasses = {
 
 export default function EventCard({ event, compact = false }) {
   const category = event.category || 'other';
-  const image = mediaUrl(event.cover) || mediaUrl(event.photos?.[0] || event.photos?.data?.[0], '/image/background.png');
+  const image = mediaUrl(event.cover) || mediaUrl(event.photos?.[0] || event.photos?.data?.[0]);
 
   return (
     <article className={`event-card ${compact ? 'compact' : ''}`}>
       <div className="event-image">
-        <img src={image} alt={event.title} />
+        {image ? <img src={image} alt={event.title} /> : <div className="event-placeholder" aria-hidden="true"><MaterialIcon name="event" /></div>}
         {!compact && <span className={`event-tag ${categoryClasses[category] || categoryClasses.other}`}>{categoryLabels[category] || categoryLabels.other}</span>}
       </div>
       <div className="event-body">

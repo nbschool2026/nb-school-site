@@ -47,7 +47,7 @@ nb-school-site/
 
 ## CMS
 
-Схеми лежать у `cms/src/api/*/content-types/*/schema.json`. `cms/src/index.ts` під час запуску додає демонстраційні записи до порожніх колекцій (крім галереї) і надає ролі `Public` права `find`/`findOne` для читання вмісту. Дані зберігаються в локальній SQLite-базі `cms/.tmp/data.db`.
+Схеми лежать у `cms/src/api/*/content-types/*/schema.json`. `cms/src/index.ts` під час запуску додає демонстраційні записи до деяких порожніх колекцій, але події більше не створює; також надає ролі `Public` права `find`/`findOne` для читання вмісту. Дані зберігаються в локальній SQLite-базі `cms/.tmp/data.db`.
 
 Усі нинішні моделі мають `draftAndPublish`. Схеми не налаштовані для локалізації. Кнопки UA/EN у `frontend/src/components/AppLayout.jsx` зараз не змінюють мову.
 

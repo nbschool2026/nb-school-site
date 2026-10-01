@@ -328,6 +328,19 @@ img {
   transition: transform 0.35s ease;
 }
 
+.event-placeholder {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: #94a3b8;
+  background: #e2e8f0;
+}
+
+.event-placeholder .material-symbols-outlined {
+  font-size: 3rem;
+}
+
 .event-card:hover .event-image img {
   transform: scale(1.05);
 }
@@ -821,8 +834,12 @@ img {
 }
 
 .calendar-grid span {
-  padding: 5px 0;
-  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin: auto;
+  border-radius: 50%;
 }
 
 .calendar-grid .weekday {
@@ -831,9 +848,26 @@ img {
   font-weight: 900;
 }
 
-.calendar-grid .marked {
+.calendar-grid .calendar-event {
+  width: 25px;
+  height: 25px;
+  color: #fff;
+  font-weight: 800;
+  background: #64748b;
+}
+
+.calendar-grid .calendar-event-academic { background: #d97706; }
+.calendar-grid .calendar-event-sport { background: #2563eb; }
+.calendar-grid .calendar-event-art { background: #7c3aed; }
+.calendar-grid .calendar-event-admission { background: #16a34a; }
+.calendar-grid .calendar-event-community { background: #0891b2; }
+
+.calendar-grid .calendar-today {
+  width: 36px;
+  height: 36px;
   color: #fff;
   background: var(--primary);
+  font-weight: 900;
 }
 
 .page-heading {

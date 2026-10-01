@@ -12,18 +12,8 @@
     other: 'Подія',
   };
 
-  const categoryColors = {
-    academic: 'bg-primary',
-    sport: 'bg-blue-600',
-    art: 'bg-purple-600',
-    admission: 'bg-green-600',
-    community: 'bg-cyan-700',
-    other: 'bg-slate-600',
-  };
-
   document.addEventListener('DOMContentLoaded', function () {
     hydrateLatestEvents();
-    hydrateEventsPage();
     hydratePublicDocuments();
   });
 
@@ -31,20 +21,8 @@
     const container = document.querySelector('#latest-events-grid');
     if (!container) return;
 
-    const events = await fetchCollection('/events', 'populate=cover&sort=date:desc&filters[featured][$eq]=true&pagination[limit]=4');
-    if (!events.length) return;
-
-    container.innerHTML = events.map(renderCompactEventCard).join('');
-  }
-
-  async function hydrateEventsPage() {
-    const container = document.querySelector('#events-grid');
-    if (!container) return;
-
-    const events = await fetchCollection('/events', 'populate=cover&sort=date:desc&pagination[limit]=12');
-    if (!events.length) return;
-
-    container.innerHTML = events.map(renderEventCard).join('');
+    const events = await fetchCollection('/events', 'populate=cover&sort[0]=date:desc&sort[1]=id:desc&pagination[limit]=4');
+    container.innerHTML = events.length ? events.map(renderCompactEventCard).join('') : '<p>Подій поки немає.</p>';
   }
 
   async function hydratePublicDocuments() {
@@ -85,47 +63,21 @@
   }
 
   function renderCompactEventCard(event) {
-    const image = getMediaUrl(event.cover) || 'image/background.png';
+    const image = getMediaUrl(event.cover);
     const category = event.category || 'other';
 
     return `
       <div class="group bg-white dark:bg-primary/5 rounded-2xl overflow-hidden border border-primary/5 shadow-sm hover:shadow-xl transition-all">
         <div class="h-48 overflow-hidden">
-          <img alt="${escapeHtml(event.title)}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="${escapeAttr(image)}"/>
+          ${image ? `<img alt="${escapeHtml(event.title)}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="${escapeAttr(image)}"/>` : '<div class="flex h-full items-center justify-center bg-slate-200 text-slate-500">Без фото</div>'}
         </div>
         <div class="p-6">
           <span class="text-primary text-xs font-bold uppercase tracking-tighter">${categoryLabels[category] || categoryLabels.other}</span>
           <h3 class="text-lg font-bold mt-2 mb-1">${escapeHtml(event.title)}</h3>
           <p class="text-slate-500 dark:text-slate-400 text-sm mb-4 flex items-center gap-2">${formatDate(event.date)}</p>
-          <a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="events.html">Читати далі <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+          <a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="/events/${encodeURIComponent(event.slug)}">Читати далі <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
         </div>
       </div>
-    `;
-  }
-
-  function renderEventCard(event) {
-    const image = getMediaUrl(event.cover) || 'image/background.png';
-    const category = event.category || 'other';
-
-    return `
-      <article class="group overflow-hidden rounded-xl border border-primary/10 bg-white dark:bg-slate-800/50 transition-all hover:shadow-lg">
-        <div class="relative h-48 w-full overflow-hidden">
-          <img class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" alt="${escapeHtml(event.title)}" src="${escapeAttr(image)}"/>
-          <span class="absolute left-4 top-4 rounded-lg ${categoryColors[category] || categoryColors.other} px-3 py-1 text-xs font-bold text-white">${categoryLabels[category] || categoryLabels.other}</span>
-        </div>
-        <div class="flex flex-col p-6">
-          <div class="mb-2 flex items-center gap-2 text-sm text-slate-500">
-            <span class="material-symbols-outlined text-sm">calendar_today</span>
-            <span>${formatDate(event.date)}</span>
-          </div>
-          <h3 class="mb-3 text-xl font-bold text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors">${escapeHtml(event.title)}</h3>
-          <p class="mb-6 line-clamp-2 text-sm text-slate-600 dark:text-slate-400">${escapeHtml(event.summary || '')}</p>
-          <a class="mt-auto inline-flex items-center gap-2 text-sm font-bold text-primary hover:gap-3 transition-all" href="#">
-            Читати більше
-            <span class="material-symbols-outlined text-lg">arrow_forward</span>
-          </a>
-        </div>
-      </article>
     `;
   }
 

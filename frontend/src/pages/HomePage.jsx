@@ -4,7 +4,8 @@ import EventCard from '../components/EventCard.jsx';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
 import { fetchCollection, fetchSingle } from '../lib/api.js';
-import { events as fallbackEvents, scheduleLessons, schoolProfile as fallbackProfile } from '../lib/fallbackData.js';
+import { fetchAllEvents } from '../lib/events.js';
+import { scheduleLessons, schoolProfile as fallbackProfile } from '../lib/fallbackData.js';
 
 const weekdays = [
   ['monday', 'Понеділок'],
@@ -16,14 +17,16 @@ const weekdays = [
 
 export default function HomePage() {
   const [profile, setProfile] = useState(fallbackProfile);
-  const [events, setEvents] = useState(fallbackEvents);
+  const [events, setEvents] = useState([]);
+  const [eventsStatus, setEventsStatus] = useState('loading');
   const [lessons, setLessons] = useState(scheduleLessons);
 
   useEffect(() => {
     fetchSingle('/school-profile').then((data) => data && setProfile(data));
-    fetchCollection('/events', 'populate=cover&sort=date:desc&filters[featured][$eq]=true&pagination[limit]=4').then((data) => {
-      if (data.length) setEvents(data);
-    });
+    fetchAllEvents().then((data) => {
+      setEvents(data.slice(0, 4));
+      setEventsStatus('ready');
+    }).catch(() => setEventsStatus('error'));
     fetchCollection('/schedule-lessons', 'sort=order:asc&pagination[limit]=100').then((data) => {
       if (data.length) setLessons(data);
     });
@@ -53,9 +56,11 @@ export default function HomePage() {
       <section className="page-section">
         <div className="container">
           <SectionTitle eyebrow="Останні новини" title="Події" />
-          <div className="event-grid compact-grid">
-            {events.slice(0, 4).map((event) => <EventCard key={event.documentId || event.id || event.slug} event={event} compact />)}
-          </div>
+          {eventsStatus === 'loading' && <p>Завантаження подій…</p>}
+          {eventsStatus === 'error' && <p role="alert">Не вдалося завантажити події з CMS.</p>}
+          {eventsStatus === 'ready' && (events.length
+            ? <div className="event-grid compact-grid">{events.map((event) => <EventCard key={event.documentId || event.id || event.slug} event={event} compact />)}</div>
+            : <p>Подій поки немає.</p>)}
           <div className="center-action">
             <a className="soft-button" href="/events">Всі події <MaterialIcon name="grid_view" /></a>
           </div>

@@ -39,7 +39,16 @@ export default function EventsPage() {
   const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
   const dayCount = new Date(year, month + 1, 0).getDate();
   const leadingDays = (new Date(year, month, 1).getDay() + 6) % 7;
-  const eventDays = new Set(events.filter((event) => event.date?.startsWith(monthKey)).map((event) => Number(event.date.slice(8, 10))));
+  // The API returns events in list order; the first event decides a shared day's color.
+  const eventDays = new Map();
+  for (const event of events) {
+    if (event.date?.startsWith(monthKey)) {
+      const day = Number(event.date.slice(8, 10));
+      if (!eventDays.has(day)) eventDays.set(day, event.category || 'other');
+    }
+  }
+  const today = new Date();
+  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
 
   return (
     <main className="page-main">
@@ -64,7 +73,13 @@ export default function EventsPage() {
             <div className="calendar-grid" aria-hidden="true">
               {weekdays.map((day) => <span className="weekday" key={day}>{day}</span>)}
               {Array.from({ length: leadingDays }, (_, index) => <span key={`empty-${index}`} />)}
-              {Array.from({ length: dayCount }, (_, index) => <span className={eventDays.has(index + 1) ? 'marked' : ''} key={index}>{index + 1}</span>)}
+              {Array.from({ length: dayCount }, (_, index) => {
+                const day = index + 1;
+                const eventCategory = eventDays.get(day);
+                const isToday = monthKey === todayKey && day === today.getDate();
+                const className = isToday ? 'calendar-today' : eventCategory ? `calendar-event calendar-event-${eventCategory}` : '';
+                return <span className={className} key={day}>{day}</span>;
+              })}
             </div>
             <button type="button" className="month-action" onClick={() => setSelectedMonth(selectedMonth === monthKey ? null : monthKey)}>{selectedMonth === monthKey ? 'Скинути місяць' : 'Показати цей місяць'}</button>
             {selectedMonth && selectedMonth !== monthKey && <button type="button" className="month-action" onClick={() => setSelectedMonth(null)}>Скинути вибраний місяць</button>}
