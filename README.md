@@ -36,6 +36,7 @@ npm.cmd run dev
 - [Структура й потік даних](docs/architecture.md)
 - [Моделі CMS та редагування вмісту](docs/content-management.md)
 - [Функціональні вимоги власника сайту](docs/product-requirements.md)
+- [Поетапний план реалізації](docs/implementation-plan.md)
 - [Плани, відомі прогалини та правила їх запису](docs/roadmap.md)
 
 ## Поточний стан
