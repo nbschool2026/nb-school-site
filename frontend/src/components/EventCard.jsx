@@ -23,7 +23,7 @@ const categoryClasses = {
 
 export default function EventCard({ event, compact = false }) {
   const category = event.category || 'other';
-  const image = mediaUrl(event.cover, '/image/background.png');
+  const image = mediaUrl(event.cover) || mediaUrl(event.photos?.[0] || event.photos?.data?.[0], '/image/background.png');
 
   return (
     <article className={`event-card ${compact ? 'compact' : ''}`}>
@@ -39,7 +39,7 @@ export default function EventCard({ event, compact = false }) {
           {formatDate(event.date)}
         </p>
         {!compact && <p className="muted">{event.summary}</p>}
-        <Link className="text-link" to="/events">
+        <Link className="text-link" to={`/events/${encodeURIComponent(event.slug)}`}>
           Читати далі <MaterialIcon name="arrow_forward" />
         </Link>
       </div>

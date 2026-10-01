@@ -50,6 +50,16 @@
         "images"
       ]
     },
+    "photos": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "youtubeUrl": {
+      "type": "string"
+    },
     "featured": {
       "type": "boolean",
       "default": false
