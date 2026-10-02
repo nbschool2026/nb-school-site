@@ -52,6 +52,11 @@ const english = {
   'Якщо ви не знайшли потрібну інформацію, ви можете надіслати офіційний запит до адміністрації.': 'If you cannot find the information you need, you can send an official request to the administration.',
   'Надіслати запит': 'Send a request', 'Завантажити PDF': 'Download PDF',
   'Переглянути': 'View', 'Переклад ще не додано': 'English translation is not available yet',
+  'Завантажити оригінал': 'Download original', 'Файл ще не додано.': 'File has not been added yet.',
+  'PDF-копія для перегляду ще не готова.': 'The PDF preview is not ready yet.',
+  'Завантаження документів…': 'Loading documents…', 'Не вдалося завантажити документи з CMS.': 'Could not load documents from the CMS.',
+  'Документів поки немає.': 'No documents yet.', 'Перегляд документа': 'Document preview',
+  'Закрити перегляд': 'Close preview',
   'Показано українською': 'Shown in Ukrainian',
 };
 

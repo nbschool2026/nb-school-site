@@ -1,9 +1,12 @@
 import { ensureUkrainianContentManagerLabels } from './content-manager-labels';
 import { ensureSeedMedia } from './seed-media';
 import { ensureContentLocales } from './content-locales';
+import { registerDocumentPreviewConversion } from './document-preview-conversion';
 
 export default {
-  register() {},
+  register({ strapi }) {
+    registerDocumentPreviewConversion(strapi);
+  },
 
   async bootstrap({ strapi }) {
     await ensureContentLocales(strapi);

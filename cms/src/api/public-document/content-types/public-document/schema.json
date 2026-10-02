@@ -82,6 +82,18 @@
         }
       }
     },
+    "previewPdf": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "files"
+      ],
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
     "order": {
       "type": "integer",
       "default": 0,

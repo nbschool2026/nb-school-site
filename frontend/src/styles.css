@@ -954,6 +954,61 @@ img {
   margin-top: 14px;
 }
 
+.document-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.document-actions .text-link {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+.document-preview {
+  width: min(1100px, calc(100% - 24px));
+  height: min(90vh, 900px);
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.document-preview::backdrop {
+  background: rgba(15, 23, 42, 0.76);
+}
+
+.document-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px;
+}
+
+.document-preview-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.document-preview-header button {
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.document-preview iframe {
+  width: 100%;
+  height: calc(100% - 60px);
+  border: 0;
+}
+
 .question-card {
   display: grid;
   align-content: center;
