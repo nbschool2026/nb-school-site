@@ -22,7 +22,6 @@ html {
 
 body {
   margin: 0;
-  min-width: 320px;
 }
 
 a {
@@ -569,7 +568,7 @@ img {
   height: 360px;
   border-radius: 14px;
   object-fit: cover;
-  filter: grayscale(1);
+  object-position: center 30%;
 }
 
 .principal-card h3 {

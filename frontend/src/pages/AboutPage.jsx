@@ -84,7 +84,7 @@ export default function AboutPage() {
 
       <section className="page-section white-band">
         <div className="container">
-          <SectionTitle title={t('Адміністрація')} center />
+          <SectionTitle title={t('Вчителі та адміністрація')} center />
           {status === 'ready' && !staffMembers.length && <p>{t('Інформацію про працівників ще не додано.')}</p>}
           <div className="staff-grid">
             {staffMembers.map((person) => (

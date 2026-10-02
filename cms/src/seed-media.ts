@@ -26,9 +26,17 @@ const assets = [
   {
     uid: 'api::staff-member.staff-member',
     field: 'homepagePhoto',
-    filename: 'principal-landscape.webp',
-    name: 'Фото директорки для головної',
-    alternativeText: 'Директорка ліцею',
+    filename: 'principal-portrait.webp',
+    name: 'Портрет директорки',
+    alternativeText: 'Портрет директорки ліцею',
+  },
+  {
+    uid: 'api::staff-member.staff-member',
+    field: 'photo',
+    staffName: 'Луценко Наталія Олександрівна',
+    filename: 'deputy-lutsenko.webp',
+    name: 'Портрет Луценко Наталії Олександрівни',
+    alternativeText: 'Луценко Наталія Олександрівна, заступниця директора з виховної роботи',
   },
 ];
 
@@ -39,7 +47,7 @@ export async function ensureSeedMedia(strapi: any) {
   for (const asset of assets) {
     const allRecords = await strapi.db.query(asset.uid).findMany({ populate: [asset.field] });
     const records = asset.uid === 'api::staff-member.staff-member'
-      ? firstStaffDocument(allRecords)
+      ? asset.staffName ? namedStaffDocument(allRecords, asset.staffName) : firstStaffDocument(allRecords)
       : allRecords;
     if (!records.length) continue;
 
@@ -81,4 +89,9 @@ function firstStaffDocument(records: any[]) {
   const first = [...records].sort((a, b) =>
     (a.order ?? 0) - (b.order ?? 0) || a.id - b.id)[0];
   return first ? records.filter((record) => record.documentId === first.documentId) : [];
+}
+
+function namedStaffDocument(records: any[], name: string) {
+  const match = records.find((record) => record.name === name);
+  return match ? records.filter((record) => record.documentId === match.documentId) : [];
 }

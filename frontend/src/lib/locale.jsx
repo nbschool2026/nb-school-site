@@ -33,6 +33,7 @@ const english = {
   'Історію закладу ще не додано.': 'The school history has not been added yet.',
   'Наші цінності': 'Our values', 'Цінності ще не додано.': 'Values have not been added yet.',
   'Адміністрація': 'Administration',
+  'Вчителі та адміністрація': 'Teachers and administration',
   'Інформацію про працівників ще не додано.': 'Staff information has not been added yet.',
   'Категорії': 'Categories', 'Усі події': 'All events', 'Академічні': 'Academic',
   'Спорт': 'Sports', 'Мистецтво': 'Arts', 'Вступ': 'Admissions',

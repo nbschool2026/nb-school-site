@@ -27,7 +27,8 @@ async function seedCollection(strapi, uid: string, records: Record<string, unkno
   if (count > 0) return;
 
   for (const data of records) {
-    await strapi.db.query(uid).create({ data });
+    const draft = await strapi.documents(uid).create({ data, locale: 'uk' });
+    await strapi.documents(uid).publish({ documentId: draft.documentId, locale: 'uk' });
   }
 }
 
@@ -35,7 +36,8 @@ async function seedSingleType(strapi, uid: string, data: Record<string, unknown>
   const existing = await strapi.db.query(uid).findOne();
   if (existing) return;
 
-  await strapi.db.query(uid).create({ data });
+  const draft = await strapi.documents(uid).create({ data, locale: 'uk' });
+  await strapi.documents(uid).publish({ documentId: draft.documentId, locale: 'uk' });
 }
 
 async function ensurePublicReadPermissions(strapi) {
@@ -134,13 +136,8 @@ const staffMembers = [
     order: 10,
   },
   {
-    name: 'Ігор Сидоренко',
-    position: 'Заступник з навчальної роботи',
-    order: 20,
-  },
-  {
-    name: 'Марія Іванова',
-    position: 'Заступник з виховної роботи',
+    name: 'Луценко Наталія Олександрівна',
+    position: 'Заступник директора з виховної роботи',
     order: 30,
   },
 ];
