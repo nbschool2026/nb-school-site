@@ -16,12 +16,14 @@ export default function AppLayout() {
   const { locale, setLocale, t } = useLocale();
   const [open, setOpen] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [profileStatus, setProfileStatus] = useState('loading');
 
   useEffect(() => {
     let active = true;
-    fetchSingleLocalized('/school-profile', '', locale).then((data) => {
-      if (active) setProfile(data);
-    });
+    setProfileStatus('loading');
+    fetchSingleLocalized('/school-profile', 'populate[0]=heroImage&populate[1]=aboutImage', locale).then((data) => {
+      if (active) { setProfile(data); setProfileStatus('ready'); }
+    }).catch(() => { if (active) setProfileStatus('error'); });
     return () => { active = false; };
   }, [locale]);
 
@@ -69,7 +71,7 @@ export default function AppLayout() {
         )}
       </header>
 
-      <Outlet />
+      <Outlet context={{ profile, profileStatus }} />
 
       <footer className="site-footer">
         <div className="footer-inner">

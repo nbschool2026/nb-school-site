@@ -1,16 +1,17 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
-import { fetchCollectionLocalized, fetchSingleLocalized, mediaUrl } from '../lib/api.js';
+import { fetchCollectionLocalized, mediaUrl } from '../lib/api.js';
 import { useLocale } from '../lib/locale.jsx';
 
 export default function AboutPage() {
   const { locale, t } = useLocale();
+  const { profile } = useOutletContext();
   const [historyItems, setHistoryItems] = useState([]);
   const [valueCards, setValueCards] = useState([]);
   const [staffMembers, setStaffMembers] = useState([]);
-  const [profile, setProfile] = useState(null);
   const [status, setStatus] = useState('loading');
 
   useEffect(() => {
@@ -20,13 +21,11 @@ export default function AboutPage() {
       fetchCollectionLocalized('/history-items', 'sort=year:asc&pagination[pageSize]=100', locale),
       fetchCollectionLocalized('/value-cards', 'sort=order:asc&pagination[pageSize]=100', locale),
       fetchCollectionLocalized('/staff-members', 'populate=photo&sort=order:asc&pagination[pageSize]=100', locale),
-      fetchSingleLocalized('/school-profile', 'populate=aboutImage', locale),
-    ]).then(([history, values, staff, schoolProfile]) => {
+    ]).then(([history, values, staff]) => {
       if (!active) return;
       setHistoryItems(history);
       setValueCards(values);
       setStaffMembers(staff);
-      setProfile(schoolProfile);
       setStatus('ready');
     }).catch(() => { if (active) setStatus('error'); });
     return () => { active = false; };

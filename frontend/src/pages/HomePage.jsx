@@ -1,9 +1,10 @@
 import React from 'react';
 import { useEffect, useMemo, useState } from 'react';
+import { Link, useOutletContext } from 'react-router-dom';
 import EventCard from '../components/EventCard.jsx';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
-import { fetchCollectionLocalized, fetchSingleLocalized, mediaUrl } from '../lib/api.js';
+import { fetchCollectionLocalized, mediaUrl } from '../lib/api.js';
 import { fetchAllEvents } from '../lib/events.js';
 import { scheduleLessons } from '../lib/fallbackData.js';
 import { useLocale } from '../lib/locale.jsx';
@@ -18,8 +19,7 @@ const weekdays = [
 
 export default function HomePage() {
   const { locale, t } = useLocale();
-  const [profile, setProfile] = useState(null);
-  const [profileStatus, setProfileStatus] = useState('loading');
+  const { profile, profileStatus } = useOutletContext();
   const [principal, setPrincipal] = useState(null);
   const [events, setEvents] = useState([]);
   const [eventsStatus, setEventsStatus] = useState('loading');
@@ -27,11 +27,7 @@ export default function HomePage() {
 
   useEffect(() => {
     let active = true;
-    setProfileStatus('loading');
     setEventsStatus('loading');
-    fetchSingleLocalized('/school-profile', 'populate=heroImage', locale).then((data) => {
-      if (active) { setProfile(data); setProfileStatus('ready'); }
-    }).catch(() => { if (active) setProfileStatus('error'); });
     fetchCollectionLocalized('/staff-members', 'populate[0]=photo&populate[1]=homepagePhoto&sort=order:asc&pagination[pageSize]=100', locale).then((data) => {
       if (active) setPrincipal(data[0] || null);
     }).catch(() => { if (active) setPrincipal(null); });
@@ -65,7 +61,7 @@ export default function HomePage() {
           {profile?.heroSubtitle && <p>{profile.heroSubtitle}</p>}
           <div className="hero-actions">
             <a className="primary-button" href="#schedule">{t('Відкрити нашу програму')}</a>
-            <a className="ghost-button" href="/about">{t('Віртуальний тур')}</a>
+            <Link className="ghost-button" to="/about">{t('Віртуальний тур')}</Link>
           </div>
         </div>
       </section>
@@ -79,7 +75,7 @@ export default function HomePage() {
             ? <div className="event-grid compact-grid">{events.map((event) => <EventCard key={event.documentId || event.id || event.slug} event={event} compact />)}</div>
             : <p>{t('Подій поки немає.')}</p>)}
           <div className="center-action">
-            <a className="soft-button" href="/events">{t('Всі події')} <MaterialIcon name="grid_view" /></a>
+            <Link className="soft-button" to="/events">{t('Всі події')} <MaterialIcon name="grid_view" /></Link>
           </div>
         </div>
       </section>
