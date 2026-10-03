@@ -56,6 +56,10 @@ export default function EventsPage() {
   return (
     <main className="page-main">
       <section className="container events-layout">
+        <div className="page-heading events-heading">
+          <h1>{t('Наші події')}</h1>
+          <p>{t('Дізнайтеся про майбутні заходи, академічні конкурси, спортивні змагання та культурне життя нашого ліцею.')}</p>
+        </div>
         <aside className="events-sidebar">
           <div>
             <h2>{t('Категорії')}</h2>
@@ -90,10 +94,6 @@ export default function EventsPage() {
         </aside>
 
         <section className="events-content">
-          <div className="page-heading">
-            <h1>{t('Наші події')}</h1>
-            <p>{t('Дізнайтеся про майбутні заходи, академічні конкурси, спортивні змагання та культурне життя нашого ліцею.')}</p>
-          </div>
           {status === 'loading' && <p>{t('Завантаження подій…')}</p>}
           {status === 'error' && <p role="alert">{t('Не вдалося завантажити події з CMS. Перевірте, чи запущена адмінка, і оновіть сторінку.')}</p>}
           {status === 'ready' && (filteredEvents.length
