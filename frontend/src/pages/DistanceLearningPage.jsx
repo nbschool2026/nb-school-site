@@ -165,7 +165,14 @@ export default function DistanceLearningPage() {
           <label><span>{t('Клас')}</span><select value={grade} onChange={(event) => { setGrade(event.target.value); setSubject(''); updateQuery({ grade: event.target.value, subject: '' }); }}><option value="">{t('Усі класи')}</option>{grades.map((item) => <option key={item}>{item}</option>)}</select></label>
           <label><span>{t('Предмет')}</span><select value={subject} onChange={(event) => { setSubject(event.target.value); updateQuery({ subject: event.target.value }); }}><option value="">{t('Усі предмети')}</option>{subjects.map((item) => <option key={item}>{item}</option>)}</select></label>
         </div>
-        {status === 'loading' && <p>{t('Завантаження матеріалів…')}</p>}
+        <div className="distance-learning-results-bar">
+          <strong>{t('Знайдено матеріалів')}: {visible.length}</strong>
+          {(query || grade || subject) && <div className="distance-learning-filter-chips" aria-label={t('Активні фільтри')}>
+            {query && <button type="button" onClick={() => { setSearch(''); updateQuery({ q: '' }); }}>Пошук: {search} ×</button>}
+            {grade && <button type="button" onClick={() => { setGrade(''); setSubject(''); updateQuery({ grade: '', subject: '' }); }}>{grade} ×</button>}
+            {subject && <button type="button" onClick={() => { setSubject(''); updateQuery({ subject: '' }); }}>{subject} ×</button>}
+          </div>}
+        </div>        {status === 'loading' && <p>{t('Завантаження матеріалів…')}</p>}
         {status === 'error' && <p role="alert">{t('Не вдалося завантажити матеріали з CMS.')}</p>}
         {status === 'ready' && !visible.length && <p>{t('Матеріалів за цими умовами не знайдено.')}</p>}
         <div className="distance-material-list">{visible.map((item) => <article id={`distance-material-${item.documentId || item.id}`} className={`distance-material-card${pinnedId === (item.documentId || String(item.id)) ? ' is-pinned' : ''}${completedIds.has(item.documentId || String(item.id)) ? ' is-completed' : ''}`} key={item.documentId || item.id}>
