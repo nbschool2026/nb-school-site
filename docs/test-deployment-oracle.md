@@ -8,7 +8,7 @@
                     └─ решта маршрутів → frontend/dist
 ```
 
-Поточна тестова адреса може змінитися, якщо Oracle призначить іншу public IP. HTTPS і домен DuckDNS ще не налаштовані.
+Поточна тестова адреса: **https://nb-school.duckdns.org/**. Oracle public IP може змінитися, тому DNS-запис DuckDNS потрібно оновлювати, якщо IP зміниться.
 
 ## 1. Oracle Cloud
 
@@ -161,7 +161,7 @@ sudo systemctl status nb-school-cms --no-pager
 Поточний Caddyfile проксить API, uploads і всю адмінку до Strapi, а решту віддає зі зібраного frontend:
 
 ```caddyfile
-http://PUBLIC_IP {
+nb-school.duckdns.org {
     handle /api {
         reverse_proxy 127.0.0.1:1337
     }
@@ -270,6 +270,12 @@ http://127.0.0.1:2337/admin
 - `/admin` відкриває frontend: перевірити Caddyfile з окремими маршрутами `/admin` і `/admin/*`, виконати `caddy validate` та `systemctl reload caddy`.
 - `curl http://PUBLIC_IP` із самого сервера може не працювати через доступ до власної public IP. Перевіряти public порт із Windows через `Test-NetConnection`.
 
-## 12. Наступний крок
+## 12. DuckDNS і HTTPS
 
-Підключити DuckDNS, додати HTTPS у Caddy, перевірити публічні API та адмінку через домен, а потім налаштувати резервне копіювання `cms/.tmp/data.db` і `cms/public/uploads/` поза сервером.
+Для тестового розгортання використовується `nb-school.duckdns.org`, який вказує на public IP Oracle. DuckDNS — безкоштовний dynamic DNS: піддомен не потребує щорічної оплати, але IP-адреса сервера може змінитися. Після зміни IP оновіть поле IP на сторінці DuckDNS або автоматизуйте запит оновлення. Перевіряйте актуальні умови на [DuckDNS About](https://www.duckdns.org/about.jsp) та [DuckDNS FAQ](https://www.duckdns.org/faqs.jsp).
+
+Caddy автоматично отримує й поновлює HTTPS-сертифікат для домену, якщо DNS вказує на сервер і відкриті порти `80` та `443`.
+
+## 13. Наступний крок
+
+Налаштувати автоматичне резервне копіювання `cms/.tmp/data.db` і `cms/public/uploads/` поза сервером, а потім перевірити відновлення на окремій копії.

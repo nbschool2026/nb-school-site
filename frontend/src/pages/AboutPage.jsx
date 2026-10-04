@@ -10,7 +10,6 @@ export default function AboutPage() {
   const { locale, t } = useLocale();
   const { profile } = useOutletContext();
   const [historyItems, setHistoryItems] = useState([]);
-  const [valueCards, setValueCards] = useState([]);
   const [staffMembers, setStaffMembers] = useState([]);
   const [status, setStatus] = useState('loading');
 
@@ -19,12 +18,10 @@ export default function AboutPage() {
     setStatus('loading');
     Promise.all([
       fetchCollectionLocalized('/history-items', 'sort=year:asc&pagination[pageSize]=100', locale),
-      fetchCollectionLocalized('/value-cards', 'sort=order:asc&pagination[pageSize]=100', locale),
       fetchCollectionLocalized('/staff-members', 'populate=photo&sort=order:asc&pagination[pageSize]=100', locale),
-    ]).then(([history, values, staff]) => {
+    ]).then(([history, staff]) => {
       if (!active) return;
       setHistoryItems(history);
-      setValueCards(values);
       setStaffMembers(staff);
       setStatus('ready');
     }).catch(() => { if (active) setStatus('error'); });
@@ -59,23 +56,6 @@ export default function AboutPage() {
                   <p>{item.text}</p>
                   {locale === 'en' && item._fallbackLocale && <small>{t('Показано українською')}</small>}
                 </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="page-section">
-        <div className="container">
-          <SectionTitle title={t('Наші цінності')} center />
-          {status === 'ready' && !valueCards.length && <p>{t('Цінності ще не додано.')}</p>}
-          <div className="value-grid">
-            {valueCards.map((card) => (
-              <article className="value-card" key={card.documentId || card.id}>
-                <MaterialIcon name={card.icon || 'workspace_premium'} />
-                <h3>{card.title}</h3>
-                <p>{card.text}</p>
-                {locale === 'en' && card._fallbackLocale && <small>{t('Показано українською')}</small>}
               </article>
             ))}
           </div>
