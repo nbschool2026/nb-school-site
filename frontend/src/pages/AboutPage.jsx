@@ -20,7 +20,7 @@ export default function AboutPage() {
       ? profile.aboutHeroImages
       : profile?.aboutHeroImages?.data || [];
     const urls = gallery.map((image) => mediaFormatUrl(image, 'large', mediaUrl(image))).filter(Boolean);
-    return urls.length ? urls.slice(0, 3) : [mediaUrl(profile?.aboutImage)].filter(Boolean);
+    return urls.length ? urls.slice(0, 20) : [mediaUrl(profile?.aboutImage)].filter(Boolean);
   }, [profile]);
 
   useEffect(() => {
