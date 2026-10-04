@@ -36,7 +36,13 @@ def fetch(url):
     with urlopen(req, timeout=30) as response: return response.read().decode('utf-8', 'replace')
 
 def clean(lines):
-    return [re.sub(r'\s+', ' ', line).strip() for line in lines if line.strip()]
+    noise = re.compile(r'^(?:Перейти до основного вмісту|Перейти на панель навігації|Google Sites|Report abuse|Page details|Page updated|Learn more|Got it)$', re.I)
+    cookie = re.compile(r'^This site uses cookies from Google .* By using this site, you agree to its use of cookies\.$', re.I)
+    result = []
+    for line in lines:
+        value = re.sub(r'\s+', ' ', line).strip()
+        if value and not noise.match(value) and not cookie.match(value): result.append(value)
+    return result
 
 def main():
     root = sys.argv[1] if len(sys.argv) > 1 else ROOT
