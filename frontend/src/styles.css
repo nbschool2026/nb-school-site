@@ -223,6 +223,17 @@ img {
   opacity: 1;
 }
 
+.subhero-media .subhero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 800ms ease;
+}
+
+.subhero-media .subhero-slide.is-active {
+  opacity: 1;
+}
+
 .hero-content {
   position: relative;
   z-index: 1;

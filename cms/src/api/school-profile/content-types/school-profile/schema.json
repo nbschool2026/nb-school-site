@@ -109,6 +109,18 @@
         }
       }
     },
+    "aboutHeroImages": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images"
+      ],
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      }
+    },
     "distanceLearningImage": {
       "type": "media",
       "multiple": false,

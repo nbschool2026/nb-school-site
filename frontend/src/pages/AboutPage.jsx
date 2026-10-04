@@ -1,9 +1,9 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
-import { fetchCollectionLocalized, mediaFormatUrl, mediaUrl } from '../lib/api.js';
+import { fetchCollectionLocalized, mediaUrl } from '../lib/api.js';
 import { useLocale } from '../lib/locale.jsx';
 
 export default function AboutPage() {
@@ -13,6 +13,23 @@ export default function AboutPage() {
   const [staffMembers, setStaffMembers] = useState([]);
   const [status, setStatus] = useState('loading');
   const [aboutImageLoaded, setAboutImageLoaded] = useState(false);
+  const [aboutSlide, setAboutSlide] = useState(0);
+
+  const aboutHeroImages = useMemo(() => {
+    const gallery = Array.isArray(profile?.aboutHeroImages)
+      ? profile.aboutHeroImages
+      : profile?.aboutHeroImages?.data || [];
+    const urls = gallery.map((image) => mediaUrl(image)).filter(Boolean);
+    return urls.length ? urls.slice(0, 3) : [mediaUrl(profile?.aboutImage)].filter(Boolean);
+  }, [profile]);
+
+  useEffect(() => {
+    setAboutSlide(0);
+    setAboutImageLoaded(false);
+    if (aboutHeroImages.length < 2) return undefined;
+    const timer = window.setInterval(() => setAboutSlide((current) => (current + 1) % aboutHeroImages.length), 6000);
+    return () => window.clearInterval(timer);
+  }, [aboutHeroImages]);
 
   useEffect(() => {
     let active = true;
@@ -33,12 +50,10 @@ export default function AboutPage() {
     <main>
       {status === 'loading' && <p className="container">{t('Завантаження сторінки «Про нас»…')}</p>}
       {status === 'error' && <p className="container" role="alert">{t('Не вдалося завантажити сторінку «Про нас» із CMS.')}</p>}
-      <section className={`subhero${mediaUrl(profile?.aboutImage) ? ' subhero-with-image' : ''}`}>
-        <picture className="subhero-media" aria-hidden="true">
-          {mediaUrl(profile?.aboutImage) && mediaFormatUrl(profile.aboutImage, 'small') && <source media="(max-width: 640px)" srcSet={mediaFormatUrl(profile.aboutImage, 'small')} />}
-          {mediaUrl(profile?.aboutImage) && mediaFormatUrl(profile.aboutImage, 'medium') && <source media="(max-width: 1100px)" srcSet={mediaFormatUrl(profile.aboutImage, 'medium')} />}
-          {mediaUrl(profile?.aboutImage) && <img className={aboutImageLoaded ? 'is-loaded' : ''} src={mediaUrl(profile.aboutImage)} alt="" decoding="async" onLoad={() => setAboutImageLoaded(true)} />}
-        </picture>
+      <section className={`subhero${aboutHeroImages.length ? ' subhero-with-image' : ''}`}>
+        <div className="subhero-media" aria-hidden="true">
+          {aboutHeroImages.map((image, index) => <img key={image} className={`subhero-slide${index === aboutSlide ? ' is-active' : ''}${aboutImageLoaded && index === aboutSlide ? ' is-loaded' : ''}`} src={image} alt="" loading={index === 0 ? 'eager' : 'lazy'} decoding="async" onLoad={() => index === aboutSlide && setAboutImageLoaded(true)} />)}
+        </div>
         <div>
           <h1>{t('Про Наш Ліцей')}</h1>
           {locale === 'en' && profile?._fallbackLocale && <small>{t('Показано українською')}</small>}

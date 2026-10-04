@@ -61,6 +61,7 @@ const labels: Record<string, Record<string, string>> = {
     mapUrl: 'Посилання на карту',
     heroImage: 'Головне фото',
     aboutImage: 'Фото сторінки «Про нас»',
+    aboutHeroImages: 'Слайдер hero «Про нас» (до 3 фото)',
     distanceLearningImage: 'Hero дистанційного навчання',
     distanceLearningTextColor: 'Колір тексту hero дистанційного навчання',
   },
