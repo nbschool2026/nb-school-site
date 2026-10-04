@@ -4,6 +4,27 @@ import SectionTitle from '../components/SectionTitle.jsx';
 import { fetchCollectionLocalized } from '../lib/api.js';
 import { useLocale } from '../lib/locale.jsx';
 
+function inlineNodes(children, prefix) {
+  return (children || []).map((child, index) => {
+    const key = `${prefix}-${index}`;
+    if (child.type === 'link') return <a key={key} href={child.url} target="_blank" rel="noreferrer">{inlineNodes(child.children, key)}</a>;
+    const classNames = [child.bold && 'rich-bold', child.italic && 'rich-italic', child.underline && 'rich-underline'].filter(Boolean).join(' ');
+    return <span key={key} className={classNames || undefined}>{child.text}</span>;
+  });
+}
+
+function renderBlocks(value, keyPrefix) {
+  if (!Array.isArray(value)) return value ? <p>{value}</p> : null;
+  return value.map((block, index) => {
+    const key = `${keyPrefix}-${index}`;
+    if (block.type === 'heading') { const Tag = `h${Math.min(6, Math.max(1, block.level || 2))}`; return <Tag key={key}>{inlineNodes(block.children, key)}</Tag>; }
+    if (block.type === 'quote') return <blockquote key={key}>{inlineNodes(block.children, key)}</blockquote>;
+    if (block.type === 'list') { const Tag = block.format === 'ordered' ? 'ol' : 'ul'; return <Tag key={key}>{(block.children || []).map((item, i) => <li key={`${key}-${i}`}>{inlineNodes(item.children, `${key}-${i}`)}</li>)}</Tag>; }
+    if (block.type === 'image' && block.image?.url) return <img key={key} src={block.image.url.startsWith('http') ? block.image.url : `${window.location.origin}${block.image.url}`} alt={block.image.alternativeText || ''} />;
+    return <p key={key} style={block.alignment ? { textAlign: block.alignment } : undefined}>{inlineNodes(block.children, key)}</p>;
+  });
+}
+
 export default function DistanceLearningPage() {
   const { locale, t } = useLocale();
   const [materials, setMaterials] = useState([]);
@@ -53,7 +74,7 @@ export default function DistanceLearningPage() {
         <div className="distance-material-list">{visible.map((item) => <article className="distance-material-card" key={item.documentId || item.id}>
           <div className="distance-material-meta"><span>{item.grade}</span><span>{item.subject}</span><time dateTime={item.date}>{new Date(item.date).toLocaleDateString(locale === 'en' ? 'en-GB' : 'uk-UA')}</time></div>
           <h3>{item.topic}</h3>
-          {item.content && <p>{item.content}</p>}
+          {item.content && <div className="distance-material-content">{renderBlocks(item.content, item.documentId || item.id)}</div>}
           {item.videoUrl && <a className="text-link" href={item.videoUrl} target="_blank" rel="noreferrer"><MaterialIcon name="play_circle" />{t('Відкрити відео')}</a>}
         </article>)}</div>
       </div>

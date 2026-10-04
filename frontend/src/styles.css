@@ -1064,6 +1064,11 @@ img {
   line-height: 1.65;
 }
 
+.distance-material-content img { max-width: 100%; height: auto; border-radius: 10px; }
+.distance-material-content .rich-bold { font-weight: 700; }
+.distance-material-content .rich-italic { font-style: italic; }
+.distance-material-content .rich-underline { text-decoration: underline; }
+
 .distance-material-meta {
   display: flex;
   flex-wrap: wrap;

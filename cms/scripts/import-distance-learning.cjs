@@ -11,9 +11,12 @@ if (!input) {
 }
 
 function normalize(item, index) {
+  const content = Array.isArray(item.content)
+    ? item.content
+    : String(item.content || '').split(/\n+/).map((text) => text.trim()).filter(Boolean).map((text) => ({ type: 'paragraph', children: [{ type: 'text', text }] }));
   return {
     grade: String(item.grade || '').trim(), subject: String(item.subject || '').trim(), date: item.date || null,
-    topic: String(item.topic || item.subject || 'Матеріал').trim(), content: String(item.content || '').trim(),
+    topic: String(item.topic || item.subject || 'Матеріал').trim(), content,
     videoUrl: String(item.videoUrl || '').trim(), sourceUrl: String(item.sourceUrl || '').trim(),
     order: Number.isFinite(Number(item.order)) ? Number(item.order) : index,
   };
