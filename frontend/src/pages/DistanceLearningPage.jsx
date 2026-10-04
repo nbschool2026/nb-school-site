@@ -156,6 +156,7 @@ export default function DistanceLearningPage() {
         {status === 'error' && <p role="alert">{t('Не вдалося завантажити матеріали з CMS.')}</p>}
         {status === 'ready' && !visible.length && <p>{t('Матеріалів за цими умовами не знайдено.')}</p>}
         <div className="distance-material-list">{visible.map((item) => <article id={`distance-material-${item.documentId || item.id}`} className={`distance-material-card${pinnedId === (item.documentId || String(item.id)) ? ' is-pinned' : ''}${completedIds.has(item.documentId || String(item.id)) ? ' is-completed' : ''}`} key={item.documentId || item.id}>
+          {completedIds.has(item.documentId || String(item.id)) && <span className="distance-material-completed-indicator" title="Виконано" aria-label="Виконано"><MaterialIcon name="check_circle" /></span>}
           <div className="distance-material-meta"><span>{item.grade}</span><span>{item.subject}</span><time dateTime={item.date}>{new Date(item.date).toLocaleDateString(locale === 'en' ? 'en-GB' : 'uk-UA')}</time></div>
           <div className="distance-material-actions">
             <button type="button" className="distance-material-pin" onClick={() => togglePinned(item.documentId || String(item.id))} aria-pressed={pinnedId === (item.documentId || String(item.id))}><MaterialIcon name="push_pin" />{pinnedId === (item.documentId || String(item.id)) ? 'Закріплено' : 'Закріпити'}</button>
