@@ -186,6 +186,30 @@ http://PUBLIC_IP {
         reverse_proxy 127.0.0.1:1337
     }
 
+    handle /content-manager {
+        reverse_proxy 127.0.0.1:1337
+    }
+
+    handle /content-manager/* {
+        reverse_proxy 127.0.0.1:1337
+    }
+
+    handle /upload {
+        reverse_proxy 127.0.0.1:1337
+    }
+
+    handle /upload/* {
+        reverse_proxy 127.0.0.1:1337
+    }
+
+    handle /i18n {
+        reverse_proxy 127.0.0.1:1337
+    }
+
+    handle /i18n/* {
+        reverse_proxy 127.0.0.1:1337
+    }
+
     handle {
         root * /opt/nb-school-site/frontend/dist
         try_files {path} /index.html
