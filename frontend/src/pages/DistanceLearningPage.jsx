@@ -39,13 +39,22 @@ function gradeColor(value) {
   const index = match ? Number(match[0]) - 1 : 0;
   return gradeColors[Math.max(0, Math.min(gradeColors.length - 1, index))];
 }
-function youtubeId(url) {
-  const match = String(url || '').match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{6,})/i);
+function youtubeId(value) {
+  try {
+    const url = new URL(String(value || '').trim());
+    const host = url.hostname.toLowerCase().replace(/^www\./, '');
+    if (host === 'youtu.be') return url.pathname.split('/')[1] || '';
+    if (host === 'youtube.com' || host === 'm.youtube.com') {
+      if (url.pathname === '/watch') return url.searchParams.get('v') || '';
+      if (/^\/(?:embed|shorts)\//.test(url.pathname)) return url.pathname.split('/')[2] || '';
+    }
+  } catch { /* fall through to the legacy format below */ }
+  const match = String(value || '').match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{6,})/i);
   return match ? match[1] : '';
 }
 function youtubeEmbed(url) {
-  const match = String(url || '').match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{6,})/i);
-  return match ? `https://www.youtube.com/embed/${match[1]}` : '';
+  const id = youtubeId(url);
+  return id ? `https://www.youtube-nocookie.com/embed/${id}` : '';
 }
 
 export default function DistanceLearningPage() {
