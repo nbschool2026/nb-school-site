@@ -1192,6 +1192,9 @@ img {
 .distance-material-videos { display: grid; gap: 16px; margin-top: 20px; }
 .distance-material-video { width: 100%; min-width: 0; max-width: 100%; }
 .distance-material-video iframe { display: block; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; height: auto; min-height: 0; border: 0; border-radius: 10px; }
+.distance-material-video-fallback { display: grid; min-height: 180px; place-items: center; align-content: center; gap: 8px; padding: 24px; border-radius: 10px; color: var(--muted); background: #f1f5f9; text-align: center; }
+.distance-material-video-fallback p { margin: 0; }
+.distance-material-video-fallback .text-link { margin-top: 0; }
 .distance-material-video h4 { margin: 0 0 8px; }
 
 .distance-material-meta span {
