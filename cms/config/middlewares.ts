@@ -10,6 +10,8 @@ export default [
           'connect-src': ["'self'", 'https:'],
           'img-src': ["'self'", 'data:', 'blob:', 'https://lh3.googleusercontent.com'],
           'media-src': ["'self'", 'data:', 'blob:'],
+          'style-src': ["'self'", 'https:', "'unsafe-inline'", 'blob:'],
+          'style-src-elem': ["'self'", 'https:', "'unsafe-inline'", 'blob:'],
           upgradeInsecureRequests: null,
         },
       },
