@@ -51,6 +51,7 @@ export default function DistanceLearningPage() {
     } catch { stored = ''; }
     return fromUrl || stored;
   });
+  const [expandedIds, setExpandedIds] = useState(() => new Set());
   const [completedIds, setCompletedIds] = useState(() => {
     try {
       const value = JSON.parse(localStorage.getItem('distance-learning-completed') || '[]');
@@ -92,6 +93,13 @@ export default function DistanceLearningPage() {
     }, { replace: true });
   };
 
+  const toggleExpanded = (id) => {
+    setExpandedIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
   const toggleCompleted = (id) => {
     setCompletedIds((current) => {
       const next = new Set(current);
@@ -154,8 +162,11 @@ export default function DistanceLearningPage() {
             <button type="button" className="distance-material-complete" onClick={() => toggleCompleted(item.documentId || String(item.id))} aria-pressed={completedIds.has(item.documentId || String(item.id))}><MaterialIcon name="check_circle" />{completedIds.has(item.documentId || String(item.id)) ? 'Виконано' : 'Позначити виконаним'}</button>
           </div>
           <h3>{item.topic}</h3>
-          {item.content && <div className="distance-material-content">{renderBlocks(item.content, item.documentId || item.id)}</div>}
-          {!!(item.videos?.length || item.videoUrl) && <div className="distance-material-videos">{(item.videos?.length ? item.videos : [{ url: item.videoUrl }]).map((video, index) => { const embed = youtubeEmbed(video.url); return <div className="distance-material-video" key={`${item.documentId || item.id}-video-${index}`}>{video.title && <h4>{video.title}</h4>}{embed ? <iframe src={embed} title={video.title || `${item.topic} — відео ${index + 1}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /> : <a className="text-link" href={video.url} target="_blank" rel="noreferrer"><MaterialIcon name="play_circle" />{t('Відкрити відео')}</a>}</div>; })}</div>}
+          <div className={`distance-material-body${expandedIds.has(item.documentId || String(item.id)) ? ' is-expanded' : ''}`}>
+            {item.content && <div className="distance-material-content">{renderBlocks(item.content, item.documentId || item.id)}</div>}
+            {!!(item.videos?.length || item.videoUrl) && <div className="distance-material-videos">{(item.videos?.length ? item.videos : [{ url: item.videoUrl }]).map((video, index) => { const embed = youtubeEmbed(video.url); return <div className="distance-material-video" key={`${item.documentId || item.id}-video-${index}`}>{video.title && <h4>{video.title}</h4>}{embed ? <iframe src={embed} title={video.title || `${item.topic} — відео ${index + 1}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /> : <a className="text-link" href={video.url} target="_blank" rel="noreferrer"><MaterialIcon name="play_circle" />{t('Відкрити відео')}</a>}</div>; })}</div>}
+          </div>
+          <button type="button" className="distance-material-expand" onClick={() => toggleExpanded(item.documentId || String(item.id))} aria-expanded={expandedIds.has(item.documentId || String(item.id))}><MaterialIcon name={expandedIds.has(item.documentId || String(item.id)) ? 'expand_less' : 'expand_more'} />{expandedIds.has(item.documentId || String(item.id)) ? 'Приховати' : 'Показати більше'}</button>
         </article>)}</div>
       </div>
     </section>
