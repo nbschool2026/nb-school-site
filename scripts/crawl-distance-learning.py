@@ -6,7 +6,7 @@ import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import unquote, urljoin, urlparse
+from urllib.parse import quote, unquote, urljoin, urlparse, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
 ROOT = 'https://sites.google.com/view/novbilous/головна-сторінка?authuser=0'
@@ -30,6 +30,8 @@ class Extractor(HTMLParser):
         if not self.skip and data.strip(): self.text.append(html.unescape(data.strip()))
 
 def fetch(url):
+    parts = urlsplit(url)
+    url = urlunsplit((parts.scheme, parts.netloc, quote(unquote(parts.path), safe='/%'), parts.query, parts.fragment))
     req = Request(url, headers={'User-Agent': 'Mozilla/5.0 distance-learning-export'})
     with urlopen(req, timeout=30) as response: return response.read().decode('utf-8', 'replace')
 
