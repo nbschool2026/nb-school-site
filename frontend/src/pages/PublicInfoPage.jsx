@@ -41,12 +41,6 @@ export default function PublicInfoPage() {
           {status === 'error' && <p role="alert">{t('Не вдалося завантажити документи з CMS.')}</p>}
           {status === 'ready' && !documents.length && <p>{t('Документів поки немає.')}</p>}
           {status === 'ready' && documents.map((document) => <DocumentCard key={document.documentId || document.id || document.slug} document={document} onPreview={setPreview} />)}
-          <article className="question-card">
-            <MaterialIcon name="help_outline" />
-            <h3>{t('Залишилися питання?')}</h3>
-            <p>{t('Якщо ви не знайшли потрібну інформацію, ви можете надіслати офіційний запит до адміністрації.')}</p>
-            <a className="primary-button" href="mailto:bilousnew@ukr.net">{t('Надіслати запит')}</a>
-          </article>
         </div>
       </section>
       <dialog ref={previewDialog} className="document-preview" onClose={() => setPreview(null)} aria-label={preview?.title || t('Перегляд документа')}>

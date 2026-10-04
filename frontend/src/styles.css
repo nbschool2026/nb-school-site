@@ -1021,8 +1021,7 @@ img {
   font-size: 1.05rem;
 }
 
-.document-card p,
-.question-card p {
+.document-card p {
   color: var(--muted);
   line-height: 1.65;
 }
@@ -1084,22 +1083,6 @@ img {
   width: 100%;
   height: calc(100% - 60px);
   border: 0;
-}
-
-.question-card {
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  border: 2px dashed rgba(221, 109, 6, 0.26);
-  border-radius: 12px;
-  padding: 24px;
-  background: rgba(221, 109, 6, 0.06);
-  text-align: center;
-}
-
-.question-card > .material-symbols-outlined {
-  color: rgba(221, 109, 6, 0.75);
-  font-size: 2.8rem;
 }
 
 .site-footer {
@@ -1190,8 +1173,7 @@ img {
     display: grid;
   }
 
-  .hero-actions a,
-  .question-card .primary-button {
+  .hero-actions a {
     width: 100%;
   }
 
