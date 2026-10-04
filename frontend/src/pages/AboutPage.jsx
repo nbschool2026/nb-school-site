@@ -27,7 +27,7 @@ export default function AboutPage() {
     setAboutSlide(0);
     setAboutImageLoaded(false);
     if (aboutHeroImages.length < 2) return undefined;
-    const timer = window.setInterval(() => setAboutSlide((current) => (current + 1) % aboutHeroImages.length), 6000);
+    const timer = window.setInterval(() => setAboutSlide((current) => (current + 1) % aboutHeroImages.length), 3000);
     return () => window.clearInterval(timer);
   }, [aboutHeroImages]);
 
