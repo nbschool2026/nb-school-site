@@ -1,0 +1,22 @@
+{
+  "kind": "collectionType",
+  "collectionName": "distance_learning_materials",
+  "info": {
+    "singularName": "distance-learning-material",
+    "pluralName": "distance-learning-materials",
+    "displayName": "Матеріал дистанційного навчання",
+    "description": "Матеріали та завдання для класів і предметів"
+  },
+  "options": { "draftAndPublish": true },
+  "attributes": {
+    "grade": { "type": "string", "required": true, "pluginOptions": { "i18n": { "localized": true } } },
+    "subject": { "type": "string", "required": true, "pluginOptions": { "i18n": { "localized": true } } },
+    "date": { "type": "date", "required": true, "pluginOptions": { "i18n": { "localized": true } } },
+    "topic": { "type": "string", "required": true, "pluginOptions": { "i18n": { "localized": true } } },
+    "content": { "type": "text", "pluginOptions": { "i18n": { "localized": true } } },
+    "videoUrl": { "type": "string", "pluginOptions": { "i18n": { "localized": false } } },
+    "sourceUrl": { "type": "string", "pluginOptions": { "i18n": { "localized": false } } },
+    "order": { "type": "integer", "default": 0, "pluginOptions": { "i18n": { "localized": false } } }
+  },
+  "pluginOptions": { "i18n": { "localized": true } }
+}

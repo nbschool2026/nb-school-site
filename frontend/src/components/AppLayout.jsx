@@ -10,6 +10,7 @@ const links = [
   { to: '/about', label: 'Про нас' },
   { to: '/events', label: 'Події' },
   { to: '/public-info', label: 'Публічна інформація' },
+  { to: '/distance-learning', label: 'Дистанційне навчання' },
 ];
 
 export default function AppLayout() {

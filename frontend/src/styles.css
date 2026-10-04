@@ -1042,6 +1042,37 @@ img {
   font: inherit;
 }
 
+.distance-material-list {
+  display: grid;
+  gap: 16px;
+}
+
+.distance-material-card {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.distance-material-card h3 {
+  margin: 12px 0 8px;
+}
+
+.distance-material-card p {
+  color: var(--muted);
+  white-space: pre-line;
+  line-height: 1.65;
+}
+
+.distance-material-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
 .document-card {
   padding: 24px;
 }

@@ -45,6 +45,10 @@ const labels: Record<string, Record<string, string>> = {
     room: 'Кабінет',
     order: 'Порядок',
   },
+  'api::distance-learning-material.distance-learning-material': {
+    grade: 'Клас', subject: 'Предмет', date: 'Дата', topic: 'Тема', content: 'Завдання',
+    videoUrl: 'Відео', sourceUrl: 'Посилання на джерело', order: 'Порядок',
+  },
   'api::school-profile.school-profile': {
     schoolName: 'Назва ліцею',
     heroTitle: 'Заголовок головної',

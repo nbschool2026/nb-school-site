@@ -51,6 +51,7 @@ async function ensurePublicReadPermissions(strapi) {
     ...readActions('api::public-document.public-document'),
     ...readActions('api::staff-member.staff-member'),
     ...readActions('api::schedule-lesson.schedule-lesson'),
+    ...readActions('api::distance-learning-material.distance-learning-material'),
     ...readActions('api::history-item.history-item'),
     ...readActions('api::value-card.value-card'),
     ...readActions('api::gallery-item.gallery-item'),
