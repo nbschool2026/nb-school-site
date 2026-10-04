@@ -186,6 +186,16 @@ img {
   position: absolute;
   inset: 0;
   display: block;
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-media {
+  background-image: url('/home-hero-placeholder.webp');
+}
+
+.subhero-media {
+  background-image: url('/about-hero-placeholder.webp');
 }
 
 .hero-media::after,
@@ -203,6 +213,13 @@ img {
   height: 100%;
   object-fit: cover;
   object-position: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.hero-media img.is-loaded,
+.subhero-media img.is-loaded {
+  opacity: 1;
 }
 
 .hero-content {

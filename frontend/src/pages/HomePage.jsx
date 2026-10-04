@@ -14,6 +14,7 @@ export default function HomePage() {
   const [principal, setPrincipal] = useState(null);
   const [events, setEvents] = useState([]);
   const [eventsStatus, setEventsStatus] = useState('loading');
+  const [heroLoaded, setHeroLoaded] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -37,7 +38,7 @@ export default function HomePage() {
         {heroImage && <picture className="hero-media" aria-hidden="true">
           {heroSmall && <source media="(max-width: 640px)" srcSet={heroSmall} />}
           {heroMedium && <source media="(max-width: 1100px)" srcSet={heroMedium} />}
-          <img src={heroImage} alt="" fetchPriority="high" decoding="async" />
+          <img className={heroLoaded ? 'is-loaded' : ''} src={heroImage} alt="" fetchPriority="high" decoding="async" onLoad={() => setHeroLoaded(true)} />
         </picture>}
         <div className="hero-content">
           <h1>{profile?.heroTitle || profile?.schoolName || t('Новобілоуський ліцей')}</h1>

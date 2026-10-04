@@ -12,6 +12,7 @@ export default function AboutPage() {
   const [historyItems, setHistoryItems] = useState([]);
   const [staffMembers, setStaffMembers] = useState([]);
   const [status, setStatus] = useState('loading');
+  const [aboutImageLoaded, setAboutImageLoaded] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -36,7 +37,7 @@ export default function AboutPage() {
         {mediaUrl(profile?.aboutImage) && <picture className="subhero-media" aria-hidden="true">
           {mediaFormatUrl(profile?.aboutImage, 'small') && <source media="(max-width: 640px)" srcSet={mediaFormatUrl(profile.aboutImage, 'small')} />}
           {mediaFormatUrl(profile?.aboutImage, 'medium') && <source media="(max-width: 1100px)" srcSet={mediaFormatUrl(profile.aboutImage, 'medium')} />}
-          <img src={mediaUrl(profile.aboutImage)} alt="" decoding="async" />
+          <img className={aboutImageLoaded ? 'is-loaded' : ''} src={mediaUrl(profile.aboutImage)} alt="" decoding="async" onLoad={() => setAboutImageLoaded(true)} />
         </picture>}
         <div>
           <h1>{t('Про Наш Ліцей')}</h1>
