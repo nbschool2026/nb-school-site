@@ -66,6 +66,7 @@ export default function DistanceLearningPage() {
     return fromUrl || stored;
   });
   const [expandedIds, setExpandedIds] = useState(() => new Set());
+  const [expandableIds, setExpandableIds] = useState(() => new Set());
   const [completedIds, setCompletedIds] = useState(() => {
     try {
       const value = JSON.parse(localStorage.getItem('distance-learning-completed') || '[]');
@@ -140,6 +141,22 @@ export default function DistanceLearningPage() {
   });
 
   useEffect(() => {
+    if (status !== 'ready') return;
+    const timer = window.setTimeout(() => {
+      const next = new Set();
+      visible.forEach((item) => {
+        const id = item.documentId || String(item.id);
+        const body = document.querySelector(`#distance-material-${id} .distance-material-body`);
+        if (body && body.scrollHeight > body.clientHeight + 1) next.add(id);
+      });
+      setExpandableIds((current) => {
+        if (current.size === next.size && [...current].every((id) => next.has(id))) return current;
+        return next;
+      });
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [status, materials, grade, subject, query]);
+  useEffect(() => {
     if (status !== 'ready' || hasAutoScrolled.current || !pinnedId) return;
     const firstPinned = visible.find((item) => pinnedId === (item.documentId || String(item.id)));
     if (!firstPinned) return;
@@ -196,7 +213,7 @@ export default function DistanceLearningPage() {
             {item.content && <div className="distance-material-content">{renderBlocks(item.content, item.documentId || item.id)}</div>}
             {!!(item.videos?.length || item.videoUrl) && <div className="distance-material-videos">{(item.videos?.length ? item.videos : [{ url: item.videoUrl }]).map((video, index) => { const embed = youtubeEmbed(video.url); return <div className="distance-material-video" key={`${item.documentId || item.id}-video-${index}`}>{video.title && <h4>{video.title}</h4>}{embed ? <iframe src={embed} title={video.title || `${item.topic} — відео ${index + 1}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /> : <a className="text-link" href={video.url} target="_blank" rel="noreferrer"><MaterialIcon name="play_circle" />{t('Відкрити відео')}</a>}</div>; })}</div>}
           </div>
-          <button type="button" className="distance-material-expand" onClick={() => toggleExpanded(item.documentId || String(item.id))} aria-expanded={expandedIds.has(item.documentId || String(item.id))}><MaterialIcon name={expandedIds.has(item.documentId || String(item.id)) ? 'expand_less' : 'expand_more'} />{expandedIds.has(item.documentId || String(item.id)) ? 'Приховати' : 'Показати більше'}</button>
+          {expandableIds.has(item.documentId || String(item.id)) && <button type="button" className="distance-material-expand" onClick={() => toggleExpanded(item.documentId || String(item.id))} aria-expanded={expandedIds.has(item.documentId || String(item.id))}><MaterialIcon name={expandedIds.has(item.documentId || String(item.id)) ? 'expand_less' : 'expand_more'} />{expandedIds.has(item.documentId || String(item.id)) ? 'Приховати' : 'Показати більше'}</button>}
         </article>)}</div>
       </div>
     </section>
