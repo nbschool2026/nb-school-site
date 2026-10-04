@@ -28,6 +28,7 @@ const labels: Record<string, Record<string, string>> = {
     title: 'Назва',
     slug: 'Адреса сторінки',
     description: 'Опис',
+    category: 'Категорія',
     type: 'Тип',
     icon: 'Іконка',
     url: 'Посилання',

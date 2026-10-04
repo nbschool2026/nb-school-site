@@ -1012,6 +1012,36 @@ img {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.public-info-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.public-info-filters label {
+  display: grid;
+  gap: 8px;
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.public-info-filters input,
+.public-info-filters select {
+  min-height: 46px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: #f8fafc;
+  font: inherit;
+}
+
 .document-card {
   padding: 24px;
 }
@@ -1186,6 +1216,10 @@ img {
   .event-grid,
   .document-grid,
   .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .public-info-filters {
     grid-template-columns: 1fr;
   }
 
