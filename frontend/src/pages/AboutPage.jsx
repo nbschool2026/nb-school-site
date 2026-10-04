@@ -34,11 +34,11 @@ export default function AboutPage() {
       {status === 'loading' && <p className="container">{t('Завантаження сторінки «Про нас»…')}</p>}
       {status === 'error' && <p className="container" role="alert">{t('Не вдалося завантажити сторінку «Про нас» із CMS.')}</p>}
       <section className={`subhero${mediaUrl(profile?.aboutImage) ? ' subhero-with-image' : ''}`}>
-        {mediaUrl(profile?.aboutImage) && <picture className="subhero-media" aria-hidden="true">
-          {mediaFormatUrl(profile?.aboutImage, 'small') && <source media="(max-width: 640px)" srcSet={mediaFormatUrl(profile.aboutImage, 'small')} />}
-          {mediaFormatUrl(profile?.aboutImage, 'medium') && <source media="(max-width: 1100px)" srcSet={mediaFormatUrl(profile.aboutImage, 'medium')} />}
-          <img className={aboutImageLoaded ? 'is-loaded' : ''} src={mediaUrl(profile.aboutImage)} alt="" decoding="async" onLoad={() => setAboutImageLoaded(true)} />
-        </picture>}
+        <picture className="subhero-media" aria-hidden="true">
+          {mediaUrl(profile?.aboutImage) && mediaFormatUrl(profile.aboutImage, 'small') && <source media="(max-width: 640px)" srcSet={mediaFormatUrl(profile.aboutImage, 'small')} />}
+          {mediaUrl(profile?.aboutImage) && mediaFormatUrl(profile.aboutImage, 'medium') && <source media="(max-width: 1100px)" srcSet={mediaFormatUrl(profile.aboutImage, 'medium')} />}
+          {mediaUrl(profile?.aboutImage) && <img className={aboutImageLoaded ? 'is-loaded' : ''} src={mediaUrl(profile.aboutImage)} alt="" decoding="async" onLoad={() => setAboutImageLoaded(true)} />}
+        </picture>
         <div>
           <h1>{t('Про Наш Ліцей')}</h1>
           {locale === 'en' && profile?._fallbackLocale && <small>{t('Показано українською')}</small>}
