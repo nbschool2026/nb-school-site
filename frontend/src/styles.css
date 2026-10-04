@@ -1086,7 +1086,8 @@ img {
   overflow: hidden;
 }
 
-.distance-material-card { position: relative; }`r`n.distance-material-card.is-pinned { border: 2px solid var(--primary); box-shadow: 0 0 0 3px rgba(221, 109, 6, 0.16), inset 0 0 0 1px rgba(221, 109, 6, 0.08); }
+.distance-material-card { position: relative; }
+.distance-material-card.is-pinned { border: 2px solid var(--primary); box-shadow: 0 0 0 3px rgba(221, 109, 6, 0.16), inset 0 0 0 1px rgba(221, 109, 6, 0.08); }
 .distance-material-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-bottom: 8px; }
 .distance-material-completed-indicator {
   position: absolute;
@@ -1144,7 +1145,14 @@ img {
   color: #fff;
   background: var(--badge-color);
 }
-.distance-material-subject {
+.distance-material-card.is-completed .distance-material-grade {
+  color: #fff;
+  background: #94a3b8;
+}
+.distance-material-card.is-completed .distance-material-subject {
+  color: #94a3b8;
+  border-color: #94a3b8 !important;
+}.distance-material-subject {
   color: var(--badge-color);
   border-color: var(--badge-color) !important;
 }
