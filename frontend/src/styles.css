@@ -1094,6 +1094,24 @@ img {
   font-weight: 700;
 }
 .distance-learning-filter-chips button:hover { color: #fff; background: var(--primary); }
+.distance-learning-pinned-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 20px;
+  padding: 16px 18px;
+  border: 1px solid rgba(221, 109, 6, 0.3);
+  border-left: 4px solid var(--primary);
+  border-radius: 12px;
+  background: #fff8ef;
+}
+.distance-learning-pinned-banner div { display: grid; gap: 3px; min-width: 0; }
+.distance-learning-pinned-banner span { color: var(--primary-dark); font-size: .75rem; font-weight: 900; text-transform: uppercase; }
+.distance-learning-pinned-banner strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.distance-learning-pinned-banner small { color: var(--muted); }
+.distance-learning-pinned-banner button { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; border: 0; border-radius: 999px; padding: 8px 12px; color: #fff; background: var(--primary); cursor: pointer; font: inherit; font-weight: 700; }
+.distance-learning-pinned-banner button:hover { background: var(--primary-dark); }
 .distance-material-list {
   display: grid;
   gap: 16px;
@@ -1416,4 +1434,9 @@ img {
 }
 @media (max-width: 640px) {
   .distance-material-completed-indicator { display: none; }
+}
+@media (max-width: 640px) {
+  .distance-learning-pinned-banner { align-items: flex-start; flex-direction: column; }
+  .distance-learning-pinned-banner strong { max-width: 100%; white-space: normal; }
+  .distance-learning-pinned-banner button { width: 100%; justify-content: center; }
 }

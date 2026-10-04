@@ -139,6 +139,16 @@ export default function DistanceLearningPage() {
     if (sort === 'subject') return String(a.subject || '').localeCompare(String(b.subject || ''), 'uk');
     return String(b.date || '').localeCompare(String(a.date || ''));
   });
+  const pinnedMaterial = pinnedId ? materials.find((item) => pinnedId === (item.documentId || String(item.id))) : null;
+
+  const scrollToMaterial = (id) => {
+    const element = document.getElementById('distance-material-' + id);
+    if (!element) return;
+    const headerHeight = document.querySelector('.site-header')?.getBoundingClientRect().height || 0;
+    const top = element.getBoundingClientRect().top + window.scrollY - headerHeight - 12;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+  };
+
 
   useEffect(() => {
     if (status !== 'ready') return;
@@ -198,6 +208,10 @@ export default function DistanceLearningPage() {
             {subject && <button type="button" onClick={() => { setSubject(''); updateQuery({ subject: '' }); }}>{subject} ×</button>}
           </div>}
         </div>
+        {pinnedMaterial && <aside className="distance-learning-pinned-banner">
+          <div><span>{t('Закріплений урок')}</span><strong>{pinnedMaterial.topic}</strong><small>{pinnedMaterial.grade} · {pinnedMaterial.subject}</small></div>
+          <button type="button" onClick={() => scrollToMaterial(pinnedMaterial.documentId || String(pinnedMaterial.id))}><MaterialIcon name="arrow_downward" />{t('Перейти до уроку')}</button>
+        </aside>}
         {status === 'loading' && <p>{t('Завантаження матеріалів…')}</p>}
         {status === 'error' && <p role="alert">{t('Не вдалося завантажити матеріали з CMS.')}</p>}
         {status === 'ready' && !sortedVisible.length && <p>{t('Матеріалів за цими умовами не знайдено.')}</p>}
