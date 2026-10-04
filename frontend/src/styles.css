@@ -1195,6 +1195,10 @@ img {
 .distance-material-body:not(.is-expanded) .distance-material-video { display: none; }
 .distance-material-expand { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; padding: 0; border: 0; color: var(--primary-dark); background: transparent; cursor: pointer; font: inherit; font-weight: 700; }
 .distance-material-expand:hover { color: var(--primary); text-decoration: underline; }
+.distance-material-card button:focus-visible,
+.distance-material-card a:focus-visible,
+.public-info-filters input:focus-visible,
+.public-info-filters select:focus-visible { outline: 3px solid rgba(37, 99, 235, .55); outline-offset: 3px; }
 .distance-material-content { min-width: 0; overflow-wrap: anywhere; }
 .distance-material-content .rich-bold { font-weight: 700; }
 .distance-material-content .rich-italic { font-style: italic; }
