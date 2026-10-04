@@ -176,6 +176,9 @@ img {
 
 .hero-with-image {
   background: #101622;
+  background-image: url('/home-hero-placeholder.webp');
+  background-size: cover;
+  background-position: center;
 }
 
 .hero-media,
@@ -635,6 +638,9 @@ img {
 
 .subhero-with-image {
   background: #101010;
+  background-image: url('/about-hero-placeholder.webp');
+  background-size: cover;
+  background-position: center;
 }
 
 .subhero-media::after {
