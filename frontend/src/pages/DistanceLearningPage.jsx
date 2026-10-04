@@ -36,10 +36,17 @@ export default function DistanceLearningPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [materials, setMaterials] = useState([]);
   const [heroImage, setHeroImage] = useState('');
+  const [heroTextColor, setHeroTextColor] = useState('#ffffff');
   const [status, setStatus] = useState('loading');
   const [grade, setGrade] = useState(() => searchParams.get('grade') || '');
   const [subject, setSubject] = useState(() => searchParams.get('subject') || '');
   const [search, setSearch] = useState(() => searchParams.get('q') || '');
+  const [pinnedIds, setPinnedIds] = useState(() => {
+    const fromUrl = (searchParams.get('pinned') || '').split(',').filter(Boolean);
+    let stored = [];
+    try { stored = JSON.parse(localStorage.getItem('distance-learning-pinned') || '[]'); } catch { stored = []; }
+    return new Set([...stored, ...fromUrl]);
+  });
 
   const updateQuery = (updates) => {
     setSearchParams((current) => {
@@ -60,9 +67,24 @@ export default function DistanceLearningPage() {
 
   useEffect(() => {
     fetchSingleLocalized('/school-profile', 'populate[0]=distanceLearningImage', locale)
-      .then((profile) => setHeroImage(mediaUrl(profile?.distanceLearningImage)))
+      .then((profile) => { setHeroImage(mediaUrl(profile?.distanceLearningImage)); setHeroTextColor(profile?.distanceLearningTextColor || '#ffffff'); })
       .catch(() => setHeroImage(''));
   }, [locale]);
+
+  const togglePinned = (id) => {
+    setPinnedIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      const values = [...next];
+      localStorage.setItem('distance-learning-pinned', JSON.stringify(values));
+      setSearchParams((currentParams) => {
+        const params = new URLSearchParams(currentParams);
+        if (values.length) params.set('pinned', values.join(',')); else params.delete('pinned');
+        return params;
+      }, { replace: true });
+      return next;
+    });
+  };
 
   const grades = useMemo(() => [...new Set(materials.map((item) => item.grade).filter(Boolean))].sort(), [materials]);
   const subjects = useMemo(() => [...new Set(materials
@@ -75,7 +97,7 @@ export default function DistanceLearningPage() {
   });
 
   return <main>
-    <section className="info-hero distance-learning-hero" style={{ '--distance-learning-hero-image': heroImage ? `url("${heroImage}")` : 'none' }}>
+    <section className="info-hero distance-learning-hero" style={{ '--distance-learning-hero-image': heroImage ? `url("${heroImage}")` : 'none', '--distance-learning-text-color': heroTextColor }}>
       <div className="container">
         <div className="pill"><MaterialIcon name="laptop_chromebook" /> {t('Навчання')}</div>
         <h1>{t('Дистанційне навчання')}</h1>
@@ -93,8 +115,9 @@ export default function DistanceLearningPage() {
         {status === 'loading' && <p>{t('Завантаження матеріалів…')}</p>}
         {status === 'error' && <p role="alert">{t('Не вдалося завантажити матеріали з CMS.')}</p>}
         {status === 'ready' && !visible.length && <p>{t('Матеріалів за цими умовами не знайдено.')}</p>}
-        <div className="distance-material-list">{visible.map((item) => <article className="distance-material-card" key={item.documentId || item.id}>
+        <div className="distance-material-list">{visible.map((item) => <article className={`distance-material-card${pinnedIds.has(item.documentId || String(item.id)) ? ' is-pinned' : ''}`} key={item.documentId || item.id}>
           <div className="distance-material-meta"><span>{item.grade}</span><span>{item.subject}</span><time dateTime={item.date}>{new Date(item.date).toLocaleDateString(locale === 'en' ? 'en-GB' : 'uk-UA')}</time></div>
+          <button type="button" className="distance-material-pin" onClick={() => togglePinned(item.documentId || String(item.id))} aria-pressed={pinnedIds.has(item.documentId || String(item.id))}><MaterialIcon name={pinnedIds.has(item.documentId || String(item.id)) ? 'push_pin' : 'push_pin'} />{pinnedIds.has(item.documentId || String(item.id)) ? 'Закріплено' : 'Закріпити'}</button>
           <h3>{item.topic}</h3>
           {item.content && <div className="distance-material-content">{renderBlocks(item.content, item.documentId || item.id)}</div>}
           {!!(item.videos?.length || item.videoUrl) && <div className="distance-material-videos">{(item.videos?.length ? item.videos : [{ url: item.videoUrl }]).map((video, index) => { const embed = youtubeEmbed(video.url); return <div className="distance-material-video" key={`${item.documentId || item.id}-video-${index}`}>{video.title && <h4>{video.title}</h4>}{embed ? <iframe src={embed} title={video.title || `${item.topic} — відео ${index + 1}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /> : <a className="text-link" href={video.url} target="_blank" rel="noreferrer"><MaterialIcon name="play_circle" />{t('Відкрити відео')}</a>}</div>; })}</div>}

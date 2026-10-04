@@ -62,6 +62,7 @@ const labels: Record<string, Record<string, string>> = {
     heroImage: 'Головне фото',
     aboutImage: 'Фото сторінки «Про нас»',
     distanceLearningImage: 'Hero дистанційного навчання',
+    distanceLearningTextColor: 'Колір тексту hero дистанційного навчання',
   },
   'api::staff-member.staff-member': {
     name: 'ПІБ',
