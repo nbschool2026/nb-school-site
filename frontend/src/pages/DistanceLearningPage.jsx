@@ -103,7 +103,12 @@ export default function DistanceLearningPage() {
     if (!firstPinned) return;
     const elementId = `distance-material-${firstPinned.documentId || firstPinned.id}`;
     const timer = window.setTimeout(() => {
-      document.getElementById(elementId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const element = document.getElementById(elementId);
+      if (element) {
+        const headerHeight = document.querySelector('.site-header')?.getBoundingClientRect().height || 0;
+        const top = element.getBoundingClientRect().top + window.scrollY - headerHeight - 12;
+        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      }
       hasAutoScrolled.current = true;
     }, 0);
     return () => window.clearTimeout(timer);
