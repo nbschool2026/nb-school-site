@@ -31,19 +31,14 @@ export default function HomePage() {
   const heroImage = mediaUrl(profile?.heroImage);
   const heroSmall = mediaFormatUrl(profile?.heroImage, 'small');
   const heroMedium = mediaFormatUrl(profile?.heroImage, 'medium');
-  const heroReady = profileStatus !== 'loading' && (!heroImage || heroLoaded);
 
   return (
     <main>
-      {!heroReady && <div className="site-preloader" role="status" aria-live="polite">
-        <span className="site-preloader-spinner" aria-hidden="true" />
-        <span>{t('Завантаження…')}</span>
-      </div>}
       <section className={`hero${heroImage ? ' hero-with-image' : ''}`}>
         <picture className="hero-media" aria-hidden="true">
           {heroImage && heroSmall && <source media="(max-width: 640px)" srcSet={heroSmall} />}
           {heroImage && heroMedium && <source media="(max-width: 1100px)" srcSet={heroMedium} />}
-          {heroImage && <img className={heroLoaded ? 'is-loaded' : ''} src={heroImage} alt="" fetchPriority="high" decoding="async" onLoad={() => setHeroLoaded(true)} onError={() => setHeroLoaded(true)} />}
+          {heroImage && <img className={heroLoaded ? 'is-loaded' : ''} src={heroImage} alt="" fetchPriority="high" decoding="async" onLoad={() => setHeroLoaded(true)} />}
         </picture>
         <div className="hero-content">
           <h1>{profile?.heroTitle || profile?.schoolName || t('Новобілоуський ліцей')}</h1>
