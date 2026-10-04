@@ -90,6 +90,13 @@ export default function DistanceLearningPage() {
     } catch { return new Set(); }
   });
 
+  const loadMaterials = () => {
+    setStatus('loading');
+    fetchCollectionLocalized('/distance-learning-materials', 'sort=date:desc&populate[videos]=*&pagination[pageSize]=500', locale)
+      .then((data) => { setMaterials(data); setStatus('ready'); })
+      .catch(() => setStatus('error'));
+  };
+
   const updateQuery = (updates) => {
     setSearchParams((current) => {
       const next = new URLSearchParams(current);
@@ -238,8 +245,8 @@ export default function DistanceLearningPage() {
           <div><span>{t('Закріплений урок')}</span><strong>{pinnedMaterial.topic}</strong><small>{pinnedMaterial.grade} · {pinnedMaterial.subject}</small></div>
           <button type="button" onClick={() => { const id = pinnedMaterial.documentId || String(pinnedMaterial.id); setPendingScrollId(id); setSearch(''); setGrade(''); setSubject(''); updateQuery({ q: '', grade: '', subject: '' }); }}><MaterialIcon name="arrow_downward" />{t('Перейти до уроку')}</button>
         </aside>}
-        {status === 'loading' && <p>{t('Завантаження матеріалів…')}</p>}
-        {status === 'error' && <p role="alert">{t('Не вдалося завантажити матеріали з CMS.')}</p>}
+        {status === 'loading' && <div className="distance-learning-loading" role="status" aria-live="polite"><span className="distance-learning-spinner" aria-hidden="true" /><span>{t('Завантаження матеріалів…')}</span></div>}
+        {status === 'error' && <div className="distance-learning-error" role="alert"><MaterialIcon name="cloud_off" /><div><strong>{t('Не вдалося завантажити матеріали з CMS.')}</strong><p>{t('Перевірте з’єднання та спробуйте ще раз.')}</p><button type="button" onClick={loadMaterials}>{t('Спробувати ще раз')}</button></div></div>}
         {status === 'ready' && !sortedVisible.length && <p>{t('Матеріалів за цими умовами не знайдено.')}</p>}
         <div className="distance-material-list">{sortedVisible.map((item) => <article id={`distance-material-${item.documentId || item.id}`} className={`distance-material-card${pinnedId === (item.documentId || String(item.id)) ? ' is-pinned' : ''}${completedIds.has(item.documentId || String(item.id)) ? ' is-completed' : ''}`} key={item.documentId || item.id}>
           {completedIds.has(item.documentId || String(item.id)) && <span className="distance-material-completed-indicator" title="Виконано" aria-label="Виконано"><MaterialIcon name="check_circle" /></span>}

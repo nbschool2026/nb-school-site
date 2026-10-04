@@ -1082,6 +1082,16 @@ img {
   color: var(--muted);
 }
 .distance-learning-filter-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.distance-learning-loading,
+.distance-learning-error { display: flex; align-items: center; gap: 12px; margin: 24px 0; padding: 18px 20px; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--muted); }
+.distance-learning-spinner { width: 20px; height: 20px; flex: 0 0 auto; border: 3px solid rgba(221, 109, 6, .2); border-top-color: var(--primary); border-radius: 50%; animation: distance-learning-spin .8s linear infinite; }
+.distance-learning-error { align-items: flex-start; color: #991b1b; background: #fff7f7; }
+.distance-learning-error > .material-symbols-outlined { margin-top: 2px; }
+.distance-learning-error strong { display: block; color: #7f1d1d; }
+.distance-learning-error p { margin: 4px 0 10px; color: #991b1b; }
+.distance-learning-error button { border: 0; border-radius: 999px; padding: 8px 14px; color: #fff; background: var(--primary); cursor: pointer; font: inherit; font-weight: 700; }
+.distance-learning-error button:hover { background: var(--primary-dark); }
+@keyframes distance-learning-spin { to { transform: rotate(360deg); } }
 .distance-learning-filter-chips button {
   border: 1px solid var(--line);
   border-radius: 999px;
