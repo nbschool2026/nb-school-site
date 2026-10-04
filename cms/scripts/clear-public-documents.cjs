@@ -25,12 +25,25 @@ async function main() {
       await app.documents(uid).delete({ documentId });
     }
 
+    const documentUploads = await app.db.query('plugin::upload.file').findMany({
+      where: {
+        mime: {
+          $in: [
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          ],
+        },
+      },
+    });
+    for (const file of documentUploads) files.set(file.id, file);
+
     const uploadService = app.plugin('upload').service('upload');
     for (const file of files.values()) {
       await uploadService.remove(file);
     }
 
-    console.log(`Removed ${documentIds.length} public document(s) and ${files.size} attached file(s).`);
+    console.log(`Removed ${documentIds.length} public document(s) and ${files.size} document file(s).`);
   } finally {
     await app.destroy();
   }
