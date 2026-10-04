@@ -42,11 +42,20 @@ export default function DistanceLearningPage() {
   const [subject, setSubject] = useState(() => searchParams.get('subject') || '');
   const [search, setSearch] = useState(() => searchParams.get('q') || '');
   const hasAutoScrolled = useRef(false);
-  const [pinnedIds, setPinnedIds] = useState(() => {
-    const fromUrl = (searchParams.get('pinned') || '').split(',').filter(Boolean);
-    let stored = [];
-    try { stored = JSON.parse(localStorage.getItem('distance-learning-pinned') || '[]'); } catch { stored = []; }
-    return new Set([...stored, ...fromUrl]);
+  const [pinnedId, setPinnedId] = useState(() => {
+    const fromUrl = (searchParams.get('pinned') || '').split(',').filter(Boolean)[0] || '';
+    let stored = '';
+    try {
+      const value = JSON.parse(localStorage.getItem('distance-learning-pinned') || '""');
+      stored = Array.isArray(value) ? (value[0] || '') : String(value || '');
+    } catch { stored = ''; }
+    return fromUrl || stored;
+  });
+  const [completedIds, setCompletedIds] = useState(() => {
+    try {
+      const value = JSON.parse(localStorage.getItem('distance-learning-completed') || '[]');
+      return new Set(Array.isArray(value) ? value : []);
+    } catch { return new Set(); }
   });
 
   const updateQuery = (updates) => {
@@ -73,16 +82,21 @@ export default function DistanceLearningPage() {
   }, [locale]);
 
   const togglePinned = (id) => {
-    setPinnedIds((current) => {
+    const next = pinnedId === id ? '' : id;
+    setPinnedId(next);
+    localStorage.setItem('distance-learning-pinned', JSON.stringify(next));
+    setSearchParams((currentParams) => {
+      const params = new URLSearchParams(currentParams);
+      if (next) params.set('pinned', next); else params.delete('pinned');
+      return params;
+    }, { replace: true });
+  };
+
+  const toggleCompleted = (id) => {
+    setCompletedIds((current) => {
       const next = new Set(current);
       if (next.has(id)) next.delete(id); else next.add(id);
-      const values = [...next];
-      localStorage.setItem('distance-learning-pinned', JSON.stringify(values));
-      setSearchParams((currentParams) => {
-        const params = new URLSearchParams(currentParams);
-        if (values.length) params.set('pinned', values.join(',')); else params.delete('pinned');
-        return params;
-      }, { replace: true });
+      localStorage.setItem('distance-learning-completed', JSON.stringify([...next]));
       return next;
     });
   };
@@ -98,8 +112,8 @@ export default function DistanceLearningPage() {
   });
 
   useEffect(() => {
-    if (status !== 'ready' || hasAutoScrolled.current || !pinnedIds.size) return;
-    const firstPinned = visible.find((item) => pinnedIds.has(item.documentId || String(item.id)));
+    if (status !== 'ready' || hasAutoScrolled.current || !pinnedId) return;
+    const firstPinned = visible.find((item) => pinnedId === (item.documentId || String(item.id)));
     if (!firstPinned) return;
     const elementId = `distance-material-${firstPinned.documentId || firstPinned.id}`;
     const timer = window.setTimeout(() => {
@@ -112,7 +126,7 @@ export default function DistanceLearningPage() {
       hasAutoScrolled.current = true;
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [status, visible, pinnedIds]);
+  }, [status, visible, pinnedId]);
 
   return <main>
     <section className="info-hero distance-learning-hero" style={{ '--distance-learning-hero-image': heroImage ? `url("${heroImage}")` : 'none', '--distance-learning-text-color': heroTextColor }}>
@@ -133,9 +147,12 @@ export default function DistanceLearningPage() {
         {status === 'loading' && <p>{t('Завантаження матеріалів…')}</p>}
         {status === 'error' && <p role="alert">{t('Не вдалося завантажити матеріали з CMS.')}</p>}
         {status === 'ready' && !visible.length && <p>{t('Матеріалів за цими умовами не знайдено.')}</p>}
-        <div className="distance-material-list">{visible.map((item) => <article id={`distance-material-${item.documentId || item.id}`} className={`distance-material-card${pinnedIds.has(item.documentId || String(item.id)) ? ' is-pinned' : ''}`} key={item.documentId || item.id}>
+        <div className="distance-material-list">{visible.map((item) => <article id={`distance-material-${item.documentId || item.id}`} className={`distance-material-card${pinnedId === (item.documentId || String(item.id)) ? ' is-pinned' : ''}${completedIds.has(item.documentId || String(item.id)) ? ' is-completed' : ''}`} key={item.documentId || item.id}>
           <div className="distance-material-meta"><span>{item.grade}</span><span>{item.subject}</span><time dateTime={item.date}>{new Date(item.date).toLocaleDateString(locale === 'en' ? 'en-GB' : 'uk-UA')}</time></div>
-          <button type="button" className="distance-material-pin" onClick={() => togglePinned(item.documentId || String(item.id))} aria-pressed={pinnedIds.has(item.documentId || String(item.id))}><MaterialIcon name={pinnedIds.has(item.documentId || String(item.id)) ? 'push_pin' : 'push_pin'} />{pinnedIds.has(item.documentId || String(item.id)) ? 'Закріплено' : 'Закріпити'}</button>
+          <div className="distance-material-actions">
+            <button type="button" className="distance-material-pin" onClick={() => togglePinned(item.documentId || String(item.id))} aria-pressed={pinnedId === (item.documentId || String(item.id))}><MaterialIcon name="push_pin" />{pinnedId === (item.documentId || String(item.id)) ? 'Закріплено' : 'Закріпити'}</button>
+            <button type="button" className="distance-material-complete" onClick={() => toggleCompleted(item.documentId || String(item.id))} aria-pressed={completedIds.has(item.documentId || String(item.id))}><MaterialIcon name="check_circle" />{completedIds.has(item.documentId || String(item.id)) ? 'Виконано' : 'Позначити виконаним'}</button>
+          </div>
           <h3>{item.topic}</h3>
           {item.content && <div className="distance-material-content">{renderBlocks(item.content, item.documentId || item.id)}</div>}
           {!!(item.videos?.length || item.videoUrl) && <div className="distance-material-videos">{(item.videos?.length ? item.videos : [{ url: item.videoUrl }]).map((video, index) => { const embed = youtubeEmbed(video.url); return <div className="distance-material-video" key={`${item.documentId || item.id}-video-${index}`}>{video.title && <h4>{video.title}</h4>}{embed ? <iframe src={embed} title={video.title || `${item.topic} — відео ${index + 1}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /> : <a className="text-link" href={video.url} target="_blank" rel="noreferrer"><MaterialIcon name="play_circle" />{t('Відкрити відео')}</a>}</div>; })}</div>}

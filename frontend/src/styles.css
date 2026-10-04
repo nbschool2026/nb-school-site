@@ -1071,9 +1071,19 @@ img {
 }
 
 .distance-material-card.is-pinned { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(221, 109, 6, 0.12); }
-.distance-material-pin { float: right; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 11px; color: var(--primary-dark); background: #fff8ef; cursor: pointer; font: inherit; font-weight: 700; }
+.distance-material-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-bottom: 8px; }
+.distance-material-pin,
+.distance-material-complete { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 11px; color: var(--primary-dark); background: #fff8ef; cursor: pointer; font: inherit; font-weight: 700; }
 .distance-material-pin:hover, .distance-material-card.is-pinned .distance-material-pin { color: #fff; background: var(--primary); }
-
+.distance-material-complete:hover, .distance-material-card.is-completed .distance-material-complete { color: #fff; background: #64748b; border-color: #64748b; }
+.distance-material-card.is-completed { color: #8a929e; }
+.distance-material-card.is-completed h3,
+.distance-material-card.is-completed h4,
+.distance-material-card.is-completed .distance-material-meta,
+.distance-material-card.is-completed p,
+.distance-material-card.is-completed a { color: #8a929e; }
+.distance-material-card.is-completed .distance-material-content img,
+.distance-material-card.is-completed .distance-material-video iframe { filter: grayscale(1); }
 .distance-material-card h3 {
   margin: 12px 0 8px;
 }
