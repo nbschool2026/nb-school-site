@@ -146,6 +146,10 @@ export default function DistanceLearningPage() {
       return next;
     });
   };
+  const clearCompleted = () => {
+    localStorage.removeItem('distance-learning-completed');
+    setCompletedIds(new Set());
+  };
 
   const grades = useMemo(() => [...new Set(materials.map((item) => item.grade).filter(Boolean))].sort((a, b) => (Number(a.match(/\d+/)?.[0]) || 99) - (Number(b.match(/\d+/)?.[0]) || 99)), [materials]);
   const subjects = useMemo(() => [...new Set(materials
@@ -235,11 +239,14 @@ export default function DistanceLearningPage() {
         </div>
         <div className="distance-learning-results-bar">
           <strong>{t('Знайдено матеріалів')}: {sortedVisible.length}</strong>
+          <div className="distance-learning-toolbar">
           {(query || grade || subject) && <div className="distance-learning-filter-chips" aria-label={t('Активні фільтри')}>
             {query && <button type="button" onClick={() => { setSearch(''); updateQuery({ q: '' }); }}>Пошук: {search} ×</button>}
             {grade && <button type="button" onClick={() => { setGrade(''); setSubject(''); updateQuery({ grade: '', subject: '' }); }}>{grade} ×</button>}
             {subject && <button type="button" onClick={() => { setSubject(''); updateQuery({ subject: '' }); }}>{subject} ×</button>}
           </div>}
+          {completedIds.size > 0 && <button type="button" className="distance-learning-reset-completed" onClick={clearCompleted}><MaterialIcon name="restart_alt" />{t('Скинути виконані')} ({completedIds.size})</button>}
+          </div>
         </div>
         {pinnedMaterial && <aside className="distance-learning-pinned-banner">
           <div><span>{t('Закріплений урок')}</span><strong>{pinnedMaterial.topic}</strong><small>{pinnedMaterial.grade} · {pinnedMaterial.subject}</small></div>

@@ -1104,6 +1104,9 @@ img {
   font-weight: 700;
 }
 .distance-learning-filter-chips button:hover { color: #fff; background: var(--primary); }
+.distance-learning-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.distance-learning-reset-completed { display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(100, 116, 139, .35); border-radius: 999px; padding: 6px 10px; color: #64748b; background: #fff; cursor: pointer; font: inherit; font-size: .85rem; font-weight: 700; }
+.distance-learning-reset-completed:hover { color: #fff; background: #64748b; }
 .distance-learning-pinned-banner {
   display: flex;
   align-items: center;
