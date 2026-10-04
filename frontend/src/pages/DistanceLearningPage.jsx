@@ -26,6 +26,19 @@ function renderBlocks(value, keyPrefix) {
   });
 }
 
+const gradeColors = ['#16a34a', '#2563eb', '#d97706', '#7c3aed', '#0891b2', '#dc2626', '#9333ea', '#0f766e', '#c2410c', '#4f46e5', '#be123c'];
+const subjectColors = ['#2563eb', '#d97706', '#16a34a', '#7c3aed', '#0891b2', '#dc2626', '#9333ea', '#0f766e'];
+
+function colorFor(value, palette) {
+  const hash = String(value || '').split('').reduce((total, character) => total + character.charCodeAt(0), 0);
+  return palette[hash % palette.length];
+}
+
+function gradeColor(value) {
+  const match = String(value || '').match(/\d+/);
+  const index = match ? Number(match[0]) - 1 : 0;
+  return gradeColors[Math.max(0, Math.min(gradeColors.length - 1, index))];
+}
 function youtubeEmbed(url) {
   const match = String(url || '').match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{6,})/i);
   return match ? `https://www.youtube.com/embed/${match[1]}` : '';
@@ -109,7 +122,7 @@ export default function DistanceLearningPage() {
     });
   };
 
-  const grades = useMemo(() => [...new Set(materials.map((item) => item.grade).filter(Boolean))].sort(), [materials]);
+  const grades = useMemo(() => [...new Set(materials.map((item) => item.grade).filter(Boolean))].sort((a, b) => (Number(a.match(/\d+/)?.[0]) || 99) - (Number(b.match(/\d+/)?.[0]) || 99)), [materials]);
   const subjects = useMemo(() => [...new Set(materials
     .filter((item) => !grade || item.grade === grade)
     .map((item) => item.subject).filter(Boolean))].sort(), [materials, grade]);
@@ -157,7 +170,7 @@ export default function DistanceLearningPage() {
         {status === 'ready' && !visible.length && <p>{t('Матеріалів за цими умовами не знайдено.')}</p>}
         <div className="distance-material-list">{visible.map((item) => <article id={`distance-material-${item.documentId || item.id}`} className={`distance-material-card${pinnedId === (item.documentId || String(item.id)) ? ' is-pinned' : ''}${completedIds.has(item.documentId || String(item.id)) ? ' is-completed' : ''}`} key={item.documentId || item.id}>
           {completedIds.has(item.documentId || String(item.id)) && <span className="distance-material-completed-indicator" title="Виконано" aria-label="Виконано"><MaterialIcon name="check_circle" /></span>}
-          <div className="distance-material-meta"><span>{item.grade}</span><span>{item.subject}</span><time dateTime={item.date}>{new Date(item.date).toLocaleDateString(locale === 'en' ? 'en-GB' : 'uk-UA')}</time></div>
+          <div className="distance-material-meta"><span className="distance-material-grade" style={{ "--badge-color": gradeColor(item.grade) }}>{item.grade}</span><span className="distance-material-subject" style={{ "--badge-color": colorFor(item.subject, subjectColors) }}>{item.subject}</span><time dateTime={item.date}>{new Date(item.date).toLocaleDateString(locale === 'en' ? 'en-GB' : 'uk-UA')}</time></div>
           <div className="distance-material-actions">
             <button type="button" className="distance-material-pin" onClick={() => togglePinned(item.documentId || String(item.id))} aria-pressed={pinnedId === (item.documentId || String(item.id))}><MaterialIcon name="push_pin" />{pinnedId === (item.documentId || String(item.id)) ? 'Закріплено' : 'Закріпити'}</button>
             <button type="button" className="distance-material-complete" onClick={() => toggleCompleted(item.documentId || String(item.id))} aria-pressed={completedIds.has(item.documentId || String(item.id))}><MaterialIcon name="check_circle" />{completedIds.has(item.documentId || String(item.id)) ? 'Виконано' : 'Позначити виконаним'}</button>

@@ -1132,6 +1132,22 @@ img {
 .distance-material-video iframe { display: block; width: 100%; max-width: 100%; min-height: 280px; border: 0; border-radius: 10px; }
 .distance-material-video h4 { margin: 0 0 8px; }
 
+.distance-material-meta span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 3px 10px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+}
+.distance-material-grade {
+  color: #fff;
+  background: var(--badge-color);
+}
+.distance-material-subject {
+  color: var(--badge-color);
+  border-color: var(--badge-color) !important;
+}
 .distance-material-meta {
   display: flex;
   flex-wrap: wrap;
@@ -1367,4 +1383,7 @@ img {
   .distance-material-complete .material-symbols-outlined {
     font-size: 24px;
   }
+}
+@media (max-width: 640px) {
+  .distance-material-completed-indicator { display: none; }
 }
