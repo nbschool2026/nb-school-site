@@ -68,7 +68,7 @@ export default function DistanceLearningPage() {
   });
 
   return <main>
-    <section className="info-hero">
+    <section className="info-hero distance-learning-hero">
       <div className="container">
         <div className="pill"><MaterialIcon name="laptop_chromebook" /> {t('Навчання')}</div>
         <h1>{t('Дистанційне навчання')}</h1>
