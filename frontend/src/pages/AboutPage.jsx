@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
-import { fetchCollectionLocalized, mediaUrl } from '../lib/api.js';
+import { fetchCollectionLocalized, mediaFormatUrl, mediaUrl } from '../lib/api.js';
 import { useLocale } from '../lib/locale.jsx';
 
 export default function AboutPage() {
@@ -19,7 +19,7 @@ export default function AboutPage() {
     const gallery = Array.isArray(profile?.aboutHeroImages)
       ? profile.aboutHeroImages
       : profile?.aboutHeroImages?.data || [];
-    const urls = gallery.map((image) => mediaUrl(image)).filter(Boolean);
+    const urls = gallery.map((image) => mediaFormatUrl(image, 'large', mediaUrl(image))).filter(Boolean);
     return urls.length ? urls.slice(0, 3) : [mediaUrl(profile?.aboutImage)].filter(Boolean);
   }, [profile]);
 
