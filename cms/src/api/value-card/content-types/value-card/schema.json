@@ -30,6 +30,7 @@
     "icon": {
       "type": "string",
       "default": "workspace_premium",
+      "description": "Назва іконки Material Symbols латиницею. Символ _ є частиною назви, наприклад workspace_premium. Каталог: https://fonts.google.com/icons",
       "pluginOptions": {
         "i18n": {
           "localized": false

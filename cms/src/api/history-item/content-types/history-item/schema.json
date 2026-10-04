@@ -39,6 +39,7 @@
     "icon": {
       "type": "string",
       "default": "history_edu",
+      "description": "Назва іконки Material Symbols латиницею. Символ _ є частиною назви, наприклад history_edu. Каталог: https://fonts.google.com/icons",
       "pluginOptions": {
         "i18n": {
           "localized": false

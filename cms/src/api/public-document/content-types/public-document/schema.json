@@ -56,6 +56,7 @@
     "icon": {
       "type": "string",
       "default": "description",
+      "description": "Назва іконки Material Symbols латиницею. Символ _ є частиною назви, наприклад description. Каталог: https://fonts.google.com/icons",
       "pluginOptions": {
         "i18n": {
           "localized": false

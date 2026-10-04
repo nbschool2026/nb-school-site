@@ -73,6 +73,18 @@ const labels: Record<string, Record<string, string>> = {
   },
 };
 
+const descriptions: Record<string, Record<string, string>> = {
+  'api::history-item.history-item': {
+    icon: 'Назва іконки Material Symbols латиницею. Символ _ є частиною назви, наприклад history_edu. Каталог: https://fonts.google.com/icons',
+  },
+  'api::value-card.value-card': {
+    icon: 'Назва іконки Material Symbols латиницею. Символ _ є частиною назви, наприклад workspace_premium. Каталог: https://fonts.google.com/icons',
+  },
+  'api::public-document.public-document': {
+    icon: 'Назва іконки Material Symbols латиницею. Символ _ є частиною назви, наприклад description. Каталог: https://fonts.google.com/icons',
+  },
+};
+
 export async function ensureUkrainianContentManagerLabels(strapi: any) {
   const service = strapi.plugin('content-manager')?.service('content-types');
   if (!service) return;
@@ -95,5 +107,19 @@ export async function ensureUkrainianContentManagerLabels(strapi: any) {
       }
     }
     if (changed) await service.updateConfiguration(contentType, configuration);
+
+    const fieldDescriptions = descriptions[uid];
+    if (!fieldDescriptions) continue;
+
+    let descriptionsChanged = false;
+    for (const [field, description] of Object.entries(fieldDescriptions)) {
+      const metadata = configuration.metadatas?.[field];
+      if (!metadata?.edit) continue;
+      if (metadata.edit.description !== description) {
+        metadata.edit.description = description;
+        descriptionsChanged = true;
+      }
+    }
+    if (descriptionsChanged) await service.updateConfiguration(contentType, configuration);
   }
 }
