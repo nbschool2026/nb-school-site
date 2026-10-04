@@ -1,5 +1,5 @@
 {
-  "collectionName": "components_video_links",
+  "collectionName": "components_shared_video_links",
   "info": { "displayName": "Посилання на відео", "description": "YouTube або інше відео для матеріалу" },
   "options": {},
   "attributes": {
