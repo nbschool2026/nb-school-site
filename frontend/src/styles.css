@@ -1169,7 +1169,7 @@ img {
 .distance-material-video-preview span { position: absolute; inset: 0; display: grid; place-items: center; gap: 4px; color: #fff; background: rgba(15, 23, 42, .28); font-weight: 800; }
 .distance-material-video-preview span .material-symbols-outlined { display: block; font-size: 3rem; }
 .distance-material-video-preview:hover img { opacity: 1; }
-.distance-material-video iframe { filter: grayscale(1); }
+.distance-material-card.is-completed .distance-material-video iframe { filter: grayscale(1); }
 .distance-material-card h3 {
   margin: 12px 0 8px;
 }
