@@ -39,6 +39,10 @@ function gradeColor(value) {
   const index = match ? Number(match[0]) - 1 : 0;
   return gradeColors[Math.max(0, Math.min(gradeColors.length - 1, index))];
 }
+function youtubeId(url) {
+  const match = String(url || '').match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{6,})/i);
+  return match ? match[1] : '';
+}
 function youtubeEmbed(url) {
   const match = String(url || '').match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{6,})/i);
   return match ? `https://www.youtube.com/embed/${match[1]}` : '';
@@ -67,6 +71,7 @@ export default function DistanceLearningPage() {
     return fromUrl || stored;
   });
   const [expandedIds, setExpandedIds] = useState(() => new Set());
+  const [activeVideoIds, setActiveVideoIds] = useState(() => new Set());
   const [expandableIds, setExpandableIds] = useState(() => new Set());
   const [completedIds, setCompletedIds] = useState(() => {
     try {
@@ -236,7 +241,7 @@ export default function DistanceLearningPage() {
           <h3>{item.topic}</h3>
           <div className={`distance-material-body${expandedIds.has(item.documentId || String(item.id)) ? ' is-expanded' : ''}`}>
             {item.content && <div className="distance-material-content">{renderBlocks(item.content, item.documentId || item.id)}</div>}
-            {!!(item.videos?.length || item.videoUrl) && <div className="distance-material-videos">{(item.videos?.length ? item.videos : [{ url: item.videoUrl }]).map((video, index) => { const embed = youtubeEmbed(video.url); return <div className="distance-material-video" key={`${item.documentId || item.id}-video-${index}`}>{video.title && <h4>{video.title}</h4>}{embed ? <iframe src={embed} title={video.title || `${item.topic} — відео ${index + 1}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /> : <a className="text-link" href={video.url} target="_blank" rel="noreferrer"><MaterialIcon name="play_circle" />{t('Відкрити відео')}</a>}</div>; })}</div>}
+            {!!(item.videos?.length || item.videoUrl) && <div className="distance-material-videos">{(item.videos?.length ? item.videos : [{ url: item.videoUrl }]).map((video, index) => { const embed = youtubeEmbed(video.url); return <div className="distance-material-video" key={`${item.documentId || item.id}-video-${index}`}>{video.title && <h4>{video.title}</h4>}{embed ? (activeVideoIds.has(`${item.documentId || item.id}-${index}`) ? <iframe src={embed} title={video.title || `${item.topic} — відео ${index + 1}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /> : <button type="button" className="distance-material-video-preview" onClick={() => setActiveVideoIds((current) => new Set(current).add(`${item.documentId || item.id}-${index}`))}><img src={`https://i.ytimg.com/vi/${youtubeId(video.url)}/hqdefault.jpg`} alt="" loading="lazy" /><span><MaterialIcon name="play_arrow" />{t('Переглянути відео')}</span></button>) : <a className="text-link" href={video.url} target="_blank" rel="noreferrer"><MaterialIcon name="play_circle" />{t('Відкрити відео')}</a>}</div>; })}</div>}
           </div>
           {expandableIds.has(item.documentId || String(item.id)) && <button type="button" className="distance-material-expand" onClick={() => toggleExpanded(item.documentId || String(item.id))} aria-expanded={expandedIds.has(item.documentId || String(item.id))}><MaterialIcon name={expandedIds.has(item.documentId || String(item.id)) ? 'expand_less' : 'expand_more'} />{expandedIds.has(item.documentId || String(item.id)) ? 'Приховати' : 'Показати більше'}</button>}
         </article>)}</div>
