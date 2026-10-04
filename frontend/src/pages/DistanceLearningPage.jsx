@@ -56,6 +56,7 @@ export default function DistanceLearningPage() {
   const [search, setSearch] = useState(() => searchParams.get('q') || '');
   const [sort, setSort] = useState(() => searchParams.get('sort') || 'newest');
   const hasAutoScrolled = useRef(false);
+  const [pendingScrollId, setPendingScrollId] = useState('');
   const [pinnedId, setPinnedId] = useState(() => {
     const fromUrl = (searchParams.get('pinned') || '').split(',').filter(Boolean)[0] || '';
     let stored = '';
@@ -183,6 +184,16 @@ export default function DistanceLearningPage() {
     return () => window.clearTimeout(timer);
   }, [status, visible, pinnedId]);
 
+  useEffect(() => {
+    if (!pendingScrollId || status !== 'ready') return;
+    const isVisible = visible.some((item) => pendingScrollId === (item.documentId || String(item.id)));
+    if (!isVisible) return;
+    const timer = window.setTimeout(() => {
+      scrollToMaterial(pendingScrollId);
+      setPendingScrollId('');
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [pendingScrollId, status, visible]);
   return <main>
     <section className="info-hero distance-learning-hero" style={{ '--distance-learning-hero-image': heroImage ? `url("${heroImage}")` : 'none', '--distance-learning-text-color': heroTextColor }}>
       <div className="container">
@@ -210,7 +221,7 @@ export default function DistanceLearningPage() {
         </div>
         {pinnedMaterial && <aside className="distance-learning-pinned-banner">
           <div><span>{t('Закріплений урок')}</span><strong>{pinnedMaterial.topic}</strong><small>{pinnedMaterial.grade} · {pinnedMaterial.subject}</small></div>
-          <button type="button" onClick={() => scrollToMaterial(pinnedMaterial.documentId || String(pinnedMaterial.id))}><MaterialIcon name="arrow_downward" />{t('Перейти до уроку')}</button>
+          <button type="button" onClick={() => { const id = pinnedMaterial.documentId || String(pinnedMaterial.id); setPendingScrollId(id); setSearch(''); setGrade(''); setSubject(''); updateQuery({ q: '', grade: '', subject: '' }); }}><MaterialIcon name="arrow_downward" />{t('Перейти до уроку')}</button>
         </aside>}
         {status === 'loading' && <p>{t('Завантаження матеріалів…')}</p>}
         {status === 'error' && <p role="alert">{t('Не вдалося завантажити матеріали з CMS.')}</p>}
