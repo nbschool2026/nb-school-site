@@ -964,10 +964,12 @@ img {
 .calendar-grid .calendar-event-community { background: #0891b2; }
 
 .calendar-grid .calendar-today {
-  width: 36px;
-  height: 36px;
-  color: #fff;
-  background: var(--primary);
+  width: 30px;
+  height: 30px;
+  border-radius: 0;
+  color: var(--ink);
+  background: transparent;
+  box-shadow: inset 0 -3px 0 var(--primary);
   font-weight: 900;
 }
 

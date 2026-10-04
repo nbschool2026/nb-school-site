@@ -9,7 +9,6 @@ const categories = [
   ['academic', 'auto_stories', 'Академічні'],
   ['sport', 'sports_basketball', 'Спорт'],
   ['art', 'palette', 'Мистецтво'],
-  ['admission', 'person_add', 'Вступ'],
 ];
 const weekdayLabels = { uk: ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'НД'], en: ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'] };
 
