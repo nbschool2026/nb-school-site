@@ -10,45 +10,6 @@ export const schoolProfile = {
   mapUrl: 'https://maps.app.goo.gl/eh5ZCAyBr3FVmDbz8',
 };
 
-export const publicDocuments = [
-  {
-    id: 1,
-    title: 'Статут закладу освіти',
-    slug: 'school-charter',
-    description: 'Установчий документ, що визначає правові засади діяльності навчального закладу.',
-    type: 'pdf',
-    icon: 'description',
-    order: 10,
-  },
-  {
-    id: 2,
-    title: 'Структура та органи управління',
-    slug: 'management-structure',
-    description: 'Інформація про адміністрацію, педагогічну раду та органи самоврядування.',
-    type: 'page',
-    icon: 'account_balance',
-    order: 20,
-  },
-  {
-    id: 3,
-    title: 'Кадровий склад',
-    slug: 'staff',
-    description: 'Відомості про кваліфікацію, освіту та педагогічний стаж працівників.',
-    type: 'page',
-    icon: 'groups',
-    order: 30,
-  },
-  {
-    id: 4,
-    title: 'Фінансова звітність',
-    slug: 'financial-reports',
-    description: 'Кошторис, фінансові звіти та інформація про використання коштів.',
-    type: 'pdf',
-    icon: 'payments',
-    order: 40,
-  },
-];
-
 export const historyItems = [
   { id: 1, year: '1985 рік', title: 'Заснування школи', text: 'Початок формування педагогічних традицій.', icon: 'history_edu', order: 10 },
   { id: 2, year: '2010 рік', title: 'Реконструкція', text: 'Оновлення матеріально-технічної бази та відкриття нових кабінетів.', icon: 'architecture', order: 20 },

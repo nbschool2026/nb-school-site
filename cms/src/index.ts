@@ -10,7 +10,6 @@ export default {
 
   async bootstrap({ strapi }) {
     await ensureContentLocales(strapi);
-    await seedCollection(strapi, 'api::public-document.public-document', publicDocuments);
     await seedCollection(strapi, 'api::staff-member.staff-member', staffMembers);
     await seedCollection(strapi, 'api::schedule-lesson.schedule-lesson', scheduleLessons);
     await seedCollection(strapi, 'api::history-item.history-item', historyItems);
@@ -92,41 +91,6 @@ const schoolProfile = {
   workingHours: 'Пн - Пт: 8:00 - 17:00',
   mapUrl: 'https://maps.app.goo.gl/eh5ZCAyBr3FVmDbz8',
 };
-
-const publicDocuments = [
-  {
-    title: 'Статут закладу освіти',
-    slug: 'school-charter',
-    description: 'Установчий документ, що визначає правові засади діяльності навчального закладу.',
-    type: 'pdf',
-    icon: 'description',
-    order: 10,
-  },
-  {
-    title: 'Структура та органи управління',
-    slug: 'management-structure',
-    description: 'Інформація про адміністрацію, педагогічну раду та органи самоврядування.',
-    type: 'page',
-    icon: 'account_balance',
-    order: 20,
-  },
-  {
-    title: 'Кадровий склад',
-    slug: 'staff',
-    description: 'Відомості про кваліфікацію, освіту та педагогічний стаж працівників.',
-    type: 'page',
-    icon: 'groups',
-    order: 30,
-  },
-  {
-    title: 'Фінансова звітність',
-    slug: 'financial-reports',
-    description: 'Кошторис, фінансові звіти та інформація про використання коштів.',
-    type: 'pdf',
-    icon: 'payments',
-    order: 40,
-  },
-];
 
 const staffMembers = [
   {
