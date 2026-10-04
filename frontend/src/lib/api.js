@@ -72,10 +72,19 @@ async function requestJson(path, query) {
 }
 
 export function mediaUrl(media, fallback = '') {
-  const file = media?.data?.attributes || media;
+  const file = mediaFile(media);
   if (!file?.url) return fallback;
 
   return file.url.startsWith('http') ? file.url : `${MEDIA_BASE}${file.url}`;
+}
+
+export function mediaFormatUrl(media, format, fallback = '') {
+  const file = mediaFile(media);
+  return mediaUrl(file?.formats?.[format], fallback);
+}
+
+function mediaFile(media) {
+  return media?.data?.attributes || media?.data || media || null;
 }
 
 function normalizeEntity(entity) {

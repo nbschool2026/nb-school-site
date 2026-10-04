@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
-import { fetchCollectionLocalized, mediaUrl } from '../lib/api.js';
+import { fetchCollectionLocalized, mediaFormatUrl, mediaUrl } from '../lib/api.js';
 import { useLocale } from '../lib/locale.jsx';
 
 export default function AboutPage() {
@@ -32,9 +32,12 @@ export default function AboutPage() {
     <main>
       {status === 'loading' && <p className="container">{t('Завантаження сторінки «Про нас»…')}</p>}
       {status === 'error' && <p className="container" role="alert">{t('Не вдалося завантажити сторінку «Про нас» із CMS.')}</p>}
-      <section className="subhero" style={{ backgroundImage: mediaUrl(profile?.aboutImage)
-        ? `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.62)), url("${mediaUrl(profile.aboutImage)}")`
-        : 'linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.75))' }}>
+      <section className={`subhero${mediaUrl(profile?.aboutImage) ? ' subhero-with-image' : ''}`}>
+        {mediaUrl(profile?.aboutImage) && <picture className="subhero-media" aria-hidden="true">
+          {mediaFormatUrl(profile?.aboutImage, 'small') && <source media="(max-width: 640px)" srcSet={mediaFormatUrl(profile.aboutImage, 'small')} />}
+          {mediaFormatUrl(profile?.aboutImage, 'medium') && <source media="(max-width: 1100px)" srcSet={mediaFormatUrl(profile.aboutImage, 'medium')} />}
+          <img src={mediaUrl(profile.aboutImage)} alt="" decoding="async" />
+        </picture>}
         <div>
           <h1>{t('Про Наш Ліцей')}</h1>
           {locale === 'en' && profile?._fallbackLocale && <small>{t('Показано українською')}</small>}

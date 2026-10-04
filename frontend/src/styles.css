@@ -164,16 +164,47 @@ img {
 }
 
 .hero {
+  position: relative;
   min-height: 620px;
   display: grid;
   place-items: center;
   padding: 80px 16px;
-  background-size: cover;
-  background-position: center;
+  background: linear-gradient(rgba(16, 22, 34, 0.86), rgba(16, 22, 34, 0.7));
   text-align: center;
+  overflow: hidden;
+}
+
+.hero-with-image {
+  background: #101622;
+}
+
+.hero-media,
+.subhero-media {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.hero-media::after,
+.subhero-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(16, 22, 34, 0.62), rgba(16, 22, 34, 0.35));
+}
+
+.hero-media img,
+.subhero-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .hero-content {
+  position: relative;
+  z-index: 1;
   width: min(850px, 100%);
   color: #fff;
 }
@@ -588,6 +619,7 @@ img {
 }
 
 .subhero {
+  position: relative;
   min-height: 500px;
   margin: 40px auto;
   width: min(1180px, calc(100% - 32px));
@@ -596,13 +628,22 @@ img {
   border-radius: 14px;
   padding: 48px 24px;
   color: #fff;
-  background-size: cover;
-  background-position: center;
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.75));
   text-align: center;
   overflow: hidden;
 }
 
+.subhero-with-image {
+  background: #101010;
+}
+
+.subhero-media::after {
+  background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.62));
+}
+
 .subhero > div {
+  position: relative;
+  z-index: 1;
   width: min(760px, 100%);
 }
 

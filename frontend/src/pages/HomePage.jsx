@@ -4,7 +4,7 @@ import { Link, useOutletContext } from 'react-router-dom';
 import EventCard from '../components/EventCard.jsx';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
-import { fetchCollectionLocalized, mediaUrl } from '../lib/api.js';
+import { fetchCollectionLocalized, mediaFormatUrl, mediaUrl } from '../lib/api.js';
 import { fetchAllEvents } from '../lib/events.js';
 import { useLocale } from '../lib/locale.jsx';
 
@@ -28,12 +28,17 @@ export default function HomePage() {
   }, [locale]);
 
   const heroImage = mediaUrl(profile?.heroImage);
+  const heroSmall = mediaFormatUrl(profile?.heroImage, 'small');
+  const heroMedium = mediaFormatUrl(profile?.heroImage, 'medium');
 
   return (
     <main>
-      <section className="hero" style={{ backgroundImage: heroImage
-        ? `linear-gradient(rgba(16, 22, 34, 0.62), rgba(16, 22, 34, 0.35)), url("${heroImage}")`
-        : 'linear-gradient(rgba(16, 22, 34, 0.86), rgba(16, 22, 34, 0.7))' }}>
+      <section className={`hero${heroImage ? ' hero-with-image' : ''}`}>
+        {heroImage && <picture className="hero-media" aria-hidden="true">
+          {heroSmall && <source media="(max-width: 640px)" srcSet={heroSmall} />}
+          {heroMedium && <source media="(max-width: 1100px)" srcSet={heroMedium} />}
+          <img src={heroImage} alt="" fetchPriority="high" decoding="async" />
+        </picture>}
         <div className="hero-content">
           <h1>{profile?.heroTitle || profile?.schoolName || t('Новобілоуський ліцей')}</h1>
           {locale === 'en' && profile?._fallbackLocale && <small>{t('Показано українською')}</small>}
