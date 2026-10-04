@@ -41,12 +41,13 @@ export default function EventsPage() {
   const monthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
   const dayCount = new Date(year, month + 1, 0).getDate();
   const leadingDays = (new Date(year, month, 1).getDay() + 6) % 7;
-  // The API returns events in list order; the first event decides a shared day's color.
   const eventDays = new Map();
   for (const event of events) {
     if (event.date?.startsWith(monthKey)) {
       const day = Number(event.date.slice(8, 10));
-      if (!eventDays.has(day)) eventDays.set(day, event.category || 'other');
+      const categoriesForDay = eventDays.get(day) || [];
+      categoriesForDay.push(event.category || 'other');
+      eventDays.set(day, categoriesForDay);
     }
   }
   const today = new Date();
@@ -81,10 +82,12 @@ export default function EventsPage() {
               {Array.from({ length: leadingDays }, (_, index) => <span key={`empty-${index}`} />)}
               {Array.from({ length: dayCount }, (_, index) => {
                 const day = index + 1;
-                const eventCategory = eventDays.get(day);
+                const eventCategories = eventDays.get(day) || [];
                 const isToday = monthKey === todayKey && day === today.getDate();
-                const className = isToday ? 'calendar-today' : eventCategory ? `calendar-event calendar-event-${eventCategory}` : '';
-                return <span className={className} key={day}>{day}</span>;
+                return <span className={isToday ? 'calendar-today' : ''} key={day}>
+                  <span className="calendar-day-number">{day}</span>
+                  {eventCategories.length > 0 && <span className="calendar-event-dots">{eventCategories.map((eventCategory, eventIndex) => <span className={`calendar-event-dot calendar-event-${eventCategory}`} key={`${day}-${eventIndex}`} />)}</span>}
+                </span>;
               })}
             </div>
             <button type="button" className="month-action" onClick={() => setSelectedMonth(selectedMonth === monthKey ? null : monthKey)}>{t(selectedMonth === monthKey ? 'Скинути місяць' : 'Показати цей місяць')}</button>

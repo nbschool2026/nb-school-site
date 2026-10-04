@@ -934,7 +934,8 @@ img {
   font-size: 0.8rem;
 }
 
-.calendar-grid span {
+.calendar-grid > span {
+  position: relative;
   display: grid;
   place-items: center;
   width: 30px;
@@ -943,18 +944,31 @@ img {
   border-radius: 50%;
 }
 
+.calendar-day-number { position: relative; z-index: 1; }
+.calendar-event-dots {
+  position: absolute;
+  right: 1px;
+  bottom: -2px;
+  display: flex;
+  gap: 2px;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+.calendar-event-dot {
+  display: block !important;
+  width: 7px !important;
+  height: 7px !important;
+  margin: 0 !important;
+  border-radius: 50% !important;
+  background: #64748b;
+}
+
 .calendar-grid .weekday {
   color: var(--muted);
   font-size: 0.66rem;
   font-weight: 900;
-}
-
-.calendar-grid .calendar-event {
-  width: 25px;
-  height: 25px;
-  color: #fff;
-  font-weight: 800;
-  background: #64748b;
 }
 
 .calendar-grid .calendar-event-academic { background: #d97706; }
