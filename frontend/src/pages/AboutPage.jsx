@@ -52,7 +52,7 @@ export default function AboutPage() {
       {status === 'error' && <p className="container" role="alert">{t('Не вдалося завантажити сторінку «Про нас» із CMS.')}</p>}
       <section className={`subhero${aboutHeroImages.length ? ' subhero-with-image' : ''}`}>
         <div className="subhero-media" aria-hidden="true">
-          {aboutHeroImages.map((image, index) => <img key={image} className={`subhero-slide${index === aboutSlide ? ' is-active' : ''}${aboutImageLoaded && index === aboutSlide ? ' is-loaded' : ''}`} src={image} alt="" loading={index === 0 ? 'eager' : 'lazy'} decoding="async" onLoad={() => index === aboutSlide && setAboutImageLoaded(true)} />)}
+          {aboutHeroImages.map((image, index) => <img key={image} className={`subhero-slide${index === aboutSlide ? ' is-active' : ''}${aboutImageLoaded && index === aboutSlide ? ' is-loaded' : ''}`} style={{ opacity: index === aboutSlide ? 1 : 0 }} src={image} alt="" loading={index === 0 ? 'eager' : 'lazy'} decoding="async" onLoad={() => index === aboutSlide && setAboutImageLoaded(true)} />)}
         </div>
         <div>
           <h1>{t('Про Наш Ліцей')}</h1>
