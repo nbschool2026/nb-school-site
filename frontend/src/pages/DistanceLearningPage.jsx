@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
@@ -41,6 +41,7 @@ export default function DistanceLearningPage() {
   const [grade, setGrade] = useState(() => searchParams.get('grade') || '');
   const [subject, setSubject] = useState(() => searchParams.get('subject') || '');
   const [search, setSearch] = useState(() => searchParams.get('q') || '');
+  const hasAutoScrolled = useRef(false);
   const [pinnedIds, setPinnedIds] = useState(() => {
     const fromUrl = (searchParams.get('pinned') || '').split(',').filter(Boolean);
     let stored = [];
@@ -96,6 +97,18 @@ export default function DistanceLearningPage() {
     return (!grade || item.grade === grade) && (!subject || item.subject === subject) && (!query || text.includes(query));
   });
 
+  useEffect(() => {
+    if (status !== 'ready' || hasAutoScrolled.current || !pinnedIds.size) return;
+    const firstPinned = visible.find((item) => pinnedIds.has(item.documentId || String(item.id)));
+    if (!firstPinned) return;
+    const elementId = `distance-material-${firstPinned.documentId || firstPinned.id}`;
+    const timer = window.setTimeout(() => {
+      document.getElementById(elementId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      hasAutoScrolled.current = true;
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [status, visible, pinnedIds]);
+
   return <main>
     <section className="info-hero distance-learning-hero" style={{ '--distance-learning-hero-image': heroImage ? `url("${heroImage}")` : 'none', '--distance-learning-text-color': heroTextColor }}>
       <div className="container">
@@ -115,7 +128,7 @@ export default function DistanceLearningPage() {
         {status === 'loading' && <p>{t('Завантаження матеріалів…')}</p>}
         {status === 'error' && <p role="alert">{t('Не вдалося завантажити матеріали з CMS.')}</p>}
         {status === 'ready' && !visible.length && <p>{t('Матеріалів за цими умовами не знайдено.')}</p>}
-        <div className="distance-material-list">{visible.map((item) => <article className={`distance-material-card${pinnedIds.has(item.documentId || String(item.id)) ? ' is-pinned' : ''}`} key={item.documentId || item.id}>
+        <div className="distance-material-list">{visible.map((item) => <article id={`distance-material-${item.documentId || item.id}`} className={`distance-material-card${pinnedIds.has(item.documentId || String(item.id)) ? ' is-pinned' : ''}`} key={item.documentId || item.id}>
           <div className="distance-material-meta"><span>{item.grade}</span><span>{item.subject}</span><time dateTime={item.date}>{new Date(item.date).toLocaleDateString(locale === 'en' ? 'en-GB' : 'uk-UA')}</time></div>
           <button type="button" className="distance-material-pin" onClick={() => togglePinned(item.documentId || String(item.id))} aria-pressed={pinnedIds.has(item.documentId || String(item.id))}><MaterialIcon name={pinnedIds.has(item.documentId || String(item.id)) ? 'push_pin' : 'push_pin'} />{pinnedIds.has(item.documentId || String(item.id)) ? 'Закріплено' : 'Закріпити'}</button>
           <h3>{item.topic}</h3>
