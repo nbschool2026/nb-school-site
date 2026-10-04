@@ -108,7 +108,7 @@ export async function ensureUkrainianContentManagerLabels(strapi: any) {
       if (!metadata) continue;
       for (const view of ['edit', 'list']) {
         const current = metadata[view]?.label;
-        if (current === field || !current) {
+        if (current !== label) {
           metadata[view].label = label;
           changed = true;
         }
