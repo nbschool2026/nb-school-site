@@ -22,7 +22,7 @@ export default function AppLayout() {
   useEffect(() => {
     let active = true;
     setProfileStatus('loading');
-    fetchSingleLocalized('/school-profile', 'populate[0]=heroImage&populate[1]=aboutImage&populate[2]=aboutHeroImages', locale).then((data) => {
+    fetchSingleLocalized('/school-profile', 'populate=*', locale).then((data) => {
       if (active) { setProfile(data); setProfileStatus('ready'); }
     }).catch(() => { if (active) setProfileStatus('error'); });
     return () => { active = false; };
