@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
 import { fetchCollectionLocalized } from '../lib/api.js';
@@ -27,11 +28,20 @@ function renderBlocks(value, keyPrefix) {
 
 export default function DistanceLearningPage() {
   const { locale, t } = useLocale();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [materials, setMaterials] = useState([]);
   const [status, setStatus] = useState('loading');
-  const [grade, setGrade] = useState('');
-  const [subject, setSubject] = useState('');
-  const [search, setSearch] = useState('');
+  const [grade, setGrade] = useState(() => searchParams.get('grade') || '');
+  const [subject, setSubject] = useState(() => searchParams.get('subject') || '');
+  const [search, setSearch] = useState(() => searchParams.get('q') || '');
+
+  const updateQuery = (updates) => {
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current);
+      Object.entries(updates).forEach(([key, value]) => { if (value) next.set(key, value); else next.delete(key); });
+      return next;
+    }, { replace: true });
+  };
 
   useEffect(() => {
     let active = true;
@@ -64,9 +74,9 @@ export default function DistanceLearningPage() {
       <div className="container">
         <SectionTitle title={t('Матеріали дистанційного навчання')} />
         <div className="public-info-filters" role="search">
-          <label><span>{t('Пошук')}</span><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t('Пошук за темою або завданням')} /></label>
-          <label><span>{t('Клас')}</span><select value={grade} onChange={(event) => { setGrade(event.target.value); setSubject(''); }}><option value="">{t('Усі класи')}</option>{grades.map((item) => <option key={item}>{item}</option>)}</select></label>
-          <label><span>{t('Предмет')}</span><select value={subject} onChange={(event) => setSubject(event.target.value)}><option value="">{t('Усі предмети')}</option>{subjects.map((item) => <option key={item}>{item}</option>)}</select></label>
+          <label><span>{t('Пошук')}</span><input type="search" value={search} onChange={(event) => { setSearch(event.target.value); updateQuery({ q: event.target.value }); }} placeholder={t('Пошук за темою або завданням')} /></label>
+          <label><span>{t('Клас')}</span><select value={grade} onChange={(event) => { setGrade(event.target.value); setSubject(''); updateQuery({ grade: event.target.value, subject: '' }); }}><option value="">{t('Усі класи')}</option>{grades.map((item) => <option key={item}>{item}</option>)}</select></label>
+          <label><span>{t('Предмет')}</span><select value={subject} onChange={(event) => { setSubject(event.target.value); updateQuery({ subject: event.target.value }); }}><option value="">{t('Усі предмети')}</option>{subjects.map((item) => <option key={item}>{item}</option>)}</select></label>
         </div>
         {status === 'loading' && <p>{t('Завантаження матеріалів…')}</p>}
         {status === 'error' && <p role="alert">{t('Не вдалося завантажити матеріали з CMS.')}</p>}
