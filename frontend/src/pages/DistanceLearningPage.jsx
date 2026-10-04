@@ -54,6 +54,7 @@ export default function DistanceLearningPage() {
   const [grade, setGrade] = useState(() => searchParams.get('grade') || '');
   const [subject, setSubject] = useState(() => searchParams.get('subject') || '');
   const [search, setSearch] = useState(() => searchParams.get('q') || '');
+  const [sort, setSort] = useState(() => searchParams.get('sort') || 'newest');
   const hasAutoScrolled = useRef(false);
   const [pinnedId, setPinnedId] = useState(() => {
     const fromUrl = (searchParams.get('pinned') || '').split(',').filter(Boolean)[0] || '';
@@ -131,6 +132,12 @@ export default function DistanceLearningPage() {
     const text = [item.grade, item.subject, item.topic, item.content].filter(Boolean).join(' ').toLocaleLowerCase('uk');
     return (!grade || item.grade === grade) && (!subject || item.subject === subject) && (!query || text.includes(query));
   });
+  const sortedVisible = [...visible].sort((a, b) => {
+    if (sort === 'oldest') return String(a.date || '').localeCompare(String(b.date || ''));
+    if (sort === 'grade') return (Number(String(a.grade || '').match(/\d+/)?.[0]) || 99) - (Number(String(b.grade || '').match(/\d+/)?.[0]) || 99);
+    if (sort === 'subject') return String(a.subject || '').localeCompare(String(b.subject || ''), 'uk');
+    return String(b.date || '').localeCompare(String(a.date || ''));
+  });
 
   useEffect(() => {
     if (status !== 'ready' || hasAutoScrolled.current || !pinnedId) return;
@@ -164,18 +171,20 @@ export default function DistanceLearningPage() {
           <label><span>{t('Пошук')}</span><input type="search" value={search} onChange={(event) => { setSearch(event.target.value); updateQuery({ q: event.target.value }); }} placeholder={t('Пошук за темою або завданням')} /></label>
           <label><span>{t('Клас')}</span><select value={grade} onChange={(event) => { setGrade(event.target.value); setSubject(''); updateQuery({ grade: event.target.value, subject: '' }); }}><option value="">{t('Усі класи')}</option>{grades.map((item) => <option key={item}>{item}</option>)}</select></label>
           <label><span>{t('Предмет')}</span><select value={subject} onChange={(event) => { setSubject(event.target.value); updateQuery({ subject: event.target.value }); }}><option value="">{t('Усі предмети')}</option>{subjects.map((item) => <option key={item}>{item}</option>)}</select></label>
+          <label><span>{t('Сортування')}</span><select value={sort} onChange={(event) => { setSort(event.target.value); updateQuery({ sort: event.target.value }); }}><option value="newest">{t('Новіші спочатку')}</option><option value="oldest">{t('Старіші спочатку')}</option><option value="grade">{t('За класом')}</option><option value="subject">{t('За предметом')}</option></select></label>
         </div>
         <div className="distance-learning-results-bar">
-          <strong>{t('Знайдено матеріалів')}: {visible.length}</strong>
+          <strong>{t('Знайдено матеріалів')}: {sortedVisible.length}</strong>
           {(query || grade || subject) && <div className="distance-learning-filter-chips" aria-label={t('Активні фільтри')}>
             {query && <button type="button" onClick={() => { setSearch(''); updateQuery({ q: '' }); }}>Пошук: {search} ×</button>}
             {grade && <button type="button" onClick={() => { setGrade(''); setSubject(''); updateQuery({ grade: '', subject: '' }); }}>{grade} ×</button>}
             {subject && <button type="button" onClick={() => { setSubject(''); updateQuery({ subject: '' }); }}>{subject} ×</button>}
           </div>}
-        </div>        {status === 'loading' && <p>{t('Завантаження матеріалів…')}</p>}
+        </div>
+        {status === 'loading' && <p>{t('Завантаження матеріалів…')}</p>}
         {status === 'error' && <p role="alert">{t('Не вдалося завантажити матеріали з CMS.')}</p>}
-        {status === 'ready' && !visible.length && <p>{t('Матеріалів за цими умовами не знайдено.')}</p>}
-        <div className="distance-material-list">{visible.map((item) => <article id={`distance-material-${item.documentId || item.id}`} className={`distance-material-card${pinnedId === (item.documentId || String(item.id)) ? ' is-pinned' : ''}${completedIds.has(item.documentId || String(item.id)) ? ' is-completed' : ''}`} key={item.documentId || item.id}>
+        {status === 'ready' && !sortedVisible.length && <p>{t('Матеріалів за цими умовами не знайдено.')}</p>}
+        <div className="distance-material-list">{sortedVisible.map((item) => <article id={`distance-material-${item.documentId || item.id}`} className={`distance-material-card${pinnedId === (item.documentId || String(item.id)) ? ' is-pinned' : ''}${completedIds.has(item.documentId || String(item.id)) ? ' is-completed' : ''}`} key={item.documentId || item.id}>
           {completedIds.has(item.documentId || String(item.id)) && <span className="distance-material-completed-indicator" title="Виконано" aria-label="Виконано"><MaterialIcon name="check_circle" /></span>}
           <div className="distance-material-meta"><span className="distance-material-grade" style={{ "--badge-color": gradeColor(item.grade) }}>{item.grade}</span><span className="distance-material-subject" style={{ "--badge-color": colorFor(item.subject, subjectColors) }}>{item.subject}</span><time dateTime={item.date}>{new Date(item.date).toLocaleDateString(locale === 'en' ? 'en-GB' : 'uk-UA')}</time></div>
           <div className="distance-material-actions">
