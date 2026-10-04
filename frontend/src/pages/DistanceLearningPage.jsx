@@ -54,7 +54,7 @@ function youtubeId(value) {
 }
 function youtubeEmbed(url) {
   const id = youtubeId(url);
-  return id ? `https://www.youtube-nocookie.com/embed/${id}` : '';
+  return id ? `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1` : '';
 }
 
 export default function DistanceLearningPage() {
