@@ -995,7 +995,7 @@ img {
   display: flex;
   align-items: center;
   color: #fff;
-  background-image: linear-gradient(90deg, rgba(8, 18, 32, 0.78), rgba(8, 18, 32, 0.28)), url('https://sites.google.com/u/0/sitesv-images-rt/AMxu72smJq5MdGELfVeo8s-BQIqbEk6iRc1wzjaHUqZ4BzqmzG4h-qlp-vJ_HeqLGOU6bnN67k9ZBOS23UFow776P1oZdQsxAjxnVolEcjlkEaJgBShdNkBH7aK7uzMNY7Mt2U0O2dRL-2BZXwagwR2u07LF2yJmXcwZrv3y=w1638');
+  background-image: linear-gradient(90deg, rgba(8, 18, 32, 0.78), rgba(8, 18, 32, 0.28)), var(--distance-learning-hero-image, none);
   background-position: center;
   background-size: cover;
 }

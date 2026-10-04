@@ -61,6 +61,7 @@ const labels: Record<string, Record<string, string>> = {
     mapUrl: 'Посилання на карту',
     heroImage: 'Головне фото',
     aboutImage: 'Фото сторінки «Про нас»',
+    distanceLearningImage: 'Hero дистанційного навчання',
   },
   'api::staff-member.staff-member': {
     name: 'ПІБ',

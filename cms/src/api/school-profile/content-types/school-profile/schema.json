@@ -108,6 +108,12 @@
           "localized": false
         }
       }
+    },
+    "distanceLearningImage": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"],
+      "pluginOptions": { "i18n": { "localized": false } }
     }
   },
   "pluginOptions": {

@@ -17,6 +17,13 @@ const assets = [
     alternativeText: 'Будівля Новобілоуського ліцею',
   },
   {
+    uid: 'api::school-profile.school-profile',
+    field: 'distanceLearningImage',
+    filename: 'distance-learning-hero.webp',
+    name: 'Hero дистанційного навчання',
+    alternativeText: 'Зошит, ручка й планшет для дистанційного навчання',
+  },
+  {
     uid: 'api::staff-member.staff-member',
     field: 'photo',
     filename: 'principal-portrait.webp',

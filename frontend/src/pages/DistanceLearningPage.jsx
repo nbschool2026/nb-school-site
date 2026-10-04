@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
-import { fetchCollectionLocalized } from '../lib/api.js';
+import { fetchCollectionLocalized, fetchSingleLocalized, mediaUrl } from '../lib/api.js';
 import { useLocale } from '../lib/locale.jsx';
 
 function inlineNodes(children, prefix) {
@@ -35,6 +35,7 @@ export default function DistanceLearningPage() {
   const { locale, t } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
   const [materials, setMaterials] = useState([]);
+  const [heroImage, setHeroImage] = useState('');
   const [status, setStatus] = useState('loading');
   const [grade, setGrade] = useState(() => searchParams.get('grade') || '');
   const [subject, setSubject] = useState(() => searchParams.get('subject') || '');
@@ -57,6 +58,12 @@ export default function DistanceLearningPage() {
     return () => { active = false; };
   }, [locale]);
 
+  useEffect(() => {
+    fetchSingleLocalized('/school-profile', 'populate[0]=distanceLearningImage', locale)
+      .then((profile) => setHeroImage(mediaUrl(profile?.distanceLearningImage)))
+      .catch(() => setHeroImage(''));
+  }, [locale]);
+
   const grades = useMemo(() => [...new Set(materials.map((item) => item.grade).filter(Boolean))].sort(), [materials]);
   const subjects = useMemo(() => [...new Set(materials
     .filter((item) => !grade || item.grade === grade)
@@ -68,7 +75,7 @@ export default function DistanceLearningPage() {
   });
 
   return <main>
-    <section className="info-hero distance-learning-hero">
+    <section className="info-hero distance-learning-hero" style={{ '--distance-learning-hero-image': heroImage ? `url("${heroImage}")` : 'none' }}>
       <div className="container">
         <div className="pill"><MaterialIcon name="laptop_chromebook" /> {t('Навчання')}</div>
         <h1>{t('Дистанційне навчання')}</h1>
