@@ -1,0 +1,9 @@
+{
+  "collectionName": "components_video_links",
+  "info": { "displayName": "Посилання на відео", "description": "YouTube або інше відео для матеріалу" },
+  "options": {},
+  "attributes": {
+    "url": { "type": "string", "required": true },
+    "title": { "type": "string" }
+  }
+}

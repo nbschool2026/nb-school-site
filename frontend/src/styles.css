@@ -1068,6 +1068,9 @@ img {
 .distance-material-content .rich-bold { font-weight: 700; }
 .distance-material-content .rich-italic { font-style: italic; }
 .distance-material-content .rich-underline { text-decoration: underline; }
+.distance-material-videos { display: grid; gap: 16px; margin-top: 20px; }
+.distance-material-video iframe { width: 100%; min-height: 280px; border: 0; border-radius: 10px; }
+.distance-material-video h4 { margin: 0 0 8px; }
 
 .distance-material-meta {
   display: flex;

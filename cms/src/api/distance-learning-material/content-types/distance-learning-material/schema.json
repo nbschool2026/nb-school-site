@@ -15,6 +15,7 @@
     "topic": { "type": "string", "required": true, "pluginOptions": { "i18n": { "localized": true } } },
     "content": { "type": "blocks", "pluginOptions": { "i18n": { "localized": true } } },
     "videoUrl": { "type": "string", "pluginOptions": { "i18n": { "localized": false } } },
+    "videos": { "type": "component", "repeatable": true, "component": "video-link", "pluginOptions": { "i18n": { "localized": false } } },
     "sourceUrl": { "type": "string", "pluginOptions": { "i18n": { "localized": false } } },
     "order": { "type": "integer", "default": 0, "pluginOptions": { "i18n": { "localized": false } } }
   },

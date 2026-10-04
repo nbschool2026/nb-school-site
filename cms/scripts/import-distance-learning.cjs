@@ -14,9 +14,10 @@ function normalize(item, index) {
   const content = Array.isArray(item.content)
     ? item.content
     : String(item.content || '').split(/\n+/).map((text) => text.trim()).filter(Boolean).map((text) => ({ type: 'paragraph', children: [{ type: 'text', text }] }));
+  const videos = Array.isArray(item.videos) ? item.videos : (item.videoUrl ? [{ url: item.videoUrl }] : []);
   return {
     grade: String(item.grade || '').trim(), subject: String(item.subject || '').trim(), date: item.date || null,
-    topic: String(item.topic || item.subject || 'Матеріал').trim(), content,
+    topic: String(item.topic || item.subject || 'Матеріал').trim(), content, videos,
     videoUrl: String(item.videoUrl || '').trim(), sourceUrl: String(item.sourceUrl || '').trim(),
     order: Number.isFinite(Number(item.order)) ? Number(item.order) : index,
   };

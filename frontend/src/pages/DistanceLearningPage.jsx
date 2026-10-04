@@ -26,6 +26,11 @@ function renderBlocks(value, keyPrefix) {
   });
 }
 
+function youtubeEmbed(url) {
+  const match = String(url || '').match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{6,})/i);
+  return match ? `https://www.youtube.com/embed/${match[1]}` : '';
+}
+
 export default function DistanceLearningPage() {
   const { locale, t } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -46,7 +51,7 @@ export default function DistanceLearningPage() {
   useEffect(() => {
     let active = true;
     setStatus('loading');
-    fetchCollectionLocalized('/distance-learning-materials', 'sort=date:desc&pagination[pageSize]=500', locale)
+    fetchCollectionLocalized('/distance-learning-materials', 'sort=date:desc&populate[videos]=*&pagination[pageSize]=500', locale)
       .then((data) => { if (active) { setMaterials(data); setStatus('ready'); } })
       .catch(() => { if (active) setStatus('error'); });
     return () => { active = false; };
@@ -85,7 +90,7 @@ export default function DistanceLearningPage() {
           <div className="distance-material-meta"><span>{item.grade}</span><span>{item.subject}</span><time dateTime={item.date}>{new Date(item.date).toLocaleDateString(locale === 'en' ? 'en-GB' : 'uk-UA')}</time></div>
           <h3>{item.topic}</h3>
           {item.content && <div className="distance-material-content">{renderBlocks(item.content, item.documentId || item.id)}</div>}
-          {item.videoUrl && <a className="text-link" href={item.videoUrl} target="_blank" rel="noreferrer"><MaterialIcon name="play_circle" />{t('Відкрити відео')}</a>}
+          {!!(item.videos?.length || item.videoUrl) && <div className="distance-material-videos">{(item.videos?.length ? item.videos : [{ url: item.videoUrl }]).map((video, index) => { const embed = youtubeEmbed(video.url); return <div className="distance-material-video" key={`${item.documentId || item.id}-video-${index}`}>{video.title && <h4>{video.title}</h4>}{embed ? <iframe src={embed} title={video.title || `${item.topic} — відео ${index + 1}`} loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /> : <a className="text-link" href={video.url} target="_blank" rel="noreferrer"><MaterialIcon name="play_circle" />{t('Відкрити відео')}</a>}</div>; })}</div>}
         </article>)}</div>
       </div>
     </section>
