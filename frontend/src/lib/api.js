@@ -84,7 +84,7 @@ export function mediaFormatUrl(media, format, fallback = '') {
 }
 
 function mediaFile(media) {
-  return media?.data?.attributes || media?.data || media || null;
+  return media?.data?.attributes || media?.data || media?.attributes || media || null;
 }
 
 function normalizeEntity(entity) {
