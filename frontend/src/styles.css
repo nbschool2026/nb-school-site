@@ -1178,6 +1178,7 @@ img {
 
 .distance-material-content img { max-width: 100%; height: auto; border-radius: 10px; }.distance-material-body { max-height: 5.1em; overflow: hidden; transition: max-height 260ms ease; }
 .distance-material-body.is-expanded { max-height: none; }
+.distance-material-body:not(.is-expanded) .distance-material-video { display: none; }
 .distance-material-expand { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; padding: 0; border: 0; color: var(--primary-dark); background: transparent; cursor: pointer; font: inherit; font-weight: 700; }
 .distance-material-expand:hover { color: var(--primary); text-decoration: underline; }
 .distance-material-content { min-width: 0; overflow-wrap: anywhere; }
