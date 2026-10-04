@@ -568,7 +568,7 @@ img {
   height: 360px;
   border-radius: 14px;
   object-fit: cover;
-  object-position: center 30%;
+  object-position: top;
 }
 
 .principal-card h3 {
