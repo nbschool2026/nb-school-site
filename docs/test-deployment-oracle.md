@@ -276,6 +276,17 @@ http://127.0.0.1:2337/admin
 
 Caddy автоматично отримує й поновлює HTTPS-сертифікат для домену, якщо DNS вказує на сервер і відкриті порти `80` та `443`.
 
-## 13. Наступний крок
+## 13. Індексація Google
+
+Frontend містить `public/robots.txt` і `public/sitemap.xml`. Після production-збірки вони доступні за адресами:
+
+```text
+https://nb-school.duckdns.org/robots.txt
+https://nb-school.duckdns.org/sitemap.xml
+```
+
+У Google Search Console потрібно додати sitemap `sitemap.xml` і запитати індексацію головних сторінок. Адмінські та API-маршрути закриті від пошукових роботів через `robots.txt`.
+
+## 14. Наступний крок
 
 Налаштувати автоматичне резервне копіювання `cms/.tmp/data.db` і `cms/public/uploads/` поза сервером, а потім перевірити відновлення на окремій копії.

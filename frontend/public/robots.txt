@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /content-manager
+Disallow: /upload
+Disallow: /i18n
+
+Sitemap: https://nb-school.duckdns.org/sitemap.xml
