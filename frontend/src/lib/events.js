@@ -76,3 +76,17 @@ export function youtubeEmbedUrl(value) {
     return null;
   }
 }
+
+export function eventVideoEmbedUrl(value) {
+  const youtube = youtubeEmbedUrl(value);
+  if (youtube) return youtube;
+  try {
+    const url = new URL(String(value || '').trim());
+    const host = url.hostname.toLowerCase().replace(/^www\./, '');
+    if (host !== 'facebook.com' && host !== 'fb.watch') return null;
+    if (!/(^|\/)(reel|videos|share\/v|watch)(\/|$)/i.test(url.pathname)) return null;
+    return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url.href)}&show_text=false&width=500`;
+  } catch {
+    return null;
+  }
+}

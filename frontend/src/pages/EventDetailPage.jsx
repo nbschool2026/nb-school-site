@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { eventPhotos, fetchEventBySlug, youtubeEmbedUrl } from '../lib/events.js';
+import { eventPhotos, eventVideoEmbedUrl, fetchEventBySlug } from '../lib/events.js';
 import { useLocale } from '../lib/locale.jsx';
 
 export default function EventDetailPage() {
@@ -24,7 +24,7 @@ export default function EventDetailPage() {
   }, [slug, locale]);
 
   const photos = eventPhotos(event);
-  const video = youtubeEmbedUrl(event?.youtubeUrl);
+  const video = eventVideoEmbedUrl(event?.youtubeUrl);
 
   return (
     <main className="page-main">

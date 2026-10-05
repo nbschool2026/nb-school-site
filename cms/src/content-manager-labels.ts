@@ -8,7 +8,7 @@ const labels: Record<string, Record<string, string>> = {
     date: 'Дата події',
     cover: 'Обкладинка',
     photos: 'Фотографії',
-    youtubeUrl: 'Посилання YouTube',
+    youtubeUrl: 'Посилання YouTube або Facebook',
     featured: 'Рекомендована подія',
   },
   'api::gallery-item.gallery-item': {
