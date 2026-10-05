@@ -1,6 +1,6 @@
 {
   "collectionName": "components_shared_video_links",
-  "info": { "displayName": "Посилання на відео", "description": "YouTube або інше відео для матеріалу" },
+  "info": { "displayName": "Посилання на відео", "description": "YouTube, Facebook або Facebook Reels для матеріалу" },
   "options": {},
   "attributes": {
     "url": { "type": "string", "required": true },

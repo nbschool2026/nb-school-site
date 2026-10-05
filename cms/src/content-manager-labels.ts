@@ -47,7 +47,7 @@ const labels: Record<string, Record<string, string>> = {
   },
   'api::distance-learning-material.distance-learning-material': {
     grade: 'Клас', subject: 'Предмет', date: 'Дата', topic: 'Тема', content: 'Завдання',
-    videoUrl: 'Відео', sourceUrl: 'Посилання на джерело', order: 'Порядок',
+    videoUrl: 'Відео (YouTube або Facebook)', videos: 'Відео (YouTube або Facebook)', sourceUrl: 'Посилання на джерело', order: 'Порядок',
   },
   'api::school-profile.school-profile': {
     schoolName: 'Назва ліцею',

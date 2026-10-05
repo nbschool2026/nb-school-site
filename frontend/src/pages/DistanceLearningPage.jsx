@@ -57,6 +57,22 @@ function youtubeEmbed(url) {
   return id ? `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1` : '';
 }
 
+function facebookEmbed(value) {
+  try {
+    const url = new URL(String(value || '').trim());
+    const host = url.hostname.toLowerCase().replace(/^www\./, '');
+    if (host !== 'facebook.com' && host !== 'fb.watch') return '';
+    if (!/(^|\/)(reel|videos|share\/v|watch)(\/|$)/i.test(url.pathname)) return '';
+    return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url.href)}&show_text=false&width=500`;
+  } catch {
+    return '';
+  }
+}
+
+function videoEmbed(url) {
+  return youtubeEmbed(url) || facebookEmbed(url);
+}
+
 export default function DistanceLearningPage() {
   const { locale, t } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -265,7 +281,7 @@ export default function DistanceLearningPage() {
           <h3>{item.topic}</h3>
           <div className={`distance-material-body${expandedIds.has(item.documentId || String(item.id)) ? ' is-expanded' : ''}`}>
             {item.content && <div className="distance-material-content">{renderBlocks(item.content, item.documentId || item.id)}</div>}
-            {!!(item.videos?.length || item.videoUrl) && <div className="distance-material-videos">{(item.videos?.length ? item.videos : [{ url: item.videoUrl }]).map((video, index) => { const videoId = `${item.documentId || item.id}-${index}`; const embed = youtubeEmbed(video.url); const failed = failedVideoIds.has(videoId); return <div className="distance-material-video" key={`${item.documentId || item.id}-video-${index}`}>{video.title && <h4>{video.title}</h4>}{embed ? (activeVideoIds.has(videoId) ? (failed ? <div className="distance-material-video-fallback"><p>{t('Відео не вдалося завантажити.')}</p><a className="text-link" href={video.url} target="_blank" rel="noreferrer"><MaterialIcon name="open_in_new" />{t('Відкрити на YouTube')}</a></div> : <iframe src={embed} title={video.title || `${item.topic} — відео ${index + 1}`} loading="lazy" onError={() => setFailedVideoIds((current) => new Set(current).add(videoId))} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />) : <button type="button" className="distance-material-video-preview" aria-label={`${t('Переглянути відео')}${video.title ? `: ${video.title}` : ''}`} onClick={() => setActiveVideoIds((current) => new Set(current).add(videoId))}><img src={`https://i.ytimg.com/vi/${youtubeId(video.url)}/hqdefault.jpg`} alt="" loading="lazy" decoding="async" /><span><MaterialIcon name="play_arrow" />{t('Переглянути відео')}</span></button>) : <a className="text-link" href={video.url} target="_blank" rel="noreferrer"><MaterialIcon name="play_circle" />{t('Відкрити відео')}</a>}</div>; })}</div>}
+            {!!(item.videos?.length || item.videoUrl) && <div className="distance-material-videos">{(item.videos?.length ? item.videos : [{ url: item.videoUrl }]).map((video, index) => { const videoId = `${item.documentId || item.id}-${index}`; const embed = videoEmbed(video.url); const failed = failedVideoIds.has(videoId); const youtubeVideoId = youtubeId(video.url); return <div className="distance-material-video" key={`${item.documentId || item.id}-video-${index}`}>{video.title && <h4>{video.title}</h4>}{embed ? (activeVideoIds.has(videoId) ? (failed ? <div className="distance-material-video-fallback"><p>{t('Відео не вдалося завантажити.')}</p><a className="text-link" href={video.url} target="_blank" rel="noreferrer"><MaterialIcon name="open_in_new" />{t('Відкрити відео')}</a></div> : <iframe src={embed} title={video.title || `${item.topic} — відео ${index + 1}`} loading="lazy" onError={() => setFailedVideoIds((current) => new Set(current).add(videoId))} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />) : <button type="button" className="distance-material-video-preview" aria-label={`${t('Переглянути відео')}${video.title ? `: ${video.title}` : ''}`} onClick={() => setActiveVideoIds((current) => new Set(current).add(videoId))}>{youtubeVideoId ? <img src={`https://i.ytimg.com/vi/${youtubeVideoId}/hqdefault.jpg`} alt="" loading="lazy" decoding="async" /> : <span className="distance-material-video-placeholder"><MaterialIcon name="play_circle" /></span>}<span><MaterialIcon name="play_arrow" />{t('Переглянути відео')}</span></button>) : <a className="text-link" href={video.url} target="_blank" rel="noreferrer"><MaterialIcon name="play_circle" />{t('Відкрити відео')}</a>}</div>; })}</div>}
           </div>
           {expandableIds.has(item.documentId || String(item.id)) && <button type="button" className="distance-material-expand" onClick={() => toggleExpanded(item.documentId || String(item.id))} aria-expanded={expandedIds.has(item.documentId || String(item.id))}><MaterialIcon name={expandedIds.has(item.documentId || String(item.id)) ? 'expand_less' : 'expand_more'} />{expandedIds.has(item.documentId || String(item.id)) ? 'Приховати' : 'Показати більше'}</button>}
         </article>)}</div>
