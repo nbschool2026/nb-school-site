@@ -32,7 +32,7 @@ const english = {
   'Контакти ще не додано.': 'Contact details have not been added yet.',
   'Адреса': 'Address', 'Номер телефону': 'Phone number', 'Електронна пошта': 'Email',
   'Графік роботи': 'Opening hours',
-  'Завантаження сторінки «Про нас»…': 'Loading the About page…',
+  'Завантаження сторінки «Про нас»…': 'Loading the About page…', 'Показати всю історію': 'Show the full history',
   'Не вдалося завантажити сторінку «Про нас» із CMS.': 'Could not load the About page from the CMS.',
   'Про Наш Ліцей': 'About our lyceum', 'Наша історія': 'Our history',
   'Історію закладу ще не додано.': 'The school history has not been added yet.',

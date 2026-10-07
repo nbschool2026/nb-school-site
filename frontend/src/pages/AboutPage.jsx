@@ -10,6 +10,7 @@ export default function AboutPage() {
   const { locale, t } = useLocale();
   const { profile } = useOutletContext();
   const [historyItems, setHistoryItems] = useState([]);
+  const [historyExpanded, setHistoryExpanded] = useState(false);
   const [staffMembers, setStaffMembers] = useState([]);
   const [staffVisibleCount, setStaffVisibleCount] = useState(4);
   const [status, setStatus] = useState('loading');
@@ -41,6 +42,7 @@ export default function AboutPage() {
     ]).then(([history, staff]) => {
       if (!active) return;
       setHistoryItems(history);
+      setHistoryExpanded(false);
       setStaffMembers(staff);
       setStaffVisibleCount(4);
       setStatus('ready');
@@ -68,7 +70,10 @@ export default function AboutPage() {
           <SectionTitle title={t('Наша історія')} center />
           {status === 'ready' && !historyItems.length && <p>{t('Історію закладу ще не додано.')}</p>}
           <div className="timeline">
-            {historyItems.map((item) => (
+            {historyItems.map((item, index) => {
+              const isCollapsedMiddle = !historyExpanded && historyItems.length > 2 && index > 0 && index < historyItems.length - 1;
+              if (isCollapsedMiddle) return index === 1 ? <li key="history-more" className="timeline-more"><button type="button" onClick={() => setHistoryExpanded(true)} aria-label={t('Показати всю історію')}>…</button></li> : null;
+              return (
               <article key={item.documentId || item.id} className="timeline-item">
                 <div className="timeline-icon"><MaterialIcon name={item.icon || 'history_edu'} /></div>
                 <div>
@@ -78,7 +83,8 @@ export default function AboutPage() {
                   {locale === 'en' && item._fallbackLocale && <small>{t('Показано українською')}</small>}
                 </div>
               </article>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
