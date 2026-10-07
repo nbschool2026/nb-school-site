@@ -713,9 +713,11 @@ img {
   gap: 26px;
 }
 
-.timeline::before { content: ''; position: absolute; top: 24px; bottom: 24px; left: 24px; width: 2px; border-radius: 2px; background: var(--line); }
-.timeline-item,
-.timeline-more { position: relative; z-index: 1; }
+.timeline > .timeline-item,
+.timeline > .timeline-more { position: relative; }
+.timeline > :not(:last-child)::after { content: ''; position: absolute; top: 24px; bottom: -50px; left: 23px; width: 2px; border-radius: 2px; background: var(--line); z-index: 0; }
+.timeline-item > *,
+.timeline-more button { position: relative; z-index: 1; }
 
 .timeline-item {
   display: grid;
