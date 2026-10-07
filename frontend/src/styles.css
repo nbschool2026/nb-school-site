@@ -708,9 +708,14 @@ img {
 }
 
 .timeline {
+  position: relative;
   display: grid;
   gap: 26px;
 }
+
+.timeline::before { content: ''; position: absolute; top: 24px; bottom: 24px; left: 24px; width: 2px; border-radius: 2px; background: var(--line); }
+.timeline-item,
+.timeline-more { position: relative; z-index: 1; }
 
 .timeline-item {
   display: grid;
