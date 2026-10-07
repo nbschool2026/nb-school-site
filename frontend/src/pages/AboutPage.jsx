@@ -11,7 +11,7 @@ export default function AboutPage() {
   const { profile } = useOutletContext();
   const [historyItems, setHistoryItems] = useState([]);
   const [staffMembers, setStaffMembers] = useState([]);
-  const [staffVisibleCount, setStaffVisibleCount] = useState(3);
+  const [staffVisibleCount, setStaffVisibleCount] = useState(4);
   const [status, setStatus] = useState('loading');
   const [aboutImageLoaded, setAboutImageLoaded] = useState(false);
   const [aboutSlide, setAboutSlide] = useState(0);
@@ -42,7 +42,7 @@ export default function AboutPage() {
       if (!active) return;
       setHistoryItems(history);
       setStaffMembers(staff);
-      setStaffVisibleCount(3);
+      setStaffVisibleCount(4);
       setStatus('ready');
     }).catch(() => { if (active) setStatus('error'); });
     return () => { active = false; };
@@ -100,7 +100,7 @@ export default function AboutPage() {
               </article>
             ))}
           </div>
-          {staffMembers.length > staffVisibleCount && <button type="button" className="staff-more" onClick={() => setStaffVisibleCount((count) => Math.min(count + 3, staffMembers.length))}><MaterialIcon name="expand_more" />{t('Показати більше')}</button>}
+          {staffMembers.length > staffVisibleCount && <button type="button" className="staff-more" onClick={() => setStaffVisibleCount((count) => Math.min(count + 4, staffMembers.length))}><MaterialIcon name="expand_more" />{t('Показати більше')}</button>}
         </div>
       </section>
     </main>
