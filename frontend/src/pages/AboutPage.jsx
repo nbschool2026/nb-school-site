@@ -11,6 +11,7 @@ export default function AboutPage() {
   const { profile } = useOutletContext();
   const [historyItems, setHistoryItems] = useState([]);
   const [staffMembers, setStaffMembers] = useState([]);
+  const [staffVisibleCount, setStaffVisibleCount] = useState(3);
   const [status, setStatus] = useState('loading');
   const [aboutImageLoaded, setAboutImageLoaded] = useState(false);
   const [aboutSlide, setAboutSlide] = useState(0);
@@ -41,6 +42,7 @@ export default function AboutPage() {
       if (!active) return;
       setHistoryItems(history);
       setStaffMembers(staff);
+      setStaffVisibleCount(3);
       setStatus('ready');
     }).catch(() => { if (active) setStatus('error'); });
     return () => { active = false; };
@@ -86,10 +88,10 @@ export default function AboutPage() {
           <SectionTitle title={t('Вчителі та адміністрація')} center />
           {status === 'ready' && !staffMembers.length && <p>{t('Інформацію про працівників ще не додано.')}</p>}
           <div className="staff-grid">
-            {staffMembers.map((person) => (
+            {staffMembers.slice(0, staffVisibleCount).map((person) => (
               <article className="staff-card" key={person.documentId || person.id}>
                 {mediaUrl(person.photo)
-                  ? <img src={mediaUrl(person.photo)} alt={person.name} />
+                  ? <img src={mediaUrl(person.photo)} alt={person.name} loading="lazy" decoding="async" />
                   : <div className="staff-photo-placeholder" aria-hidden="true"><MaterialIcon name="person" /></div>}
                 <h3>{person.name}</h3>
                 <p>{person.position}</p>
@@ -98,6 +100,7 @@ export default function AboutPage() {
               </article>
             ))}
           </div>
+          {staffMembers.length > staffVisibleCount && <button type="button" className="staff-more" onClick={() => setStaffVisibleCount((count) => Math.min(count + 3, staffMembers.length))}><MaterialIcon name="expand_more" />{t('Показати більше')}</button>}
         </div>
       </section>
     </main>

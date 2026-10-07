@@ -8,7 +8,7 @@ const english = {
   'Дистанційне навчання': 'Distance learning', 'Матеріали дистанційного навчання': 'Distance learning materials',
   'Матеріали, теми та завдання для учнів за класами й предметами.': 'Materials, topics and assignments for students by grade and subject.',
   'Усі класи': 'All grades', 'Пошук за темою або завданням': 'Search by topic or assignment',
-  'Завантаження матеріалів…': 'Loading materials…', 'Не вдалося завантажити матеріали з CMS.': 'Could not load materials from the CMS.',
+  'Завантаження матеріалів…': 'Loading materials…', 'Не вдалося завантажити матеріали з CMS.': 'Could not load materials from the CMS.', 'Показати більше': 'Show more',
   'Матеріалів за цими умовами не знайдено.': 'No materials match these filters.', 'Відкрити відео': 'Open video',
   'Мова': 'Language', 'Відкрити меню': 'Open menu', 'Закрити меню': 'Close menu',
   'Всі права захищені.': 'All rights reserved.',
