@@ -37,6 +37,20 @@ export async function fetchCollectionLocalized(path, query, locale) {
   return mergeLocalizedRecords(ukrainian, translated);
 }
 
+export async function fetchCollectionLocalizedAll(path, query, locale) {
+  const pageSize = 100;
+  const records = [];
+  let page = 1;
+  while (page <= 100) {
+    const pageQuery = `${query ? `${query}&` : ''}pagination[page]=${page}&pagination[pageSize]=${pageSize}`;
+    const batch = await fetchCollectionLocalized(path, pageQuery, locale);
+    records.push(...batch);
+    if (batch.length < pageSize) break;
+    page += 1;
+  }
+  return records;
+}
+
 export async function fetchSingleLocalized(path, query, locale) {
   if (locale === 'en') {
     const translated = await fetchSingleStrict(path, withLocale(query, 'en'));

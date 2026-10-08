@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
-import { fetchCollectionLocalized } from '../lib/api.js';
+import { fetchCollectionLocalizedAll } from '../lib/api.js';
 import { scheduleLessons as fallbackScheduleLessons } from '../lib/fallbackData.js';
 import { useLocale } from '../lib/locale.jsx';
 
@@ -51,7 +51,7 @@ export default function SchedulePage() {
   useEffect(() => {
     let active = true;
     setStatus('loading');
-    fetchCollectionLocalized('/schedule-lessons', 'sort=order:asc&pagination[pageSize]=500', locale)
+    fetchCollectionLocalizedAll('/schedule-lessons', 'sort=order:asc', locale)
       .then((records) => {
         if (!active) return;
         setLessons(records.length ? records : fallbackScheduleLessons);
