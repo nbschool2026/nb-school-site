@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, type ChangeEvent } from 'react';
 import { Button, Main, Box, Typography } from '@strapi/design-system';
 import { useFetchClient, useNotification } from '@strapi/admin/strapi-admin';
 
@@ -25,19 +25,17 @@ export default function ScheduleImport() {
   }
 
   return (
-    <Main>
-      <Box padding={8} background="neutral0">
-        <Typography variant="alpha" tag="h1">Імпорт розкладу</Typography>
-        <Box paddingTop={4} paddingBottom={4}>
-          <Typography>Завантажте CSV. Після натискання кнопки старі записи розкладу будуть видалені, а нові опубліковані.</Typography>
-        </Box>
-        <input type="file" accept=".csv,text/csv" onChange={(event) => setFile(event.target.files?.[0] || null)} />
-        <Box paddingTop={4}>
-          <Button disabled={!file || busy} onClick={importSchedule} loading={busy}>
-            Розпарсити й замінити розклад
-          </Button>
-        </Box>
-      </Box>
-    </Main>
+    React.createElement(Main, null,
+      React.createElement(Box, { padding: 8, background: 'neutral0' },
+        React.createElement(Typography, { variant: 'alpha', tag: 'h1' }, 'Імпорт розкладу'),
+        React.createElement(Box, { paddingTop: 4, paddingBottom: 4 },
+          React.createElement(Typography, null, 'Завантажте CSV. Після натискання кнопки старі записи розкладу будуть видалені, а нові опубліковані.'),
+        ),
+        React.createElement('input', { type: 'file', accept: '.csv,text/csv', onChange: (event: ChangeEvent<HTMLInputElement>) => setFile(event.target.files?.[0] || null) }),
+        React.createElement(Box, { paddingTop: 4 },
+          React.createElement(Button, { disabled: !file || busy, onClick: importSchedule, loading: busy }, 'Розпарсити й замінити розклад'),
+        ),
+      ),
+    )
   );
 }
