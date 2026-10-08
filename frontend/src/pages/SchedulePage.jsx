@@ -28,6 +28,12 @@ function classNumber(value) {
   return Number(String(value || '').match(/\d+/)?.[0] || 999);
 }
 
+function matchClass(value, classes) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  return classes.find((className) => className === raw || String(classNumber(className)) === raw.replace(/\D/g, '')) || raw;
+}
+
 function formatTime(value) {
   return String(value || '').slice(0, 5);
 }
@@ -68,10 +74,12 @@ export default function SchedulePage() {
     .sort((a, b) => a.localeCompare(b, 'uk')), [lessons]);
 
   useEffect(() => {
-    if (selectedClass && !classes.includes(selectedClass)) setSelectedClass(classes.includes('5 Клас') ? '5 Клас' : '');
+    if (status === 'loading' || !classes.length) return;
+    const normalizedClass = matchClass(selectedClass, classes);
+    if (normalizedClass !== selectedClass) setSelectedClass(classes.includes(normalizedClass) ? normalizedClass : (classes.includes('5 Клас') ? '5 Клас' : ''));
     if (selectedTeacher && !teachers.includes(selectedTeacher)) setSelectedTeacher('');
     if (selectedSubject && !subjects.includes(selectedSubject)) setSelectedSubject('');
-  }, [classes, selectedClass, subjects, selectedSubject, teachers, selectedTeacher]);
+  }, [classes, selectedClass, status, subjects, selectedSubject, teachers, selectedTeacher]);
 
   useEffect(() => {
     try {
