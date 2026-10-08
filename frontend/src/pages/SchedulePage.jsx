@@ -176,7 +176,7 @@ export default function SchedulePage() {
                   <span>{formatTime(lesson.startTime)} – {formatTime(lesson.endTime)}</span>
                   {showClassOnCard && <p className="lesson-class">{lesson.className}</p>}
                   <h4>{lesson.subject}</h4>
-                  {lesson.teacher && <p>{lesson.teacher}</p>}
+                  {!showClassOnCard && lesson.teacher && <p>{lesson.teacher}</p>}
                   {lesson.room && <p><MaterialIcon name="meeting_room" /> {lesson.room}</p>}
                 </article>)}
               </div>
