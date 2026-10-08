@@ -9,6 +9,7 @@ const links = [
   { to: '/', label: 'Головна' },
   { to: '/about', label: 'Про нас' },
   { to: '/events', label: 'Події' },
+  { to: '/schedule', label: 'Розклад' },
   { to: '/public-info', label: 'Публічна інформація' },
   { to: '/distance-learning', label: 'Дистанційне навчання' },
 ];

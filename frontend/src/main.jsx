@@ -8,6 +8,7 @@ import EventsPage from './pages/EventsPage.jsx';
 import EventDetailPage from './pages/EventDetailPage.jsx';
 import PublicInfoPage from './pages/PublicInfoPage.jsx';
 import DistanceLearningPage from './pages/DistanceLearningPage.jsx';
+import SchedulePage from './pages/SchedulePage.jsx';
 import './styles.css';
 import { LocaleProvider } from './lib/locale.jsx';
 
@@ -34,6 +35,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="events/:slug" element={<EventDetailPage />} />
           <Route path="public-info" element={<PublicInfoPage />} />
           <Route path="distance-learning" element={<DistanceLearningPage />} />
+          <Route path="schedule" element={<SchedulePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

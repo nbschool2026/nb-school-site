@@ -351,6 +351,8 @@ img {
   line-height: 1.1;
 }
 
+.section-title p { margin: 12px 0 0; color: var(--muted); }
+
 .event-grid,
 .document-grid,
 .value-grid,
@@ -503,6 +505,8 @@ img {
   background: #f8fafc;
   color: var(--ink);
 }
+
+.schedule-filters { grid-template-columns: minmax(260px, 380px); }
 
 .schedule-scroll {
   margin-top: 26px;
