@@ -17,7 +17,7 @@ const english = {
   'Останні новини': 'Latest news', 'Завантаження подій…': 'Loading events…',
   'Не вдалося завантажити події з CMS.': 'Could not load events from the CMS.',
   'Подій поки немає.': 'No events yet.', 'Всі події': 'All events',
-  'Навчання': 'Learning', 'Розклад': 'Schedule', 'Розклад уроків': 'Class schedule', 'Розклад занять за класами та днями тижня.': 'Class schedule by grade and weekday.',
+  'Навчання': 'Learning', 'Розклад': 'Schedule', 'Розклад уроків': 'Class schedule', 'Розклад занять за класами та днями тижня.': 'Class schedule by grade and weekday.', 'Усі класи': 'All classes', 'Предмет': 'Subject', 'Вчитель': 'Teacher', 'Усі предмети': 'All subjects', 'Усі вчителі': 'All teachers',
   'Завантаження розкладу…': 'Loading the schedule…', 'Для цього класу розклад ще не додано.': 'No schedule has been added for this class yet.',
   'Клас': 'Class', 'Оберіть клас': 'Choose a class', 'Предмет': 'Subject',
   'Всі предмети': 'All subjects', 'Вчитель': 'Teacher', 'Всі вчителі': 'All teachers',

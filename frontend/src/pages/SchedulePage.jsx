@@ -29,6 +29,8 @@ export default function SchedulePage() {
   const [lessons, setLessons] = useState([]);
   const [status, setStatus] = useState('loading');
   const [selectedClass, setSelectedClass] = useState(() => searchParams.get('class') || '');
+  const [selectedTeacher, setSelectedTeacher] = useState(() => searchParams.get('teacher') || '');
+  const [selectedSubject, setSelectedSubject] = useState(() => searchParams.get('subject') || '');
 
   useEffect(() => {
     let active = true;
@@ -50,18 +52,22 @@ export default function SchedulePage() {
   const classes = useMemo(() => [...new Set(lessons.map((lesson) => lesson.className).filter(Boolean))]
     .sort((a, b) => classNumber(a) - classNumber(b)), [lessons]);
 
+  const teachers = useMemo(() => [...new Set(lessons.map((lesson) => lesson.teacher).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, 'uk')), [lessons]);
+  const subjects = useMemo(() => [...new Set(lessons.map((lesson) => lesson.subject).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, 'uk')), [lessons]);
+
   useEffect(() => {
-    if (selectedClass && classes.includes(selectedClass)) return;
-    if (classes.length) {
-      const next = classes[0];
-      setSelectedClass(next);
-      setSearchParams((current) => { current.set('class', next); return current; }, { replace: true });
-    }
-  }, [classes, selectedClass, setSearchParams]);
+    if (selectedClass && !classes.includes(selectedClass)) setSelectedClass('');
+    if (selectedTeacher && !teachers.includes(selectedTeacher)) setSelectedTeacher('');
+    if (selectedSubject && !subjects.includes(selectedSubject)) setSelectedSubject('');
+  }, [classes, selectedClass, subjects, selectedSubject, teachers, selectedTeacher]);
 
   const visibleLessons = useMemo(() => lessons
-    .filter((lesson) => !selectedClass || lesson.className === selectedClass)
-    .sort((a, b) => String(a.startTime || '').localeCompare(String(b.startTime || '')) || Number(a.order || 0) - Number(b.order || 0)), [lessons, selectedClass]);
+    .filter((lesson) => (!selectedClass || lesson.className === selectedClass)
+      && (!selectedTeacher || lesson.teacher === selectedTeacher)
+      && (!selectedSubject || lesson.subject === selectedSubject))
+    .sort((a, b) => String(a.startTime || '').localeCompare(String(b.startTime || '')) || Number(a.order || 0) - Number(b.order || 0)), [lessons, selectedClass, selectedSubject, selectedTeacher]);
 
   const byDay = useMemo(() => weekdays.reduce((result, day) => {
     result[day] = visibleLessons.filter((lesson) => lesson.weekday === day);
@@ -78,6 +84,18 @@ export default function SchedulePage() {
     }, { replace: true });
   }
 
+  function selectFilter(key, setter) {
+    return (event) => {
+      const next = event.target.value;
+      setter(next);
+      setSearchParams((current) => {
+        if (next) current.set(key, next);
+        else current.delete(key);
+        return current;
+      }, { replace: true });
+    };
+  }
+
   return (
     <main className="page-main">
       <div className="container">
@@ -86,7 +104,22 @@ export default function SchedulePage() {
           <label>
             {t('Клас')}
             <select value={selectedClass} onChange={selectClass}>
+              <option value="">{t('Усі класи')}</option>
               {classes.map((className) => <option key={className} value={className}>{className}</option>)}
+            </select>
+          </label>
+          <label>
+            {t('Предмет')}
+            <select value={selectedSubject} onChange={selectFilter('subject', setSelectedSubject)}>
+              <option value="">{t('Усі предмети')}</option>
+              {subjects.map((subject) => <option key={subject} value={subject}>{subject}</option>)}
+            </select>
+          </label>
+          <label>
+            {t('Вчитель')}
+            <select value={selectedTeacher} onChange={selectFilter('teacher', setSelectedTeacher)}>
+              <option value="">{t('Усі вчителі')}</option>
+              {teachers.map((teacher) => <option key={teacher} value={teacher}>{teacher}</option>)}
             </select>
           </label>
         </div>
