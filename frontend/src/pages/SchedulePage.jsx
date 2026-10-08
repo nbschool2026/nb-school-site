@@ -38,6 +38,16 @@ function formatTime(value) {
   return String(value || '').slice(0, 5);
 }
 
+function uniqueLessons(records) {
+  const seen = new Set();
+  return records.filter((lesson) => {
+    const key = [lesson.className, lesson.weekday, lesson.startTime, lesson.endTime, lesson.subject, lesson.teacher].join('|');
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 export default function SchedulePage() {
   const { locale, t } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -54,7 +64,7 @@ export default function SchedulePage() {
     fetchCollectionLocalizedAll('/schedule-lessons', 'sort=order:asc', locale)
       .then((records) => {
         if (!active) return;
-        setLessons(records.length ? records : fallbackScheduleLessons);
+        setLessons(records.length ? uniqueLessons(records) : fallbackScheduleLessons);
         setStatus('ready');
       })
       .catch(() => {

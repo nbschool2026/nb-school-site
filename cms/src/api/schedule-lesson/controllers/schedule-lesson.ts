@@ -62,15 +62,14 @@ export default factories.createCoreController(uid, ({ strapi }) => ({
     const invalid = items.find((item) => !item.className || !item.weekday || !item.startTime || !item.subject);
     if (invalid || !items.length) return ctx.badRequest('CSV має містити className, weekday, lessonNumber і subject.');
 
-    const existing = await strapi.db.query(uid).findMany({ select: ['documentId'] });
-    for (const record of existing) {
-      await strapi.documents(uid).delete({ documentId: record.documentId, locale: 'uk' });
-    }
+    const existingCount = await strapi.db.query(uid).count();
+    // Remove every locale/status row in one operation so repeated imports cannot leave stale duplicates.
+    await strapi.db.query(uid).deleteMany({});
     for (const item of items) {
       const { lessonNumber: _lessonNumber, ...data } = item;
       const draft = await strapi.documents(uid).create({ locale: 'uk', data: data as any });
       await strapi.documents(uid).publish({ documentId: draft.documentId, locale: 'uk' });
     }
-    ctx.body = { imported: items.length, deleted: existing.length };
+    ctx.body = { imported: items.length, deleted: existingCount };
   },
 }));
