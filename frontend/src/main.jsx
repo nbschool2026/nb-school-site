@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import AppLayout from './components/AppLayout.jsx';
 import HomePage from './pages/HomePage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
@@ -11,9 +11,20 @@ import DistanceLearningPage from './pages/DistanceLearningPage.jsx';
 import './styles.css';
 import { LocaleProvider } from './lib/locale.jsx';
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [pathname]);
+
+  return null;
+}
+
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
+      <ScrollToTop />
       <LocaleProvider>
       <Routes>
         <Route element={<AppLayout />}>
