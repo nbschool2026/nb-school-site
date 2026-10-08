@@ -52,9 +52,10 @@ export default function SchedulePage() {
   const { locale, t } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
   const savedFilters = storedFilters();
+  const hasSavedFilters = Object.keys(savedFilters).length > 0;
   const [lessons, setLessons] = useState([]);
   const [status, setStatus] = useState('loading');
-  const [selectedClass, setSelectedClass] = useState(() => searchParams.get('class') || savedFilters.className || '5 Клас');
+  const [selectedClass, setSelectedClass] = useState(() => searchParams.get('class') || (hasSavedFilters ? savedFilters.className || '' : '5 Клас'));
   const [selectedTeacher, setSelectedTeacher] = useState(() => searchParams.get('teacher') || savedFilters.teacher || '');
   const [selectedSubject, setSelectedSubject] = useState(() => searchParams.get('subject') || savedFilters.subject || '');
 
