@@ -113,6 +113,7 @@ export default function SchedulePage() {
     result[day] = visibleLessons.filter((lesson) => lesson.weekday === day);
     return result;
   }, {}), [visibleLessons]);
+  const showClassOnCard = !selectedClass && !!selectedTeacher;
 
   function selectClass(event) {
     const next = event.target.value;
@@ -173,6 +174,7 @@ export default function SchedulePage() {
               <div className="lesson-list">
                 {byDay[day].map((lesson) => <article className="lesson-card" key={lesson.documentId || lesson.id || `${day}-${lesson.startTime}-${lesson.subject}`}>
                   <span>{formatTime(lesson.startTime)} – {formatTime(lesson.endTime)}</span>
+                  {showClassOnCard && <p className="lesson-class">{lesson.className}</p>}
                   <h4>{lesson.subject}</h4>
                   {lesson.teacher && <p>{lesson.teacher}</p>}
                   {lesson.room && <p><MaterialIcon name="meeting_room" /> {lesson.room}</p>}

@@ -561,6 +561,13 @@ img {
   margin: 4px 0 0;
 }
 
+.lesson-card .lesson-class {
+  margin-top: 8px;
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
 .lesson-card p,
 .empty-day {
   color: var(--muted);
