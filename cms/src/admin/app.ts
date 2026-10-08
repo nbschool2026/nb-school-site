@@ -1,4 +1,14 @@
+import { Calendar } from '@strapi/icons';
+
 export default {
+  register(app) {
+    app.addMenuLink({
+      to: '/schedule-import',
+      icon: Calendar,
+      intlLabel: { id: 'schedule-import.menu', defaultMessage: 'Імпорт розкладу' },
+      Component: async () => import('./pages/ScheduleImport'),
+    });
+  },
   config: {
     locales: ['uk', 'en'],
     translations: {
