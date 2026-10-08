@@ -2,10 +2,12 @@ import { ensureUkrainianContentManagerLabels } from './content-manager-labels';
 import { ensureSeedMedia } from './seed-media';
 import { ensureContentLocales } from './content-locales';
 import { registerDocumentPreviewConversion } from './document-preview-conversion';
+import scheduleImportRoutes from './admin/routes/schedule-import';
 
 export default {
   register({ strapi }) {
     registerDocumentPreviewConversion(strapi);
+    strapi.admin.routes['schedule-import'] = scheduleImportRoutes as any;
   },
 
   async bootstrap({ strapi }) {
