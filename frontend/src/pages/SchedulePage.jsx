@@ -14,6 +14,15 @@ const weekdayLabels = {
   thursday: 'Четвер',
   friday: 'П’ятниця',
 };
+const scheduleFilterStorageKey = 'nb-school-schedule-filters';
+
+function storedFilters() {
+  try {
+    return JSON.parse(localStorage.getItem(scheduleFilterStorageKey) || '{}');
+  } catch {
+    return {};
+  }
+}
 
 function classNumber(value) {
   return Number(String(value || '').match(/\d+/)?.[0] || 999);
@@ -26,11 +35,12 @@ function formatTime(value) {
 export default function SchedulePage() {
   const { locale, t } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
+  const savedFilters = storedFilters();
   const [lessons, setLessons] = useState([]);
   const [status, setStatus] = useState('loading');
-  const [selectedClass, setSelectedClass] = useState(() => searchParams.get('class') || '');
-  const [selectedTeacher, setSelectedTeacher] = useState(() => searchParams.get('teacher') || '');
-  const [selectedSubject, setSelectedSubject] = useState(() => searchParams.get('subject') || '');
+  const [selectedClass, setSelectedClass] = useState(() => searchParams.get('class') || savedFilters.className || '5 Клас');
+  const [selectedTeacher, setSelectedTeacher] = useState(() => searchParams.get('teacher') || savedFilters.teacher || '');
+  const [selectedSubject, setSelectedSubject] = useState(() => searchParams.get('subject') || savedFilters.subject || '');
 
   useEffect(() => {
     let active = true;
@@ -58,10 +68,22 @@ export default function SchedulePage() {
     .sort((a, b) => a.localeCompare(b, 'uk')), [lessons]);
 
   useEffect(() => {
-    if (selectedClass && !classes.includes(selectedClass)) setSelectedClass('');
+    if (selectedClass && !classes.includes(selectedClass)) setSelectedClass(classes.includes('5 Клас') ? '5 Клас' : '');
     if (selectedTeacher && !teachers.includes(selectedTeacher)) setSelectedTeacher('');
     if (selectedSubject && !subjects.includes(selectedSubject)) setSelectedSubject('');
   }, [classes, selectedClass, subjects, selectedSubject, teachers, selectedTeacher]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(scheduleFilterStorageKey, JSON.stringify({
+        className: selectedClass,
+        teacher: selectedTeacher,
+        subject: selectedSubject,
+      }));
+    } catch {
+      // Storage can be unavailable in private or restricted browser contexts.
+    }
+  }, [selectedClass, selectedSubject, selectedTeacher]);
 
   const visibleLessons = useMemo(() => lessons
     .filter((lesson) => (!selectedClass || lesson.className === selectedClass)
