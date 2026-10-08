@@ -542,6 +542,27 @@ img {
   gap: 12px;
 }
 
+.schedule-gap-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  margin-top: 14px;
+}
+
+.schedule-gap-toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+}
+
+.lesson-gap {
+  min-height: 82px;
+  border: 2px dashed rgba(221, 109, 6, 0.35);
+  border-radius: 10px;
+  background: rgba(221, 109, 6, 0.03);
+}
+
 .lesson-card {
   border-left: 4px solid var(--primary);
   border-radius: 10px;

@@ -38,6 +38,15 @@ function formatTime(value) {
   return String(value || '').slice(0, 5);
 }
 
+const lessonSlotByTime = {
+  '08:15': 1, '08:55': 2, '09:45': 3, '10:30': 4, '11:15': 5, '12:00': 6,
+  '12:45': 7, '13:30': 8, '14:15': 9, '15:00': 10, '15:45': 11, '16:30': 12,
+};
+
+function lessonSlot(lesson) {
+  return Number(lesson.order) || lessonSlotByTime[formatTime(lesson.startTime)] || 0;
+}
+
 function uniqueLessons(records) {
   const seen = new Set();
   return records.filter((lesson) => {
@@ -58,6 +67,7 @@ export default function SchedulePage() {
   const [selectedClass, setSelectedClass] = useState(() => searchParams.get('class') || (hasSavedFilters ? savedFilters.className || '' : '5 Клас'));
   const [selectedTeacher, setSelectedTeacher] = useState(() => searchParams.get('teacher') || savedFilters.teacher || '');
   const [selectedSubject, setSelectedSubject] = useState(() => searchParams.get('subject') || savedFilters.subject || '');
+  const [showGaps, setShowGaps] = useState(() => savedFilters.showGaps === true);
 
   useEffect(() => {
     let active = true;
@@ -98,11 +108,12 @@ export default function SchedulePage() {
         className: selectedClass,
         teacher: selectedTeacher,
         subject: selectedSubject,
+        showGaps,
       }));
     } catch {
       // Storage can be unavailable in private or restricted browser contexts.
     }
-  }, [selectedClass, selectedSubject, selectedTeacher]);
+  }, [selectedClass, selectedSubject, selectedTeacher, showGaps]);
 
   const visibleLessons = useMemo(() => lessons
     .filter((lesson) => (!selectedClass || lesson.className === selectedClass)
@@ -138,6 +149,33 @@ export default function SchedulePage() {
     };
   }
 
+  const showGapOption = !selectedClass && !selectedSubject && !!selectedTeacher;
+
+  function renderDayLessons(day) {
+    const dayLessons = byDay[day];
+    const content = [];
+    let previousSlot = null;
+    dayLessons.forEach((lesson) => {
+      const slot = lessonSlot(lesson);
+      if (showGapOption && showGaps && previousSlot !== null && slot > previousSlot + 1) {
+        for (let gap = previousSlot + 1; gap < slot; gap += 1) {
+          content.push(<div className="lesson-gap" key={`${day}-gap-${gap}`} aria-label={`${t('Вікно')} ${gap}`} />);
+        }
+      }
+      content.push({ lesson, key: lesson.documentId || lesson.id || `${day}-${lesson.startTime}-${lesson.subject}-${lesson.className}` });
+      previousSlot = Math.max(previousSlot ?? 0, slot);
+    });
+    return content.map((item) => item.lesson ? (
+      <article className="lesson-card" key={item.key}>
+        <span>{formatTime(item.lesson.startTime)} – {formatTime(item.lesson.endTime)}</span>
+        {showClassOnCard && <p className="lesson-class">{item.lesson.className}</p>}
+        <h4>{item.lesson.subject}</h4>
+        {!showClassOnCard && item.lesson.teacher && <p>{item.lesson.teacher}</p>}
+        {item.lesson.room && <p><MaterialIcon name="meeting_room" /> {item.lesson.room}</p>}
+      </article>
+    ) : item);
+  }
+
   return (
     <main className="page-main">
       <div className="container">
@@ -165,6 +203,10 @@ export default function SchedulePage() {
             </select>
           </label>
         </div>
+        {showGapOption && <label className="schedule-gap-toggle">
+          <span>{t('Показати вікна')}</span>
+          <input type="checkbox" checked={showGaps} onChange={(event) => setShowGaps(event.target.checked)} />
+        </label>}
 
         {status === 'loading' && <p>{t('Завантаження розкладу…')}</p>}
         {status === 'ready' && !visibleLessons.length && <p>{t('Для цього класу розклад ще не додано.')}</p>}
@@ -172,15 +214,7 @@ export default function SchedulePage() {
           <div className="schedule-grid">
             {weekdays.map((day) => <section className="schedule-day" key={day}>
               <h3>{t(weekdayLabels[day])}</h3>
-              <div className="lesson-list">
-                {byDay[day].map((lesson) => <article className="lesson-card" key={lesson.documentId || lesson.id || `${day}-${lesson.startTime}-${lesson.subject}`}>
-                  <span>{formatTime(lesson.startTime)} – {formatTime(lesson.endTime)}</span>
-                  {showClassOnCard && <p className="lesson-class">{lesson.className}</p>}
-                  <h4>{lesson.subject}</h4>
-                  {!showClassOnCard && lesson.teacher && <p>{lesson.teacher}</p>}
-                  {lesson.room && <p><MaterialIcon name="meeting_room" /> {lesson.room}</p>}
-                </article>)}
-              </div>
+              <div className="lesson-list">{renderDayLessons(day)}</div>
             </section>)}
           </div>
         </div>}
