@@ -13,7 +13,6 @@ export default {
   async bootstrap({ strapi }) {
     await ensureContentLocales(strapi);
     await seedCollection(strapi, 'api::staff-member.staff-member', staffMembers);
-    await seedCollection(strapi, 'api::schedule-lesson.schedule-lesson', scheduleLessons);
     await seedCollection(strapi, 'api::history-item.history-item', historyItems);
     await seedCollection(strapi, 'api::value-card.value-card', valueCards);
     await seedSingleType(strapi, 'api::school-profile.school-profile', schoolProfile);
@@ -107,13 +106,6 @@ const staffMembers = [
     position: 'Заступник директора з виховної роботи',
     order: 30,
   },
-];
-
-const scheduleLessons = [
-  { className: '11 Клас', weekday: 'monday', startTime: '08:30:00', endTime: '09:15:00', subject: 'Математика', teacher: 'Іван Іванов', order: 10 },
-  { className: '11 Клас', weekday: 'monday', startTime: '09:25:00', endTime: '10:10:00', subject: 'Фізика', teacher: 'Олена Кравченко', order: 20 },
-  { className: '11 Клас', weekday: 'tuesday', startTime: '08:30:00', endTime: '09:15:00', subject: 'Історія', teacher: 'Микола Сидоренко', order: 30 },
-  { className: '11 Клас', weekday: 'wednesday', startTime: '08:30:00', endTime: '09:15:00', subject: 'Англійська', teacher: 'Анна Коваль', order: 40 },
 ];
 
 const historyItems = [
