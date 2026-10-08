@@ -1,6 +1,8 @@
-import React, { useState, type ChangeEvent } from 'react';
+import React, { useState } from 'react';
 import { Button, Main, Box, Typography } from '@strapi/design-system';
-import { useFetchClient, useNotification } from '@strapi/admin/strapi-admin';
+// The admin-only export is resolved by the Strapi admin bundler, not the CMS TS project.
+// @ts-expect-error Strapi's package export is not visible with this project's legacy module resolution.
+import { useFetchClient, useNotification } from '@strapi/strapi/admin';
 
 export default function ScheduleImport() {
   const { post } = useFetchClient();
@@ -31,7 +33,7 @@ export default function ScheduleImport() {
         React.createElement(Box, { paddingTop: 4, paddingBottom: 4 },
           React.createElement(Typography, null, 'Завантажте CSV. Після натискання кнопки старі записи розкладу будуть видалені, а нові опубліковані.'),
         ),
-        React.createElement('input', { type: 'file', accept: '.csv,text/csv', onChange: (event: ChangeEvent<HTMLInputElement>) => setFile(event.target.files?.[0] || null) }),
+        React.createElement('input', { type: 'file', accept: '.csv,text/csv', onChange: (event: any) => setFile(event.target.files?.[0] || null) }),
         React.createElement(Box, { paddingTop: 4 },
           React.createElement(Button, { disabled: !file || busy, onClick: importSchedule, loading: busy }, 'Розпарсити й замінити розклад'),
         ),
