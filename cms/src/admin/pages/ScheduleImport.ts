@@ -19,8 +19,9 @@ export default function ScheduleImport() {
       const response = await post('/admin/schedule-lessons/import', data);
       toggleNotification({ type: 'success', message: `Розклад оновлено: ${response.data.imported} записів.` });
       setFile(null);
-    } catch (error) {
-      toggleNotification({ type: 'warning', message: 'Не вдалося імпортувати CSV. Перевірте формат файлу.' });
+    } catch (error: any) {
+      const message = error?.response?.data?.error?.message || 'Не вдалося імпортувати CSV. Перевірте формат файлу.';
+      toggleNotification({ type: 'warning', message });
     } finally {
       setBusy(false);
     }

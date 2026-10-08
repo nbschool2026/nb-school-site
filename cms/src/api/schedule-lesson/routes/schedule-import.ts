@@ -4,7 +4,7 @@ export default {
     {
       method: 'POST',
       path: '/schedule-lessons/import',
-      handler: 'schedule-lesson.import',
+      handler: 'api::schedule-lesson.schedule-lesson.import',
       config: {
         policies: ['admin::isAuthenticatedAdmin'],
       },
