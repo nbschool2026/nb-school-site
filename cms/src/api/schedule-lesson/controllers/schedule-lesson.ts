@@ -55,6 +55,13 @@ function normalize(item: Record<string, string>, index: number) {
   };
 }
 
+function csvCell(value: unknown) {
+  const text = value == null ? '' : String(value);
+  return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+const exportHeaders = ['className', 'weekday', 'lessonNumber', 'subject', 'teacher', 'room', 'в укритті', 'startTime', 'endTime'];
+
 export default factories.createCoreController(uid, ({ strapi }) => ({
   async import(ctx) {
     const uploaded = Array.isArray(ctx.request.files?.file) ? ctx.request.files.file[0] : ctx.request.files?.file;
@@ -74,5 +81,24 @@ export default factories.createCoreController(uid, ({ strapi }) => ({
       await strapi.documents(uid).publish({ documentId: draft.documentId, locale: 'uk' });
     }
     ctx.body = { imported: items.length, deleted: existingCount };
+  },
+
+  async export(ctx) {
+    const lessons = await strapi.documents(uid).findMany({
+      status: 'published',
+      locale: 'uk',
+      sort: ['weekday:asc', 'order:asc', 'className:asc'],
+      limit: 10000,
+    });
+    const rows = lessons.map((lesson: any) => exportHeaders.map((header) => {
+      if (header === 'lessonNumber') return lesson.order || '';
+      if (header === 'в укритті') return lesson.inShelter ? 'так' : '';
+      return lesson[header] || '';
+    }).map(csvCell).join(','));
+
+    ctx.type = 'text/csv';
+    ctx.set('Content-Type', 'text/csv; charset=utf-8');
+    ctx.set('Content-Disposition', 'attachment; filename="schedule-lessons.csv"');
+    ctx.body = `\ufeff${exportHeaders.join(',')}\n${rows.join('\n')}\n`;
   },
 }));

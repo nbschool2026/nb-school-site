@@ -8,6 +8,12 @@ export default {
       intlLabel: { id: 'schedule-import.menu', defaultMessage: 'Імпорт розкладу' },
       Component: async () => import('./pages/ScheduleImport'),
     });
+    app.addMenuLink({
+      to: '/schedule-export',
+      icon: Calendar,
+      intlLabel: { id: 'schedule-export.menu', defaultMessage: 'Експорт розкладу' },
+      Component: async () => import('./pages/ScheduleExport'),
+    });
   },
   config: {
     locales: ['uk', 'en'],
