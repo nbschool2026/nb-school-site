@@ -149,7 +149,8 @@ export default function SchedulePage() {
     };
   }
 
-  const showGapOption = !selectedClass && !selectedSubject && !!selectedTeacher;
+  const showGapOption = !selectedSubject
+    && ((!selectedClass && !!selectedTeacher) || (!!selectedClass && !selectedTeacher));
 
   function renderDayLessons(day) {
     const dayLessons = byDay[day];
