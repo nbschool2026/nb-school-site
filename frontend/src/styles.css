@@ -595,6 +595,14 @@ img {
   font-size: 0.86rem;
 }
 
+.lesson-card .lesson-shelter {
+  margin-top: 8px;
+  color: #1f9d3a;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-align: right;
+}
+
 .contact-band {
   padding: 72px 0;
   background: rgba(221, 109, 6, 0.07);

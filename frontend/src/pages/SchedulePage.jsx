@@ -172,6 +172,7 @@ export default function SchedulePage() {
         {showClassOnCard && <p className="lesson-class">{item.lesson.className}</p>}
         <h4>{item.lesson.subject}</h4>
         {!showClassOnCard && item.lesson.teacher && <p>{item.lesson.teacher}</p>}
+        {item.lesson.inShelter && <p className="lesson-shelter">{t('Укриття')}</p>}
         {item.lesson.room && <p><MaterialIcon name="meeting_room" /> {item.lesson.room}</p>}
       </article>
     ) : item);

@@ -45,10 +45,13 @@ function normalize(item: Record<string, string>, index: number) {
   const weekday = weekdays[String(item.weekday || item.day || '').trim().toLowerCase()];
   const rawClass = String(item.className || item.class || '').trim();
   const className = /^\d+$/.test(rawClass) ? `${rawClass} Клас` : rawClass;
+  const shelterValue = String(item["в укритті"] || item.inShelter || item.shelter || "").trim().toLowerCase();
   return {
     className, weekday, lessonNumber, startTime: times?.[0], endTime: times?.[1],
     subject: String(item.subject || '').trim(), teacher: String(item.teacher || '').trim(),
-    room: String(item.room || '').trim(), order: lessonNumber || index,
+    room: String(item.room || '').trim(),
+    inShelter: ["так", "yes", "true", "1"].includes(shelterValue),
+    order: lessonNumber || index,
   };
 }
 
