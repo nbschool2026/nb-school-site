@@ -161,7 +161,8 @@ async function fetchAllLessons() {
   const records = [];
   for (let page = 1; page <= 100; page += 1) {
     const url = apiUrl + `?pagination[page]=${page}&pagination[pageSize]=100&sort=order:asc`;
-    const response = await fetch(url);
+    const headers = process.env.SCHEDULE_API_TOKEN ? { Authorization: `Bearer ${process.env.SCHEDULE_API_TOKEN}` } : {};
+    const response = await fetch(url, { headers });
     if (!response.ok) throw new Error(`CMS API повернула ${response.status}: ${url}`);
     const payload = await response.json();
     const batch = Array.isArray(payload.data) ? payload.data : [];
