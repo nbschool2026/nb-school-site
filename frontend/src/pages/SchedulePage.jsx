@@ -37,6 +37,19 @@ function matchClass(value, classes) {
 function formatTime(value) {
   return String(value || '').slice(0, 5);
 }
+function timeMinutes(value) {
+  const match = String(value || '').match(/^(\d{1,2}):(\d{2})/);
+  return match ? Number(match[1]) * 60 + Number(match[2]) : null;
+}
+
+function isLessonCurrent(lesson, now) {
+  const dayIndex = now.getDay();
+  if (dayIndex < 1 || dayIndex > 5 || lesson.weekday !== weekdays[dayIndex - 1]) return false;
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  const start = timeMinutes(lesson.startTime);
+  const end = timeMinutes(lesson.endTime);
+  return start !== null && end !== null && currentMinutes >= start && currentMinutes < end;
+}
 
 const lessonSlotByTime = {
   '08:15': 1, '08:55': 2, '09:45': 3, '10:30': 4, '11:15': 5, '12:00': 6,
@@ -68,6 +81,12 @@ export default function SchedulePage() {
   const [selectedTeacher, setSelectedTeacher] = useState(() => searchParams.get('teacher') || savedFilters.teacher || '');
   const [selectedSubject, setSelectedSubject] = useState(() => searchParams.get('subject') || savedFilters.subject || '');
   const [showGaps, setShowGaps] = useState(() => savedFilters.showGaps === true);
+  const [currentTime, setCurrentTime] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setCurrentTime(new Date()), 30000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -167,7 +186,7 @@ export default function SchedulePage() {
       previousSlot = Math.max(previousSlot ?? 0, slot);
     });
     return content.map((item) => item.lesson ? (
-      <article className="lesson-card" key={item.key}>
+      <article className={`lesson-card${isLessonCurrent(item.lesson, currentTime) ? ' is-current' : ''}`} key={item.key} aria-current={isLessonCurrent(item.lesson, currentTime) ? 'time' : undefined}>
         <span>{formatTime(item.lesson.startTime)} – {formatTime(item.lesson.endTime)}</span>
         {showClassOnCard && <p className="lesson-class">{item.lesson.className}</p>}
         <h4>{item.lesson.subject}</h4>

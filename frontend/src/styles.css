@@ -571,6 +571,13 @@ img {
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
 }
 
+.lesson-card.is-current {
+  border-left-color: #ef6b8a;
+  background: #fffafb;
+  box-shadow: 0 10px 24px rgba(239, 107, 138, 0.34);
+  outline: 2px solid rgba(239, 107, 138, 0.2);
+}
+
 .lesson-card span {
   color: var(--muted);
   font-size: 0.72rem;
