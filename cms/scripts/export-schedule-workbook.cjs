@@ -123,6 +123,7 @@ async function createWorkbook(items, conflicts) {
   const workbook = new ExcelJS.Workbook();
   workbook.creator = 'Novobilouskyi Lyceum';
   workbook.created = new Date();
+  workbook.calcProperties = { fullCalcOnLoad: true, forceFullCalc: true };
   const dataHeaders = ['Клас', 'День', 'weekday', 'Номер уроку', 'Початок', 'Кінець', 'Предмет', 'Вчитель', 'Кабінет', 'В укритті'];
   const data = workbook.addWorksheet('Дані');
   data.addRow(dataHeaders);
@@ -143,13 +144,14 @@ async function createWorkbook(items, conflicts) {
   const makeView = (name, criteriaColumn, criteria) => {
     const sheet = workbook.addWorksheet(safeSheetName(name, used));
     sheet.addRow(dataHeaders);
-    const escaped = String(criteria).replace(/"/g, '""');
-    const source = `'Дані'!$A$2:$J$2000`;
-    const criteriaRange = `'Дані'!$${criteriaColumn}$2:$${criteriaColumn}$2000`;
-    sheet.getCell('A2').value = { formula: `FILTER(${source},${criteriaRange}="${escaped}","")` };
+    const matches = items.map((item, index) => ({ item, index }))
+      .filter(({ item }) => (criteriaColumn === 'A' ? item.className : item.teacher) === criteria);
+    const columnLetter = (number) => String.fromCharCode(64 + number);
+    matches.forEach(({ index }) => {
+      sheet.addRow(dataHeaders.map((_, columnIndex) => ({ formula: `='Дані'!${columnLetter(columnIndex + 1)}${index + 2}` })));
+    });
     styleSheet(sheet);
-    sheet.getRow(2).height = 20;
-    sheet.getCell('A1').note = 'Редагуйте дані на аркуші «Дані». Цей аркуш оновлюється формулою FILTER.';
+    sheet.getCell('A1').note = 'Редагуйте дані на аркуші «Дані». Значення на цьому аркуші пов’язані формулами з рядками джерела.';
     return sheet;
   };
   classes.forEach((className) => makeView(className, 'A', className));
