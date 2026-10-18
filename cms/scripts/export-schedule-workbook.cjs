@@ -89,6 +89,15 @@ function csvCell(value) {
   return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
 }
 
+function writeLessonsCsv(items, fileName) {
+  const headers = ['className', 'weekday', 'lessonNumber', 'subject', 'teacher', 'room', 'в укритті', 'startTime', 'endTime'];
+  const rows = items.map((item) => [
+    item.className, item.weekday, item.lessonNumber, item.subject, item.teacher, item.room,
+    item.inShelter ? 'так' : '', item.startTime, item.endTime,
+  ]);
+  fs.writeFileSync(fileName, [headers, ...rows].map((row) => row.map(csvCell).join(',')).join('\n') + '\n', 'utf8');
+}
+
 function writeConflictCsv(conflicts, fileName) {
   const headers = ['Тип', 'Ключ', 'День', 'Урок 1', 'Час 1', 'Клас 1', 'Предмет 1', 'Вчитель 1', 'Урок 2', 'Час 2', 'Клас 2', 'Предмет 2', 'Вчитель 2'];
   const rows = conflicts.map((conflict) => [
@@ -178,12 +187,15 @@ async function main() {
   const items = dedupe(records.map(normalize).filter((item) => item.className && weekdays.includes(item.weekday) && item.startTime && item.endTime && item.subject));
   const conflicts = conflictRows(items);
   const conflictCsv = output.replace(/\.xlsx$/i, '') + '-overlaps.csv';
+  const lessonsCsv = output.replace(/\.xlsx$/i, '') + '-lessons.csv';
   writeConflictCsv(conflicts, conflictCsv);
+  writeLessonsCsv(items, lessonsCsv);
   await createWorkbook(items, conflicts);
   console.log(`Уроків: ${items.length}`);
   console.log(`Накладок: ${conflicts.length}`);
   console.log(`Excel: ${output}`);
   console.log(`CSV накладок: ${conflictCsv}`);
+  console.log(`CSV усіх уроків: ${lessonsCsv}`);
   if (conflicts.length) conflicts.forEach((c) => console.log(`[${c.type}] ${c.weekdayLabel}: ${c.key} — ${c.first.startTime}-${c.first.endTime} ${c.first.subject} / ${c.second.startTime}-${c.second.endTime} ${c.second.subject}`));
 }
 
