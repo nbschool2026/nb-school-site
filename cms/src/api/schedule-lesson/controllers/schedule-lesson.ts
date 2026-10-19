@@ -113,6 +113,25 @@ function normalize(item: Record<string, string>, index: number) {
   };
 }
 
+function classNumber(value: unknown) {
+  return Number(String(value || '').match(/\d+/)?.[0] || 999);
+}
+
+function lessonData(item: Record<string, any>) {
+  return {
+    className: String(item.className || '').trim(),
+    weekday: item.weekday,
+    startTime: item.startTime,
+    endTime: item.endTime,
+    subject: String(item.subject || '').trim(),
+    teacher: String(item.teacher || '').trim(),
+    room: String(item.room || '').trim(),
+    inShelter: item.inShelter === true,
+    lessonNumber: Number(item.order || 0),
+    order: Number(item.order || 0),
+  };
+}
+
 const exportHeaders = ['className', 'weekday', 'lessonNumber', 'subject', 'teacher', 'room', 'в укритті', 'startTime', 'endTime'];
 
 export default factories.createCoreController(uid, ({ strapi }) => ({
@@ -129,19 +148,25 @@ export default factories.createCoreController(uid, ({ strapi }) => ({
     const sourceRows = isXlsx
       ? await parseXlsx(filePath)
       : parseCsv(fs.readFileSync(filePath, 'utf8'));
-    const items = sourceRows.map(normalize);
+    const keepPrimary = ['true', '1', 'yes', 'так'].includes(String(ctx.request.body?.keepPrimary || '').trim().toLowerCase());
+    const items = sourceRows.map(normalize).filter((item) => !keepPrimary || classNumber(item.className) > 4);
     const invalid = items.find((item) => !item.className || !item.weekday || !item.startTime || !item.subject);
     if (invalid || !items.length) return ctx.badRequest('XLSX або CSV має містити className, weekday, lessonNumber і subject.');
 
     const existingCount = await strapi.db.query(uid).count();
+    const preservedPrimary = keepPrimary
+      ? (await strapi.documents(uid).findMany({ status: 'published', locale: 'uk', limit: 10000 }))
+        .filter((lesson: any) => classNumber(lesson.className) <= 4)
+        .map(lessonData)
+      : [];
     // Remove every locale/status row in one operation so repeated imports cannot leave stale duplicates.
     await strapi.db.query(uid).deleteMany({});
-    for (const item of items) {
+    for (const item of [...preservedPrimary, ...items]) {
       const { lessonNumber: _lessonNumber, ...data } = item;
       const draft = await strapi.documents(uid).create({ locale: 'uk', data: data as any });
       await strapi.documents(uid).publish({ documentId: draft.documentId, locale: 'uk' });
     }
-    ctx.body = { imported: items.length, deleted: existingCount };
+    ctx.body = { imported: items.length + preservedPrimary.length, replaced: items.length, preservedPrimary: preservedPrimary.length, deleted: existingCount };
   },
 
   async export(ctx) {

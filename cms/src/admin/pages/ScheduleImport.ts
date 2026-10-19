@@ -11,6 +11,7 @@ export default function ScheduleImport() {
   const { toggleNotification } = useNotification();
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+  const [keepPrimary, setKeepPrimary] = useState(true);
 
   async function copyPrompt() {
     try {
@@ -29,8 +30,10 @@ export default function ScheduleImport() {
     try {
       const data = new FormData();
       data.append('file', file);
+      data.append('keepPrimary', String(keepPrimary));
       const response = await post('/admin/schedule-lessons/import', data);
-      toggleNotification({ type: 'success', message: `Розклад оновлено: ${response.data.imported} записів.` });
+      const preserved = response.data.preservedPrimary ? ` Початкову школу збережено: ${response.data.preservedPrimary} записів.` : '';
+      toggleNotification({ type: 'success', message: `Розклад оновлено: ${response.data.replaced || response.data.imported} записів.${preserved}` });
       setFile(null);
     } catch (error: any) {
       const message = error?.response?.data?.error?.message || 'Не вдалося імпортувати XLSX або CSV. Перевірте формат файлу.';
@@ -45,9 +48,13 @@ export default function ScheduleImport() {
       React.createElement(Box, { padding: 8, background: 'neutral0' },
         React.createElement(Typography, { variant: 'alpha', tag: 'h1' }, 'Імпорт розкладу'),
         React.createElement(Box, { paddingTop: 4, paddingBottom: 4 },
-          React.createElement(Typography, null, 'Завантажте XLSX або CSV. Після натискання кнопки старі записи розкладу будуть видалені, а нові опубліковані.'),
+          React.createElement(Typography, null, 'Завантажте XLSX або CSV. Увімкнений прапорець збереже уроки 1–4 класів, а файл оновить розклад 5–11 класів.'),
         ),
         React.createElement('input', { type: 'file', accept: '.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,text/csv', onChange: (event: any) => setFile(event.target.files?.[0] || null) }),
+        React.createElement('label', { style: { display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px' } },
+          React.createElement('input', { type: 'checkbox', checked: keepPrimary, onChange: (event: any) => setKeepPrimary(event.target.checked) }),
+          'Залишити розклад початкової школи (1–4 класи)',
+        ),
         React.createElement(Box, { paddingTop: 4 },
           React.createElement(Button, { disabled: !file || busy, onClick: importSchedule, loading: busy }, 'Розпарсити й замінити розклад'),
         ),
