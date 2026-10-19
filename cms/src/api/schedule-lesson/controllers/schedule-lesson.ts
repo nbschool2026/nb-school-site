@@ -17,13 +17,17 @@ const weekdays: Record<string, string> = {
 };
 
 function parseCsv(text: string) {
+  // Excel on Ukrainian/European regional settings often saves CSV with `;`.
+  // Accept both delimiters so an exported file can be edited and imported again.
+  const firstLine = text.split(/\r?\n/, 1)[0] || '';
+  const delimiter = (firstLine.match(/;/g) || []).length > (firstLine.match(/,/g) || []).length ? ';' : ',';
   const rows: string[][] = [];
   let row: string[] = []; let cell = ''; let quoted = false;
   for (let i = 0; i < text.length; i += 1) {
     const char = text[i];
     if (char === '"' && text[i + 1] === '"' && quoted) { cell += '"'; i += 1; continue; }
     if (char === '"') { quoted = !quoted; continue; }
-    if (char === ',' && !quoted) { row.push(cell.trim()); cell = ''; continue; }
+    if (char === delimiter && !quoted) { row.push(cell.trim()); cell = ''; continue; }
     if ((char === '\n' || char === '\r') && !quoted) {
       if (char === '\r' && text[i + 1] === '\n') i += 1;
       row.push(cell.trim()); cell = '';
@@ -33,7 +37,7 @@ function parseCsv(text: string) {
     cell += char;
   }
   if (cell || row.length) { row.push(cell.trim()); rows.push(row); }
-  const headers = (rows.shift() || []).map((header) => header.replace(/^\ufeff/, '').trim());
+  const headers = (rows.shift() || []).map((header) => header.replace(/^\ufeff/, '').trim().replace(/^"|"$/g, ''));
   return rows.map((values) => headers.reduce<Record<string, string>>((record, header, index) => {
     record[header] = values[index] || ''; return record;
   }, {}));
