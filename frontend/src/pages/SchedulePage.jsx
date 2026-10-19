@@ -60,6 +60,43 @@ function lessonSlot(lesson) {
   return Number(lesson.order) || lessonSlotByTime[formatTime(lesson.startTime)] || 0;
 }
 
+function overlaps(first, second) {
+  const firstStart = timeMinutes(first.startTime);
+  const firstEnd = timeMinutes(first.endTime);
+  const secondStart = timeMinutes(second.startTime);
+  const secondEnd = timeMinutes(second.endTime);
+  return firstStart !== null && firstEnd !== null && secondStart !== null && secondEnd !== null
+    && firstStart < secondEnd && secondStart < firstEnd;
+}
+
+function findConflicts(records) {
+  const groups = [
+    { type: 'Клас', key: (lesson) => lesson.className },
+    { type: 'Вчитель', key: (lesson) => lesson.teacher },
+    { type: 'Кабінет', key: (lesson) => lesson.room },
+  ];
+  const conflicts = [];
+  groups.forEach((group) => {
+    weekdays.forEach((day) => {
+      const grouped = new Map();
+      records.filter((lesson) => lesson.weekday === day && group.key(lesson)).forEach((lesson) => {
+        const key = group.key(lesson);
+        if (!grouped.has(key)) grouped.set(key, []);
+        grouped.get(key).push(lesson);
+      });
+      grouped.forEach((dayLessons, key) => {
+        const sorted = [...dayLessons].sort((a, b) => (timeMinutes(a.startTime) ?? 9999) - (timeMinutes(b.startTime) ?? 9999));
+        for (let index = 0; index < sorted.length; index += 1) {
+          for (let next = index + 1; next < sorted.length; next += 1) {
+            if (overlaps(sorted[index], sorted[next])) conflicts.push({ type: group.type, key, day, first: sorted[index], second: sorted[next] });
+          }
+        }
+      });
+    });
+  });
+  return conflicts;
+}
+
 function uniqueLessons(records) {
   const seen = new Set();
   return records.filter((lesson) => {
@@ -144,6 +181,8 @@ export default function SchedulePage() {
     result[day] = visibleLessons.filter((lesson) => lesson.weekday === day);
     return result;
   }, {}), [visibleLessons]);
+  const conflicts = useMemo(() => findConflicts(lessons), [lessons]);
+  const [showConflicts, setShowConflicts] = useState(false);
   const showClassOnCard = !selectedClass && !!selectedTeacher;
 
   function selectClass(event) {
@@ -239,6 +278,25 @@ export default function SchedulePage() {
             </section>)}
           </div>
         </div>}
+        {status === 'ready' && <div className="schedule-conflicts-action">
+          <button type="button" className="soft-button" onClick={() => setShowConflicts((shown) => !shown)} aria-expanded={showConflicts}>
+            <MaterialIcon name={showConflicts ? 'expand_less' : 'warning'} />
+            {showConflicts ? t('Приховати конфлікти') : t('Показати конфлікти')}
+            {conflicts.length > 0 && <span className="schedule-conflict-count">{conflicts.length}</span>}
+          </button>
+        </div>}
+        {showConflicts && <section className="schedule-conflicts" aria-live="polite">
+          <h2>{t('Конфлікти розкладу')}</h2>
+          {!conflicts.length && <p>{t('Конфліктів не знайдено.')}</p>}
+          {!!conflicts.length && <div className="schedule-conflict-list">
+            {conflicts.map((conflict, index) => <article className="schedule-conflict" key={`${conflict.type}-${conflict.key}-${conflict.day}-${index}`}>
+              <strong>{t(`Конфлікт: ${conflict.type}`)} — {conflict.key}</strong>
+              <span>{t(weekdayLabels[conflict.day])}, {formatTime(conflict.first.startTime)} – {formatTime(conflict.first.endTime)}</span>
+              <p>{conflict.first.className} · {conflict.first.subject}{conflict.first.teacher ? ` · ${conflict.first.teacher}` : ''}</p>
+              <p>{conflict.second.className} · {conflict.second.subject}{conflict.second.teacher ? ` · ${conflict.second.teacher}` : ''}</p>
+            </article>)}
+          </div>}
+        </section>}
       </div>
     </main>
   );

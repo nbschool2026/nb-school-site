@@ -509,6 +509,17 @@ img {
 .schedule-filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 760px) { .schedule-filters { grid-template-columns: 1fr; } }
 
+.schedule-conflicts-action { display: flex; justify-content: center; margin-top: 28px; }
+.schedule-conflicts-action .soft-button { border: 0; cursor: pointer; }
+.schedule-conflict-count { display: inline-grid; min-width: 24px; height: 24px; place-items: center; padding: 0 6px; border-radius: 999px; color: #fff; background: var(--primary); font-size: .78rem; }
+.schedule-conflicts { margin-top: 24px; padding: 24px; border: 1px solid rgba(220, 38, 38, .18); border-radius: 12px; background: #fff; }
+.schedule-conflicts h2 { margin: 0 0 16px; font-size: 1.35rem; }
+.schedule-conflict-list { display: grid; gap: 12px; }
+.schedule-conflict { display: grid; gap: 4px; padding: 14px 16px; border-left: 4px solid #dc2626; border-radius: 8px; background: #fff7f7; }
+.schedule-conflict strong { color: #991b1b; }
+.schedule-conflict span { color: var(--muted); font-size: .9rem; font-weight: 700; }
+.schedule-conflict p { margin: 2px 0 0; color: var(--ink); }
+
 .schedule-scroll {
   margin-top: 26px;
   overflow-x: auto;

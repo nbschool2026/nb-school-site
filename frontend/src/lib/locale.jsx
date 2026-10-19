@@ -20,6 +20,7 @@ const english = {
   'Навчання': 'Learning', 'Розклад': 'Schedule', 'Розклад уроків': 'Class schedule', 'Розклад занять за класами та днями тижня.': 'Class schedule by grade and weekday.', 'Усі предмети': 'All subjects', 'Усі вчителі': 'All teachers',
   'Завантаження розкладу…': 'Loading the schedule…', 'Для цього класу розклад ще не додано.': 'No schedule has been added for this class yet.',
   'Клас': 'Class', 'Оберіть клас': 'Choose a class', 'Предмет': 'Subject', 'Вчитель': 'Teacher', 'Показати вікна': 'Show free periods', 'Укриття': 'Shelter', 'Вікно': 'Free period',
+  'Показати конфлікти': 'Show conflicts', 'Приховати конфлікти': 'Hide conflicts', 'Конфлікти розкладу': 'Schedule conflicts', 'Конфліктів не знайдено.': 'No schedule conflicts found.', 'Конфлікт: Клас': 'Class conflict', 'Конфлікт: Вчитель': 'Teacher conflict', 'Конфлікт: Кабінет': 'Room conflict',
   'Всі предмети': 'All subjects', 'Всі вчителі': 'All teachers',
   'Математика': 'Mathematics', 'Фізика': 'Physics', 'Українська мова': 'Ukrainian language',
   'Історія': 'History', 'Англійська': 'English', 'Фізкультура': 'Physical education',
