@@ -33,7 +33,7 @@ export default function ScheduleImport() {
       toggleNotification({ type: 'success', message: `Розклад оновлено: ${response.data.imported} записів.` });
       setFile(null);
     } catch (error: any) {
-      const message = error?.response?.data?.error?.message || 'Не вдалося імпортувати CSV. Перевірте формат файлу.';
+      const message = error?.response?.data?.error?.message || 'Не вдалося імпортувати XLSX або CSV. Перевірте формат файлу.';
       toggleNotification({ type: 'warning', message });
     } finally {
       setBusy(false);
@@ -45,9 +45,9 @@ export default function ScheduleImport() {
       React.createElement(Box, { padding: 8, background: 'neutral0' },
         React.createElement(Typography, { variant: 'alpha', tag: 'h1' }, 'Імпорт розкладу'),
         React.createElement(Box, { paddingTop: 4, paddingBottom: 4 },
-          React.createElement(Typography, null, 'Завантажте CSV. Після натискання кнопки старі записи розкладу будуть видалені, а нові опубліковані.'),
+          React.createElement(Typography, null, 'Завантажте XLSX або CSV. Після натискання кнопки старі записи розкладу будуть видалені, а нові опубліковані.'),
         ),
-        React.createElement('input', { type: 'file', accept: '.csv,text/csv', onChange: (event: any) => setFile(event.target.files?.[0] || null) }),
+        React.createElement('input', { type: 'file', accept: '.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,text/csv', onChange: (event: any) => setFile(event.target.files?.[0] || null) }),
         React.createElement(Box, { paddingTop: 4 },
           React.createElement(Button, { disabled: !file || busy, onClick: importSchedule, loading: busy }, 'Розпарсити й замінити розклад'),
         ),

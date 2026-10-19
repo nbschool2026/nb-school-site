@@ -1,5 +1,7 @@
 import fs from 'node:fs';
+import path from 'node:path';
 import { factories } from '@strapi/strapi';
+import ExcelJS from 'exceljs';
 
 const uid = 'api::schedule-lesson.schedule-lesson';
 const lessonTimes: Record<number, [string, string]> = {
@@ -50,6 +52,47 @@ function parseCsv(text: string) {
   }, {}));
 }
 
+function excelCellText(value: unknown) {
+  if (value == null) return '';
+  if (value instanceof Date) {
+    return `${String(value.getHours()).padStart(2, '0')}:${String(value.getMinutes()).padStart(2, '0')}:${String(value.getSeconds()).padStart(2, '0')}`;
+  }
+  if (typeof value === 'number' && value >= 0 && value < 1) {
+    const totalSeconds = Math.round(value * 24 * 60 * 60);
+    const hours = Math.floor(totalSeconds / 3600) % 24;
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+  if (typeof value === 'object') {
+    const richText = (value as { richText?: Array<{ text?: string }> }).richText;
+    if (richText) return richText.map((part) => part.text || '').join('');
+    const result = (value as { result?: unknown }).result;
+    if (result !== undefined) return excelCellText(result);
+    const text = (value as { text?: unknown }).text;
+    if (text !== undefined) return excelCellText(text);
+  }
+  return String(value).trim();
+}
+
+async function parseXlsx(filePath: string) {
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile(filePath);
+  const sheet = workbook.worksheets[0];
+  if (!sheet) return [];
+
+  const rows: string[][] = [];
+  sheet.eachRow((row) => {
+    const values = Array.isArray(row.values) ? row.values.slice(1).map(excelCellText) : [];
+    if (values.some(Boolean)) rows.push(values);
+  });
+  const headers = (rows.shift() || []).map((header) => header.replace(/^\ufeff/, '').trim());
+  return rows.map((values) => headers.reduce<Record<string, string>>((record, header, index) => {
+    record[header] = values[index] || '';
+    return record;
+  }, {}));
+}
+
 function normalize(item: Record<string, string>, index: number) {
   const lessonNumber = Number(item.lessonNumber || item.lesson || item.period);
   const times = lessonTimes[lessonNumber];
@@ -70,22 +113,21 @@ function normalize(item: Record<string, string>, index: number) {
   };
 }
 
-function csvCell(value: unknown) {
-  const text = value == null ? '' : String(value);
-  return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
-}
-
 const exportHeaders = ['className', 'weekday', 'lessonNumber', 'subject', 'teacher', 'room', 'в укритті', 'startTime', 'endTime'];
 
 export default factories.createCoreController(uid, ({ strapi }) => ({
   async import(ctx) {
     const uploaded = Array.isArray(ctx.request.files?.file) ? ctx.request.files.file[0] : ctx.request.files?.file;
     const filePath = uploaded?.filepath || (uploaded as { path?: string } | undefined)?.path;
-    if (!filePath) return ctx.badRequest('Завантажте CSV-файл у полі file.');
+    if (!filePath) return ctx.badRequest('Завантажте XLSX або CSV-файл у полі file.');
 
-    const items = parseCsv(fs.readFileSync(filePath, 'utf8')).map(normalize);
+    const extension = path.extname((uploaded as { name?: string } | undefined)?.name || filePath).toLowerCase();
+    const sourceRows = extension === '.xlsx'
+      ? await parseXlsx(filePath)
+      : parseCsv(fs.readFileSync(filePath, 'utf8'));
+    const items = sourceRows.map(normalize);
     const invalid = items.find((item) => !item.className || !item.weekday || !item.startTime || !item.subject);
-    if (invalid || !items.length) return ctx.badRequest('CSV має містити className, weekday, lessonNumber і subject.');
+    if (invalid || !items.length) return ctx.badRequest('XLSX або CSV має містити className, weekday, lessonNumber і subject.');
 
     const existingCount = await strapi.db.query(uid).count();
     // Remove every locale/status row in one operation so repeated imports cannot leave stale duplicates.
@@ -105,15 +147,31 @@ export default factories.createCoreController(uid, ({ strapi }) => ({
       sort: ['weekday:asc', 'order:asc', 'className:asc'],
       limit: 10000,
     });
-    const rows = lessons.map((lesson: any) => exportHeaders.map((header) => {
-      if (header === 'lessonNumber') return lesson.order || '';
-      if (header === 'в укритті') return lesson.inShelter ? 'так' : '';
-      return lesson[header] || '';
-    }).map(csvCell).join(','));
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'Novobilouskyi Lyceum';
+    const sheet = workbook.addWorksheet('Розклад');
+    sheet.columns = exportHeaders.map((header) => ({ header, key: header, width: header === 'subject' || header === 'teacher' ? 34 : 18 }));
+    lessons.forEach((lesson: any) => sheet.addRow({
+      className: lesson.className || '',
+      weekday: lesson.weekday || '',
+      lessonNumber: lesson.order || '',
+      subject: lesson.subject || '',
+      teacher: lesson.teacher || '',
+      room: lesson.room || '',
+      'в укритті': lesson.inShelter ? 'так' : '',
+      startTime: lesson.startTime || '',
+      endTime: lesson.endTime || '',
+    }));
+    sheet.views = [{ state: 'frozen', ySplit: 1 }];
+    sheet.autoFilter = { from: 'A1', to: `I${Math.max(1, lessons.length + 1)}` };
+    sheet.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    sheet.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD96B00' } };
+    sheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
 
-    ctx.type = 'text/csv';
-    ctx.set('Content-Type', 'text/csv; charset=utf-8');
-    ctx.set('Content-Disposition', 'attachment; filename="schedule-lessons.csv"');
-    ctx.body = `\ufeff${exportHeaders.join(',')}\n${rows.join('\n')}\n`;
+    const buffer = await workbook.xlsx.writeBuffer();
+    ctx.type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    ctx.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    ctx.set('Content-Disposition', 'attachment; filename="schedule-lessons.xlsx"');
+    ctx.body = buffer;
   },
 }));

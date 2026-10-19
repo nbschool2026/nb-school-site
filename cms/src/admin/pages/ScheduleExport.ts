@@ -21,12 +21,12 @@ export default function ScheduleExport() {
       const doc = (globalThis as any).document;
       const link = doc.createElement('a');
       link.href = url;
-      link.download = 'schedule-lessons.csv';
+      link.download = 'schedule-lessons.xlsx';
       doc.body.appendChild(link);
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
-      toggleNotification({ type: 'success', message: 'CSV усіх уроків завантажено.' });
+      toggleNotification({ type: 'success', message: 'XLSX усіх уроків завантажено.' });
     } catch (error: any) {
       const message = error?.response?.data?.error?.message || 'Не вдалося експортувати розклад.';
       toggleNotification({ type: 'warning', message });
@@ -39,9 +39,9 @@ export default function ScheduleExport() {
     React.createElement(Box, { padding: 8, background: 'neutral0' },
       React.createElement(Typography, { variant: 'alpha', tag: 'h1' }, 'Експорт розкладу'),
       React.createElement(Box, { paddingTop: 4, paddingBottom: 4 },
-        React.createElement(Typography, null, 'Завантажте CSV з усіма опублікованими уроками з CMS.'),
+        React.createElement(Typography, null, 'Завантажте XLSX з усіма опублікованими уроками з CMS. Файл можна редагувати в Excel і завантажити назад через імпорт.'),
       ),
-      React.createElement(Button, { startIcon: React.createElement(Download, null), onClick: exportSchedule, loading: busy, disabled: busy }, 'Вивантажити CSV'),
+      React.createElement(Button, { startIcon: React.createElement(Download, null), onClick: exportSchedule, loading: busy, disabled: busy }, 'Вивантажити XLSX'),
     ),
   );
 }
