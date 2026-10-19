@@ -121,8 +121,12 @@ export default factories.createCoreController(uid, ({ strapi }) => ({
     const filePath = uploaded?.filepath || (uploaded as { path?: string } | undefined)?.path;
     if (!filePath) return ctx.badRequest('Завантажте XLSX або CSV-файл у полі file.');
 
-    const extension = path.extname((uploaded as { name?: string } | undefined)?.name || filePath).toLowerCase();
-    const sourceRows = extension === '.xlsx'
+    const uploadedInfo = uploaded as { name?: string; originalFilename?: string; originalname?: string; mimetype?: string; type?: string } | undefined;
+    const originalName = uploadedInfo?.name || uploadedInfo?.originalFilename || uploadedInfo?.originalname || filePath;
+    const extension = path.extname(originalName).toLowerCase();
+    const mimeType = uploadedInfo?.mimetype || uploadedInfo?.type || '';
+    const isXlsx = extension === '.xlsx' || mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    const sourceRows = isXlsx
       ? await parseXlsx(filePath)
       : parseCsv(fs.readFileSync(filePath, 'utf8'));
     const items = sourceRows.map(normalize);
