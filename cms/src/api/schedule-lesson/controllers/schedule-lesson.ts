@@ -16,6 +16,13 @@ const weekdays: Record<string, string> = {
   'п’ятниця': 'friday', "п'ятниця": 'friday', пт: 'friday', friday: 'friday',
 };
 
+function normalizeTime(value: unknown) {
+  const text = String(value ?? '').trim();
+  const match = text.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+  if (!match) return '';
+  return `${match[1].padStart(2, '0')}:${match[2]}:${match[3] || '00'}`;
+}
+
 function parseCsv(text: string) {
   // Excel on Ukrainian/European regional settings often saves CSV with `;`.
   // Accept both delimiters so an exported file can be edited and imported again.
@@ -46,12 +53,16 @@ function parseCsv(text: string) {
 function normalize(item: Record<string, string>, index: number) {
   const lessonNumber = Number(item.lessonNumber || item.lesson || item.period);
   const times = lessonTimes[lessonNumber];
+  // Keep explicit times from CSV. This is required because primary-school
+  // lessons (grades 1–4) use a different timetable than grades 5–11.
+  const startTime = normalizeTime(item.startTime) || times?.[0];
+  const endTime = normalizeTime(item.endTime) || times?.[1];
   const weekday = weekdays[String(item.weekday || item.day || '').trim().toLowerCase()];
   const rawClass = String(item.className || item.class || '').trim();
   const className = /^\d+$/.test(rawClass) ? `${rawClass} Клас` : rawClass;
   const shelterValue = String(item["в укритті"] || item.inShelter || item.shelter || "").trim().toLowerCase();
   return {
-    className, weekday, lessonNumber, startTime: times?.[0], endTime: times?.[1],
+    className, weekday, lessonNumber, startTime, endTime,
     subject: String(item.subject || '').trim(), teacher: String(item.teacher || '').trim(),
     room: String(item.room || '').trim(),
     inShelter: ["так", "yes", "true", "1"].includes(shelterValue),
