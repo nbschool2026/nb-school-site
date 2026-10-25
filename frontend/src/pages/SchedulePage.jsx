@@ -124,10 +124,22 @@ export default function SchedulePage() {
 
   useEffect(() => {
     const adminBase = (import.meta.env.VITE_STRAPI_API_URL || '/api').replace(/\/api\/?$/, '');
-    const jwtToken = localStorage.getItem('jwtToken')
-      || localStorage.getItem('strapi_jwt')
-      || localStorage.getItem('strapi-admin-jwt')
-      || '';
+    const findStoredToken = () => {
+      const knownKeys = ['jwtToken', 'strapi_jwt', 'strapi-admin-jwt', 'strapi-admin-token', 'adminToken'];
+      for (const storage of [window.localStorage, window.sessionStorage]) {
+        for (const key of knownKeys) {
+          const value = storage.getItem(key);
+          if (value) return value;
+        }
+        for (let index = 0; index < storage.length; index += 1) {
+          const key = storage.key(index) || '';
+          const value = storage.getItem(key) || '';
+          if (/(jwt|token|session)/i.test(key) && value.split('.').length === 3) return value;
+        }
+      }
+      return '';
+    };
+    const jwtToken = findStoredToken();
     const hasSession = Boolean(jwtToken) || /(?:^|;\s*)(?:sessionId|strapi[_-]admin[_-]session|admin[_-]auth|strapi[_-]jwt)=/i.test(document.cookie);
     const headers = jwtToken ? { Authorization: `Bearer ${jwtToken}` } : {};
     const request = (url) => fetch(url, { credentials: 'include', headers });
