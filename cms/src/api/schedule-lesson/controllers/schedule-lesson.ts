@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { factories } from '@strapi/strapi';
 import ExcelJS from 'exceljs';
+import jwt from 'jsonwebtoken';
 
 const uid = 'api::schedule-lesson.schedule-lesson';
 const lessonTimes: Record<number, [string, string]> = {
@@ -136,7 +137,25 @@ const exportHeaders = ['className', 'weekday', 'lessonNumber', 'subject', 'teach
 
 export default factories.createCoreController(uid, ({ strapi }) => ({
   async authStatus(ctx) {
-    const sessionUser = ctx.state.user;
+    let sessionUser = ctx.state.user;
+    // Strapi's admin UI stores jwtToken with Path=/admin. The custom route is
+    // under /admin, so read and verify that cookie when no auth middleware user
+    // was created for the request.
+    if (!sessionUser) {
+      const token = ctx.cookies.get('jwtToken');
+      const secret = strapi.config.get('admin.auth.secret');
+      if (token && secret) {
+        try {
+          const payload = jwt.verify(token, secret) as { id?: number; userId?: number };
+          const userId = payload.id || payload.userId;
+          if (userId) {
+            sessionUser = await strapi.db.query('admin::user').findOne({ where: { id: userId } });
+          }
+        } catch {
+          // The controller returns 401 below for an expired or invalid token.
+        }
+      }
+    }
     if (!sessionUser) return ctx.unauthorized('Увійдіть в адмінку.');
 
     let user = sessionUser;

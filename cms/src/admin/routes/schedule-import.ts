@@ -22,7 +22,8 @@ export default {
       path: '/schedule-lessons/auth-status',
       handler: 'api::schedule-lesson.schedule-lesson.authStatus',
       config: {
-        policies: ['admin::isAuthenticatedAdmin'],
+        auth: false,
+        policies: [],
       },
     },
   ],
