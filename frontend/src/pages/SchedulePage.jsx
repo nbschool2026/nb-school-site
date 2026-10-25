@@ -56,6 +56,22 @@ const lessonSlotByTime = {
   '12:45': 7, '13:30': 8, '14:15': 9, '15:00': 10, '15:45': 11, '16:30': 12,
 };
 
+const secondaryTimeSlots = [
+  ['08:15:00', '08:50:00'], ['08:55:00', '09:40:00'], ['09:45:00', '10:25:00'],
+  ['10:30:00', '11:10:00'], ['11:15:00', '11:55:00'], ['12:00:00', '12:40:00'],
+  ['12:45:00', '13:25:00'], ['13:30:00', '14:10:00'], ['14:15:00', '14:55:00'],
+  ['15:00:00', '15:40:00'], ['15:45:00', '16:25:00'], ['16:30:00', '17:10:00'],
+];
+const primaryTimeSlots = {
+  1: [['08:00:00', '08:35:00'], ['08:40:00', '09:15:00'], ['09:25:00', '10:05:00'], ['10:10:00', '10:45:00']],
+  2: [['08:00:00', '08:35:00'], ['08:40:00', '09:15:00'], ['09:25:00', '10:05:00'], ['10:10:00', '10:45:00']],
+  3: [['10:45:00', '11:20:00'], ['11:25:00', '12:00:00'], ['12:05:00', '12:40:00'], ['12:45:00', '13:20:00']],
+  4: [['10:45:00', '11:15:00'], ['11:20:00', '12:00:00'], ['12:05:00', '12:45:00'], ['12:50:00', '13:25:00']],
+};
+function timeSlotsForClass(className) {
+  return primaryTimeSlots[classNumber(className)] || secondaryTimeSlots;
+}
+
 function lessonSlot(lesson) {
   return Number(lesson.order) || lessonSlotByTime[formatTime(lesson.startTime)] || 0;
 }
@@ -123,6 +139,10 @@ export default function SchedulePage() {
   const [editingEnabled, setEditingEnabled] = useState(false);
   const [openEditKey, setOpenEditKey] = useState(null);
   const [deletingKey, setDeletingKey] = useState(null);
+  const [editingLesson, setEditingLesson] = useState(null);
+  const [editForm, setEditForm] = useState(null);
+  const [savingEdit, setSavingEdit] = useState(false);
+  const [conflictPrompt, setConflictPrompt] = useState(null);
 
   useEffect(() => {
     const adminBase = (import.meta.env.VITE_STRAPI_API_URL || '/api').replace(/\/api\/?$/, '');
@@ -289,6 +309,91 @@ export default function SchedulePage() {
   const showGapOption = !selectedSubject
     && ((!selectedClass && !!selectedTeacher) || (!!selectedClass && !selectedTeacher));
 
+  function openEditForm(lesson) {
+    setOpenEditKey(null);
+    setConflictPrompt(null);
+    setEditingLesson(lesson);
+    setEditForm({
+      className: lesson.className || '',
+      weekday: lesson.weekday || 'monday',
+      startTime: lesson.startTime || '',
+      endTime: lesson.endTime || '',
+      subject: lesson.subject || '',
+      teacher: lesson.teacher || '',
+      order: lesson.order ?? '',
+      inShelter: lesson.inShelter === true,
+    });
+  }
+
+  function closeEditForm() {
+    if (savingEdit) return;
+    setEditingLesson(null);
+    setEditForm(null);
+    setConflictPrompt(null);
+  }
+
+  function editField(name, value) {
+    setEditForm((current) => ({ ...current, [name]: value }));
+  }
+
+  function formTimeOptions() {
+    return timeSlotsForClass(editForm?.className || '5 Клас');
+  }
+
+  function editTeacherOptions() {
+    if (!editForm?.subject) return teachers;
+    const subjectTeachers = [...new Set(lessons
+      .filter((lesson) => lesson.subject === editForm.subject && lesson.teacher)
+      .map((lesson) => lesson.teacher))].sort((a, b) => a.localeCompare(b, 'uk'));
+    return subjectTeachers;
+  }
+
+  async function saveLesson(force = false) {
+    if (!editingLesson || !editForm || savingEdit) return;
+    const duplicate = lessons.find((lesson) => lesson.documentId !== editingLesson.documentId
+      && lesson.className === editForm.className
+      && lesson.weekday === editForm.weekday
+      && lesson.startTime === editForm.startTime
+      && lesson.endTime === editForm.endTime
+      && lesson.subject === editForm.subject
+      && (lesson.teacher || '') === (editForm.teacher || ''));
+    if (duplicate) {
+      window.alert('Такий урок вже є.');
+      return;
+    }
+    const overlapping = lessons.filter((lesson) => lesson.documentId !== editingLesson.documentId
+      && lesson.weekday === editForm.weekday
+      && overlaps({ startTime: editForm.startTime, endTime: editForm.endTime }, lesson)
+      && (lesson.className === editForm.className || (editForm.teacher && lesson.teacher === editForm.teacher)));
+    if (overlapping.length && !force) {
+      setConflictPrompt(overlapping);
+      return;
+    }
+    setSavingEdit(true);
+    try {
+      const adminBase = (import.meta.env.VITE_STRAPI_API_URL || '/api').replace(/\/api\/?$/, '');
+      const response = await fetch(`${adminBase}/admin/schedule-lessons/${encodeURIComponent(editingLesson.documentId)}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editForm),
+      });
+      if (response.status === 401 || response.status === 403) {
+        window.alert('Сесія завершилася. Залогіньтесь знову.');
+        return;
+      }
+      if (!response.ok) throw new Error('update failed');
+      setLessons((current) => current.map((lesson) => lesson.documentId === editingLesson.documentId
+        ? { ...lesson, ...editForm, order: editForm.order === '' ? null : Number(editForm.order) }
+        : lesson));
+      closeEditForm();
+    } catch {
+      window.alert('Не вдалося зберегти урок. Спробуйте ще раз.');
+    } finally {
+      setSavingEdit(false);
+    }
+  }
+
   async function deleteLesson(lesson, key) {
     if (!lesson.documentId || deletingKey) return;
     if (!window.confirm('Ви впевнені, що хочете видалити цей урок?')) return;
@@ -334,7 +439,7 @@ export default function SchedulePage() {
             <MaterialIcon name="edit" />
           </button>
           {openEditKey === item.key && <div className="lesson-edit-menu">
-            <button type="button" className="lesson-edit-action" disabled>{t('Редагувати')}</button>
+            <button type="button" className="lesson-edit-action" onClick={() => openEditForm(item.lesson)}>{t('Редагувати')}</button>
             <button type="button" className="lesson-delete-action" onClick={() => deleteLesson(item.lesson, item.key)} disabled={deletingKey === item.key}>{deletingKey === item.key ? t('Видалення…') : t('Видалити')}</button>
           </div>}
         </>}
@@ -415,6 +520,75 @@ export default function SchedulePage() {
             </article>)}
           </div>}
         </section>}
+        {editingLesson && editForm && <div className="schedule-modal-backdrop" role="presentation">
+          <section className="schedule-edit-modal" role="dialog" aria-modal="true" aria-labelledby="schedule-edit-title">
+            <h2 id="schedule-edit-title">{t('Редагувати урок')}</h2>
+            <label>{t('Клас')}
+              <select value={editForm.className} onChange={(event) => {
+                const className = event.target.value;
+                const nextSlots = timeSlotsForClass(className);
+                const stillAvailable = nextSlots.some(([start, end]) => start === editForm.startTime && end === editForm.endTime);
+                setEditForm((current) => ({ ...current, className, ...(stillAvailable ? {} : { startTime: nextSlots[0][0], endTime: nextSlots[0][1] }) }));
+              }}>
+                {classes.map((className) => <option key={className} value={className}>{className}</option>)}
+              </select>
+            </label>
+            <label>{t('День тижня')}
+              <select value={editForm.weekday} onChange={(event) => editField('weekday', event.target.value)}>
+                {weekdays.map((day) => <option key={day} value={day}>{t(weekdayLabels[day])}</option>)}
+              </select>
+            </label>
+            <label>{t('Час')}
+              <select value={`${editForm.startTime}|${editForm.endTime}`} onChange={(event) => {
+                const [startTime, endTime] = event.target.value.split('|');
+                setEditForm((current) => ({ ...current, startTime, endTime }));
+              }}>
+                {formTimeOptions().map(([startTime, endTime]) => <option key={`${startTime}|${endTime}`} value={`${startTime}|${endTime}`}>{formatTime(startTime)} – {formatTime(endTime)}</option>)}
+              </select>
+            </label>
+            <label>{t('Номер уроку')} <span className="schedule-form-optional">({t('необов’язково')})</span>
+              <select value={editForm.order} onChange={(event) => editField('order', event.target.value)}>
+                <option value="">{t('Не змінювати')}</option>
+                {Array.from({ length: 12 }, (_, index) => index + 1).map((number) => <option key={number} value={number}>{number}</option>)}
+              </select>
+            </label>
+            <label>{t('Предмет')}
+              <select value={editForm.subject} onChange={(event) => {
+                const subject = event.target.value;
+                const subjectTeachers = lessons.filter((lesson) => lesson.subject === subject).map((lesson) => lesson.teacher).filter(Boolean);
+                setEditForm((current) => ({ ...current, subject, teacher: subjectTeachers.includes(current.teacher) ? current.teacher : '' }));
+              }}>
+                {subjects.map((subject) => <option key={subject} value={subject}>{subject}</option>)}
+              </select>
+            </label>
+            <label>{t('Вчитель')}
+              <select value={editForm.teacher || '__all__'} onChange={(event) => editField('teacher', event.target.value === '__all__' ? '' : event.target.value)}>
+                <option value="__all__">{t('Показати всіх вчителів')}</option>
+                {editTeacherOptions().filter((teacher) => teacher !== editForm.teacher).map((teacher) => <option key={teacher} value={teacher}>{teacher}</option>)}
+                {editForm.teacher && !editTeacherOptions().includes(editForm.teacher) && <option value={editForm.teacher}>{editForm.teacher}</option>}
+              </select>
+            </label>
+            <label className="schedule-shelter-toggle"><input type="checkbox" checked={editForm.inShelter} onChange={(event) => editField('inShelter', event.target.checked)} /> {t('В укритті')}</label>
+            <div className="schedule-modal-actions">
+              <button type="button" className="soft-button" onClick={closeEditForm} disabled={savingEdit}>{t('Скасувати')}</button>
+              <button type="button" className="primary-button" onClick={() => saveLesson(false)} disabled={savingEdit}>{savingEdit ? t('Збереження…') : t('Зберегти')}</button>
+            </div>
+          </section>
+        </div>}
+        {conflictPrompt && <div className="schedule-modal-backdrop" role="presentation">
+          <section className="schedule-edit-modal schedule-conflict-modal" role="dialog" aria-modal="true" aria-labelledby="schedule-conflict-title">
+            <h2 id="schedule-conflict-title">{t('Конфлікт розкладу')}</h2>
+            <p>{t('Вибраний час і день тижня співпадає або накладається з уроком:')}</p>
+            <div className="schedule-conflict-list">
+              {conflictPrompt.map((lesson, index) => <p key={`${lesson.documentId || index}-conflict`}><strong>{t(weekdayLabels[lesson.weekday])} {formatTime(lesson.startTime)} – {formatTime(lesson.endTime)}</strong> · {lesson.subject}{lesson.teacher ? ` · ${lesson.teacher}` : ''}</p>)}
+            </div>
+            <p>{t('Ви впевнені, що хочете зберегти урок?')}</p>
+            <div className="schedule-modal-actions">
+              <button type="button" className="soft-button" onClick={() => setConflictPrompt(null)} disabled={savingEdit}>{t('Ні')}</button>
+              <button type="button" className="primary-button" onClick={() => { setConflictPrompt(null); saveLesson(true); }} disabled={savingEdit}>{t('Так')}</button>
+            </div>
+          </section>
+        </div>}
       </div>
     </main>
   );

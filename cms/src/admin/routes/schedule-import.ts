@@ -2,6 +2,15 @@ export default {
   type: 'admin',
   routes: [
     {
+      method: 'PUT',
+      path: '/schedule-lessons/:documentId',
+      handler: 'api::schedule-lesson.schedule-lesson.updateLesson',
+      config: {
+        auth: false,
+        policies: [],
+      },
+    },
+    {
       method: 'DELETE',
       path: '/schedule-lessons/:documentId',
       handler: 'api::schedule-lesson.schedule-lesson.deleteLesson',

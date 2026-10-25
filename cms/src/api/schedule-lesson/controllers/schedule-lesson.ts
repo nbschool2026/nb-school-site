@@ -192,6 +192,31 @@ export default factories.createCoreController(uid, ({ strapi }) => ({
     ctx.body = { deleted: true, documentId };
   },
 
+  async updateLesson(ctx) {
+    const sessionUser = await resolveAdminUser(strapi, ctx);
+    if (!sessionUser || !(await adminCanEdit(strapi, sessionUser))) {
+      return ctx.unauthorized('Недостатньо прав для редагування уроку.');
+    }
+    const documentId = String(ctx.params.documentId || '').trim();
+    const body = ctx.request.body || {};
+    if (!documentId || !body.className || !body.weekday || !body.startTime || !body.endTime || !body.subject) {
+      return ctx.badRequest('Заповніть клас, день, час і предмет.');
+    }
+    const data = {
+      className: String(body.className).trim(),
+      weekday: String(body.weekday).trim(),
+      startTime: String(body.startTime).trim(),
+      endTime: String(body.endTime).trim(),
+      subject: String(body.subject).trim(),
+      teacher: String(body.teacher || '').trim(),
+      inShelter: body.inShelter === true,
+      order: body.order === '' || body.order == null ? null : Number(body.order),
+    };
+    const updated = await strapi.documents(uid).update({ documentId, locale: 'uk', data: data as any });
+    await strapi.documents(uid).publish({ documentId, locale: 'uk' });
+    ctx.body = { data: updated };
+  },
+
   async import(ctx) {
     const uploaded = Array.isArray(ctx.request.files?.file) ? ctx.request.files.file[0] : ctx.request.files?.file;
     const filePath = uploaded?.filepath || (uploaded as { path?: string } | undefined)?.path;

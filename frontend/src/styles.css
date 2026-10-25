@@ -518,6 +518,19 @@ img {
 .lesson-edit-action { border: 2px solid #13951b; color: var(--ink); }
 .lesson-delete-action { border: 2px solid #f00; color: var(--ink); }
 .lesson-edit-menu button:disabled { cursor: default; opacity: .55; }
+.schedule-modal-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgba(15, 23, 42, .48); }
+.schedule-edit-modal { width: min(520px, 100%); max-height: min(92vh, 760px); overflow-y: auto; display: grid; gap: 14px; padding: 24px; border-radius: 16px; background: #fff; box-shadow: 0 24px 60px rgba(15, 23, 42, .28); }
+.schedule-edit-modal h2 { margin: 0 0 4px; }
+.schedule-edit-modal label { display: grid; gap: 6px; color: var(--ink); font-size: .88rem; font-weight: 800; }
+.schedule-edit-modal select { width: 100%; min-height: 42px; padding: 8px 10px; border: 1px solid rgba(221, 109, 6, .28); border-radius: 8px; background: #f8fafc; color: var(--ink); }
+.schedule-form-optional { color: var(--muted); font-size: .78rem; font-weight: 500; }
+.schedule-shelter-toggle { display: flex !important; grid-template-columns: auto 1fr; align-items: center; }
+.schedule-shelter-toggle input { width: 18px; height: 18px; }
+.schedule-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+.schedule-modal-actions button { min-width: 110px; cursor: pointer; }
+.schedule-modal-actions button:disabled { cursor: default; opacity: .6; }
+.schedule-conflict-modal p { margin: 0; color: var(--muted); }
+.schedule-conflict-modal .schedule-conflict-list { max-height: 220px; overflow-y: auto; }
 @media (max-width: 760px) { .schedule-filters { grid-template-columns: 1fr; } }
 
 .schedule-conflicts-action { display: flex; justify-content: center; margin-top: 28px; }
