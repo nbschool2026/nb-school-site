@@ -192,6 +192,30 @@ export default factories.createCoreController(uid, ({ strapi }) => ({
     ctx.body = { deleted: true, documentId };
   },
 
+  async createLesson(ctx) {
+    const sessionUser = await resolveAdminUser(strapi, ctx);
+    if (!sessionUser || !(await adminCanEdit(strapi, sessionUser))) {
+      return ctx.unauthorized('Недостатньо прав для створення уроку.');
+    }
+    const body = ctx.request.body || {};
+    if (!body.className || !body.weekday || !body.startTime || !body.endTime || !body.subject) {
+      return ctx.badRequest('Заповніть клас, день, час і предмет.');
+    }
+    const data = {
+      className: String(body.className).trim(),
+      weekday: String(body.weekday).trim(),
+      startTime: String(body.startTime).trim(),
+      endTime: String(body.endTime).trim(),
+      subject: String(body.subject).trim(),
+      teacher: String(body.teacher || '').trim(),
+      inShelter: body.inShelter === true,
+      order: body.order === '' || body.order == null ? null : Number(body.order),
+    };
+    const created = await strapi.documents(uid).create({ locale: 'uk', data: data as any });
+    await strapi.documents(uid).publish({ documentId: created.documentId, locale: 'uk' });
+    ctx.body = { data: created };
+  },
+
   async updateLesson(ctx) {
     const sessionUser = await resolveAdminUser(strapi, ctx);
     if (!sessionUser || !(await adminCanEdit(strapi, sessionUser))) {

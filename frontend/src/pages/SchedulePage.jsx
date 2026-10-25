@@ -140,6 +140,7 @@ export default function SchedulePage() {
   const [openEditKey, setOpenEditKey] = useState(null);
   const [deletingKey, setDeletingKey] = useState(null);
   const [editingLesson, setEditingLesson] = useState(null);
+  const [creatingLesson, setCreatingLesson] = useState(false);
   const [editForm, setEditForm] = useState(null);
   const [savingEdit, setSavingEdit] = useState(false);
   const [conflictPrompt, setConflictPrompt] = useState(null);
@@ -311,6 +312,7 @@ export default function SchedulePage() {
 
   function openEditForm(lesson) {
     setOpenEditKey(null);
+    setCreatingLesson(false);
     setConflictPrompt(null);
     setEditingLesson(lesson);
     setEditForm({
@@ -325,7 +327,16 @@ export default function SchedulePage() {
     });
   }
 
+  function openCreateForm(day) {
+    setOpenEditKey(null);
+    setConflictPrompt(null);
+    setCreatingLesson(true);
+    setEditingLesson(null);
+    setEditForm({ className: '', weekday: day, startTime: '', endTime: '', subject: '', teacher: '', order: '', inShelter: false });
+  }
+
   function closeEditForm() {
+    setCreatingLesson(false);
     setEditingLesson(null);
     setEditForm(null);
     setConflictPrompt(null);
@@ -336,7 +347,7 @@ export default function SchedulePage() {
   }
 
   function formTimeOptions() {
-    return timeSlotsForClass(editForm?.className || '5 Клас');
+    return editForm?.className ? timeSlotsForClass(editForm.className) : [];
   }
 
   function editTeacherOptions() {
@@ -348,8 +359,8 @@ export default function SchedulePage() {
   }
 
   async function saveLesson(force = false) {
-    if (!editingLesson || !editForm || savingEdit) return;
-    const duplicate = lessons.find((lesson) => lesson.documentId !== editingLesson.documentId
+    if ((!editingLesson && !creatingLesson) || !editForm || savingEdit) return;
+    const duplicate = lessons.find((lesson) => lesson.documentId !== editingLesson?.documentId
       && lesson.className === editForm.className
       && lesson.weekday === editForm.weekday
       && lesson.startTime === editForm.startTime
@@ -360,7 +371,7 @@ export default function SchedulePage() {
       window.alert('Такий урок вже є.');
       return;
     }
-    const overlapping = lessons.filter((lesson) => lesson.documentId !== editingLesson.documentId
+    const overlapping = lessons.filter((lesson) => lesson.documentId !== editingLesson?.documentId
       && lesson.weekday === editForm.weekday
       && overlaps({ startTime: editForm.startTime, endTime: editForm.endTime }, lesson)
       && (lesson.className === editForm.className || (editForm.teacher && lesson.teacher === editForm.teacher)));
@@ -373,10 +384,12 @@ export default function SchedulePage() {
       const adminBase = (import.meta.env.VITE_STRAPI_API_URL || '/api').replace(/\/api\/?$/, '');
       const payload = {
         ...editForm,
-        order: editForm.order === '' ? (editingLesson.order ?? '') : Number(editForm.order),
+        order: editForm.order === '' ? (editingLesson?.order ?? '') : Number(editForm.order),
       };
-      const response = await fetch(`${adminBase}/admin/schedule-lessons/${encodeURIComponent(editingLesson.documentId)}`, {
-        method: 'PUT',
+      const response = await fetch(creatingLesson
+        ? `${adminBase}/admin/schedule-lessons`
+        : `${adminBase}/admin/schedule-lessons/${encodeURIComponent(editingLesson.documentId)}`, {
+        method: creatingLesson ? 'POST' : 'PUT',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -386,9 +399,15 @@ export default function SchedulePage() {
         return;
       }
       if (!response.ok) throw new Error('update failed');
-      setLessons((current) => current.map((lesson) => lesson.documentId === editingLesson.documentId
-        ? { ...lesson, ...editForm, order: payload.order === '' ? null : Number(payload.order) }
-        : lesson));
+      const result = await response.json();
+      if (creatingLesson) {
+        const created = result?.data || {};
+        setLessons((current) => [...current, { ...payload, documentId: created.documentId || `created-${Date.now()}`, order: payload.order === '' ? null : Number(payload.order) }]);
+      } else {
+        setLessons((current) => current.map((lesson) => lesson.documentId === editingLesson.documentId
+          ? { ...lesson, ...editForm, order: payload.order === '' ? null : Number(payload.order) }
+          : lesson));
+      }
       closeEditForm();
     } catch {
       window.alert('Не вдалося зберегти урок. Спробуйте ще раз.');
@@ -499,7 +518,7 @@ export default function SchedulePage() {
         {status === 'ready' && !!visibleLessons.length && <div className="schedule-scroll">
           <div className="schedule-grid">
             {weekdays.map((day) => <section className="schedule-day" key={day}>
-              <h3>{t(weekdayLabels[day])}</h3>
+              <h3>{t(weekdayLabels[day])}{editingEnabled && <button type="button" className="schedule-add-lesson" title={t('Створити урок')} aria-label={`${t('Створити урок')} — ${t(weekdayLabels[day])}`} onClick={() => openCreateForm(day)}><MaterialIcon name="add" /></button>}</h3>
               <div className="lesson-list">{renderDayLessons(day)}</div>
             </section>)}
           </div>
@@ -523,9 +542,9 @@ export default function SchedulePage() {
             </article>)}
           </div>}
         </section>}
-        {editingLesson && editForm && <div className="schedule-modal-backdrop" role="presentation">
+        {(editingLesson || creatingLesson) && editForm && <div className="schedule-modal-backdrop" role="presentation">
           <section className="schedule-edit-modal" role="dialog" aria-modal="true" aria-labelledby="schedule-edit-title">
-            <h2 id="schedule-edit-title">{t('Редагувати урок')}</h2>
+            <h2 id="schedule-edit-title">{t(creatingLesson ? 'Створити урок' : 'Редагувати урок')}</h2>
             <label>{t('Клас')}
               <select value={editForm.className} onChange={(event) => {
                 const className = event.target.value;
@@ -542,10 +561,11 @@ export default function SchedulePage() {
               </select>
             </label>
             <label>{t('Час')}
-              <select value={`${editForm.startTime}|${editForm.endTime}`} onChange={(event) => {
+              <select value={`${editForm.startTime}|${editForm.endTime}`} disabled={!editForm.className} onChange={(event) => {
                 const [startTime, endTime] = event.target.value.split('|');
                 setEditForm((current) => ({ ...current, startTime, endTime }));
               }}>
+                {!editForm.className && <option value="|">{t('Спочатку оберіть клас')}</option>}
                 {formTimeOptions().map(([startTime, endTime]) => <option key={`${startTime}|${endTime}`} value={`${startTime}|${endTime}`}>{formatTime(startTime)} – {formatTime(endTime)}</option>)}
               </select>
             </label>
