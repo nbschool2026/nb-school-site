@@ -119,6 +119,27 @@ export default function SchedulePage() {
   const [selectedSubject, setSelectedSubject] = useState(() => searchParams.get('subject') || savedFilters.subject || '');
   const [showGaps, setShowGaps] = useState(() => savedFilters.showGaps === true);
   const [currentTime, setCurrentTime] = useState(() => new Date());
+  const [editAccess, setEditAccess] = useState('checking');
+  const [editingEnabled, setEditingEnabled] = useState(false);
+
+  useEffect(() => {
+    const adminBase = (import.meta.env.VITE_STRAPI_API_URL || '/api').replace(/\/api\/?$/, '');
+    const hasSessionCookie = /(?:^|;\s*)(?:sessionId|strapi_admin_session|admin_auth)=/i.test(document.cookie);
+    fetch(adminBase + '/admin/schedule-lessons/auth-status', { credentials: 'include' })
+      .then(async (response) => {
+        if (response.status === 401 || response.status === 403) {
+          if (hasSessionCookie) window.alert('Сесія завершилася. Залогіньтесь знову.');
+          setEditAccess('none');
+          return null;
+        }
+        if (!response.ok) throw new Error('auth status failed');
+        return response.json();
+      })
+      .then((result) => {
+        if (result) setEditAccess(result.canEdit ? 'allowed' : 'none');
+      })
+      .catch(() => setEditAccess('none'));
+  }, []);
 
   useEffect(() => {
     const timer = window.setInterval(() => setCurrentTime(new Date()), 30000);
@@ -226,6 +247,7 @@ export default function SchedulePage() {
     });
     return content.map((item) => item.lesson ? (
       <article className={`lesson-card${isLessonCurrent(item.lesson, currentTime) ? ' is-current' : ''}`} key={item.key} aria-current={isLessonCurrent(item.lesson, currentTime) ? 'time' : undefined}>
+        {editingEnabled && <span className="lesson-edit-icon" title="Редагувати урок"><MaterialIcon name="edit" /></span>}
         <span>{formatTime(item.lesson.startTime)} – {formatTime(item.lesson.endTime)}</span>
         {showClassOnCard && <p className="lesson-class">{item.lesson.className}</p>}
         <h4>{item.lesson.subject}</h4>
@@ -240,6 +262,12 @@ export default function SchedulePage() {
     <main className="page-main">
       <div className="container">
         <SectionTitle title={t('Розклад уроків')} subtitle={t('Розклад занять за класами та днями тижня.')} center />
+        {editAccess === 'allowed' && <div className="schedule-edit-action">
+          <button type="button" className="soft-button" onClick={() => setEditingEnabled((enabled) => !enabled)} aria-pressed={editingEnabled}>
+            <MaterialIcon name={editingEnabled ? 'visibility_off' : 'edit'} />
+            {editingEnabled ? t('Завершити редагування') : t('Редагувати')}
+          </button>
+        </div>}
         <div className="filters schedule-filters">
           <label>
             {t('Клас')}

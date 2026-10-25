@@ -17,5 +17,13 @@ export default {
         policies: ['admin::isAuthenticatedAdmin'],
       },
     },
+    {
+      method: 'GET',
+      path: '/schedule-lessons/auth-status',
+      handler: 'api::schedule-lesson.schedule-lesson.authStatus',
+      config: {
+        policies: ['admin::isAuthenticatedAdmin'],
+      },
+    },
   ],
 };

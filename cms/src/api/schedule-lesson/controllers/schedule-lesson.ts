@@ -135,6 +135,27 @@ function lessonData(item: Record<string, any>) {
 const exportHeaders = ['className', 'weekday', 'lessonNumber', 'subject', 'teacher', 'room', 'в укритті', 'startTime', 'endTime'];
 
 export default factories.createCoreController(uid, ({ strapi }) => ({
+  async authStatus(ctx) {
+    const sessionUser = ctx.state.user;
+    if (!sessionUser) return ctx.unauthorized('Увійдіть в адмінку.');
+
+    let user = sessionUser;
+    try {
+      user = await strapi.db.query('admin::user').findOne({
+        where: { id: sessionUser.id },
+        populate: { roles: true },
+      }) || sessionUser;
+    } catch {
+      // The authenticated user object still contains roles on some Strapi versions.
+    }
+    const roles = Array.isArray(user.roles) ? user.roles : [];
+    const canEdit = roles.some((role: any) => {
+      const roleValue = `${role.code || ''} ${role.name || ''}`.toLowerCase().replace(/[^a-zа-яіїєґ]+/g, '');
+      return roleValue.includes('superadmin') || roleValue.includes('editor');
+    });
+    ctx.body = { authenticated: true, canEdit };
+  },
+
   async import(ctx) {
     const uploaded = Array.isArray(ctx.request.files?.file) ? ctx.request.files.file[0] : ctx.request.files?.file;
     const filePath = uploaded?.filepath || (uploaded as { path?: string } | undefined)?.path;
