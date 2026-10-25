@@ -124,21 +124,35 @@ export default function SchedulePage() {
 
   useEffect(() => {
     const adminBase = (import.meta.env.VITE_STRAPI_API_URL || '/api').replace(/\/api\/?$/, '');
-    const jwtToken = localStorage.getItem('jwtToken') || '';
-    const hasSession = Boolean(jwtToken) || /(?:^|;\s*)(?:sessionId|strapi_admin_session|admin_auth)=/i.test(document.cookie);
+    const jwtToken = localStorage.getItem('jwtToken')
+      || localStorage.getItem('strapi_jwt')
+      || localStorage.getItem('strapi-admin-jwt')
+      || '';
+    // Strapi commonly stores the admin session in an HttpOnly cookie. It cannot
+    // be read by JavaScript, but fetch sends it with credentials: include.
+    const hasSession = Boolean(jwtToken) || /(?:^|;\s*)(?:sessionId|strapi[_-]admin[_-]session|admin[_-]auth|strapi[_-]jwt)=/i.test(document.cookie);
     const headers = jwtToken ? { Authorization: `Bearer ${jwtToken}` } : {};
-    fetch(adminBase + '/admin/schedule-lessons/auth-status', { credentials: 'include', headers })
+    const request = (url) => fetch(url, { credentials: 'include', headers });
+
+    request(adminBase + '/admin/schedule-lessons/auth-status')
       .then(async (response) => {
-        if (response.status === 401 || response.status === 403) {
-          if (hasSession) window.alert('Сесія завершилася. Залогіньтесь знову.');
-          setEditAccess('none');
-          return null;
+        if (response.status === 404 || response.status === 405) {
+          // Fallback for a server that has not rebuilt the custom route yet.
+          const meResponse = await request(adminBase + '/admin/users/me');
+          if (meResponse.ok) return { authenticated: true, canEdit: true };
+          return { status: meResponse.status };
         }
+        if (response.status === 401 || response.status === 403) return { status: response.status };
         if (!response.ok) throw new Error('auth status failed');
         return response.json();
       })
       .then((result) => {
-        if (result) setEditAccess(result.canEdit ? 'allowed' : 'none');
+        if (result?.status === 401 || result?.status === 403) {
+          if (hasSession) window.alert('Сесія завершилася. Залогіньтесь знову.');
+          setEditAccess('none');
+          return;
+        }
+        setEditAccess(result?.canEdit ? 'allowed' : 'none');
       })
       .catch(() => setEditAccess('none'));
   }, []);

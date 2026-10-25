@@ -143,15 +143,18 @@ export default factories.createCoreController(uid, ({ strapi }) => ({
     try {
       user = await strapi.db.query('admin::user').findOne({
         where: { id: sessionUser.id },
-        populate: { roles: true },
+        populate: ['roles'],
       }) || sessionUser;
     } catch {
       // The authenticated user object still contains roles on some Strapi versions.
     }
-    const roles = Array.isArray(user.roles) ? user.roles : [];
-    const canEdit = roles.some((role: any) => {
-      const roleValue = `${role.code || ''} ${role.name || ''}`.toLowerCase().replace(/[^a-zа-яіїєґ]+/g, '');
-      return roleValue.includes('superadmin') || roleValue.includes('editor');
+    const roleValue = (role: any) => `${role?.code || ''} ${role?.name || ''}`
+      .toLowerCase().replace(/[^a-zа-яіїєґ]+/g, '');
+    const roles = Array.isArray(user.roles) ? user.roles : (user.roles ? [user.roles] : []);
+    const directRole = user.role ? [user.role] : [];
+    const canEdit = [...roles, ...directRole].some((role: any) => {
+      const value = roleValue(role);
+      return value.includes('superadmin') || value.includes('editor');
     });
     ctx.body = { authenticated: true, canEdit };
   },
