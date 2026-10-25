@@ -558,16 +558,16 @@ export default function SchedulePage() {
             <label>{t('Предмет')}
               <select value={editForm.subject} onChange={(event) => {
                 const subject = event.target.value;
-                const subjectTeachers = lessons.filter((lesson) => lesson.subject === subject).map((lesson) => lesson.teacher).filter(Boolean);
-                setEditForm((current) => ({ ...current, subject, teacher: subjectTeachers.includes(current.teacher) ? current.teacher : '' }));
+                const subjectTeachers = [...new Set(lessons.filter((lesson) => lesson.subject === subject).map((lesson) => lesson.teacher).filter(Boolean))];
+                setEditForm((current) => ({ ...current, subject, teacher: subjectTeachers.includes(current.teacher) ? current.teacher : (subjectTeachers[0] || '') }));
               }}>
                 {subjects.map((subject) => <option key={subject} value={subject}>{subject}</option>)}
               </select>
             </label>
             <label>{t('Вчитель')}
-              <select value={editForm.teacher || '__all__'} onChange={(event) => editField('teacher', event.target.value === '__all__' ? '' : event.target.value)}>
-                <option value="__all__">{t('Показати всіх вчителів')}</option>
-                {editTeacherOptions().filter((teacher) => teacher !== editForm.teacher).map((teacher) => <option key={teacher} value={teacher}>{teacher}</option>)}
+              <select value={editForm.teacher} onChange={(event) => editField('teacher', event.target.value)}>
+                {!editForm.teacher && <option value="">{t('Без учителя')}</option>}
+                {editTeacherOptions().map((teacher) => <option key={teacher} value={teacher}>{teacher}</option>)}
                 {editForm.teacher && !editTeacherOptions().includes(editForm.teacher) && <option value={editForm.teacher}>{editForm.teacher}</option>}
               </select>
             </label>
