@@ -121,6 +121,8 @@ export default function SchedulePage() {
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const [editAccess, setEditAccess] = useState('checking');
   const [editingEnabled, setEditingEnabled] = useState(false);
+  const [openEditKey, setOpenEditKey] = useState(null);
+  const [deletingKey, setDeletingKey] = useState(null);
 
   useEffect(() => {
     const adminBase = (import.meta.env.VITE_STRAPI_API_URL || '/api').replace(/\/api\/?$/, '');
@@ -278,6 +280,30 @@ export default function SchedulePage() {
   const showGapOption = !selectedSubject
     && ((!selectedClass && !!selectedTeacher) || (!!selectedClass && !selectedTeacher));
 
+  async function deleteLesson(lesson, key) {
+    if (!lesson.documentId || deletingKey) return;
+    if (!window.confirm('Ви впевнені, що хочете видалити цей урок?')) return;
+    setDeletingKey(key);
+    try {
+      const adminBase = (import.meta.env.VITE_STRAPI_API_URL || '/api').replace(/\/api\/?$/, '');
+      const response = await fetch(`${adminBase}/admin/schedule-lessons/${encodeURIComponent(lesson.documentId)}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (response.status === 401 || response.status === 403) {
+        window.alert('Сесія завершилася. Залогіньтесь знову.');
+        return;
+      }
+      if (!response.ok) throw new Error('delete failed');
+      setLessons((current) => current.filter((item) => item.documentId !== lesson.documentId));
+      setOpenEditKey(null);
+    } catch {
+      window.alert('Не вдалося видалити урок. Спробуйте ще раз.');
+    } finally {
+      setDeletingKey(null);
+    }
+  }
+
   function renderDayLessons(day) {
     const dayLessons = byDay[day];
     const content = [];
@@ -294,7 +320,15 @@ export default function SchedulePage() {
     });
     return content.map((item) => item.lesson ? (
       <article className={`lesson-card${isLessonCurrent(item.lesson, currentTime) ? ' is-current' : ''}`} key={item.key} aria-current={isLessonCurrent(item.lesson, currentTime) ? 'time' : undefined}>
-        {editingEnabled && <span className="lesson-edit-icon" title="Редагувати урок"><MaterialIcon name="edit" /></span>}
+        {editingEnabled && <>
+          <button type="button" className="lesson-edit-icon" title="Редагувати урок" aria-label="Редагувати урок" onClick={() => setOpenEditKey((current) => current === item.key ? null : item.key)}>
+            <MaterialIcon name="edit" />
+          </button>
+          {openEditKey === item.key && <div className="lesson-edit-menu">
+            <button type="button" className="lesson-edit-action" disabled>{t('Редагувати')}</button>
+            <button type="button" className="lesson-delete-action" onClick={() => deleteLesson(item.lesson, item.key)} disabled={deletingKey === item.key}>{deletingKey === item.key ? t('Видалення…') : t('Видалити')}</button>
+          </div>}
+        </>}
         <span>{formatTime(item.lesson.startTime)} – {formatTime(item.lesson.endTime)}</span>
         {showClassOnCard && <p className="lesson-class">{item.lesson.className}</p>}
         <h4>{item.lesson.subject}</h4>

@@ -135,47 +135,61 @@ function lessonData(item: Record<string, any>) {
 
 const exportHeaders = ['className', 'weekday', 'lessonNumber', 'subject', 'teacher', 'room', 'в укритті', 'startTime', 'endTime'];
 
-export default factories.createCoreController(uid, ({ strapi }) => ({
-  async authStatus(ctx) {
-    let sessionUser = ctx.state.user;
-    // Strapi's admin UI stores jwtToken with Path=/admin. The custom route is
-    // under /admin, so read and verify that cookie when no auth middleware user
-    // was created for the request.
-    if (!sessionUser) {
-      const token = ctx.cookies.get('jwtToken');
-      const secret = strapi.config.get('admin.auth.secret');
-      if (token && secret) {
-        try {
-          const payload = jwt.verify(token, String(secret)) as { id?: number; userId?: number };
-          const userId = payload.id || payload.userId;
-          if (userId) {
-            sessionUser = await strapi.db.query('admin::user').findOne({ where: { id: userId } });
-          }
-        } catch {
-          // The controller returns 401 below for an expired or invalid token.
-        }
+async function resolveAdminUser(strapi: any, ctx: any) {
+  let user = ctx.state.user;
+  if (!user) {
+    const token = ctx.cookies.get('jwtToken');
+    const secret = strapi.config.get('admin.auth.secret');
+    if (token && secret) {
+      try {
+        const payload = jwt.verify(token, String(secret)) as { id?: number; userId?: number };
+        const userId = payload.id || payload.userId;
+        if (userId) user = await strapi.db.query('admin::user').findOne({ where: { id: userId } });
+      } catch {
+        return null;
       }
     }
-    if (!sessionUser) return ctx.unauthorized('Увійдіть в адмінку.');
+  }
+  return user || null;
+}
 
-    let user = sessionUser;
-    try {
-      user = await strapi.db.query('admin::user').findOne({
-        where: { id: sessionUser.id },
-        populate: ['roles'],
-      }) || sessionUser;
-    } catch {
-      // The authenticated user object still contains roles on some Strapi versions.
+async function adminCanEdit(strapi: any, sessionUser: any) {
+  if (!sessionUser) return false;
+  let user = sessionUser;
+  try {
+    user = await strapi.db.query('admin::user').findOne({
+      where: { id: sessionUser.id },
+      populate: ['roles'],
+    }) || sessionUser;
+  } catch {
+    // The authenticated user object still contains roles on some Strapi versions.
+  }
+  const roleValue = (role: any) => `${role?.code || ''} ${role?.name || ''}`
+    .toLowerCase().replace(/[^a-zа-яіїєґ]+/g, '');
+  const roles = Array.isArray(user.roles) ? user.roles : (user.roles ? [user.roles] : []);
+  const directRole = user.role ? [user.role] : [];
+  return [...roles, ...directRole].some((role: any) => {
+    const value = roleValue(role);
+    return value.includes('superadmin') || value.includes('editor');
+  });
+}
+
+export default factories.createCoreController(uid, ({ strapi }) => ({
+  async authStatus(ctx) {
+    const sessionUser = await resolveAdminUser(strapi, ctx);
+    if (!sessionUser) return ctx.unauthorized('Увійдіть в адмінку.');
+    ctx.body = { authenticated: true, canEdit: await adminCanEdit(strapi, sessionUser) };
+  },
+
+  async deleteLesson(ctx) {
+    const sessionUser = await resolveAdminUser(strapi, ctx);
+    if (!sessionUser || !(await adminCanEdit(strapi, sessionUser))) {
+      return ctx.unauthorized('Недостатньо прав для видалення уроку.');
     }
-    const roleValue = (role: any) => `${role?.code || ''} ${role?.name || ''}`
-      .toLowerCase().replace(/[^a-zа-яіїєґ]+/g, '');
-    const roles = Array.isArray(user.roles) ? user.roles : (user.roles ? [user.roles] : []);
-    const directRole = user.role ? [user.role] : [];
-    const canEdit = [...roles, ...directRole].some((role: any) => {
-      const value = roleValue(role);
-      return value.includes('superadmin') || value.includes('editor');
-    });
-    ctx.body = { authenticated: true, canEdit };
+    const documentId = String(ctx.params.documentId || '').trim();
+    if (!documentId) return ctx.badRequest('Не вказано урок.');
+    await strapi.documents(uid).delete({ documentId, locale: 'uk' });
+    ctx.body = { deleted: true, documentId };
   },
 
   async import(ctx) {
