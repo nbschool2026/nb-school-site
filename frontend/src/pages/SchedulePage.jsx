@@ -170,15 +170,20 @@ export default function SchedulePage() {
           setEditAccess(roleCanEdit(me) ? 'allowed' : 'none');
           return;
         }
-        if (meResponse.status === 401 || meResponse.status === 403) {
+        // /admin/users/me expects an Authorization header. Fall back to the
+        // custom status route, which validates Strapi's /admin cookie itself.
+        const statusResponse = await request(adminBase + '/admin/schedule-lessons/auth-status');
+        if (statusResponse.ok) {
+          const result = await statusResponse.json();
+          setEditAccess(result.canEdit ? 'allowed' : 'none');
+          return;
+        }
+        if (meResponse.status === 401 || meResponse.status === 403 || statusResponse.status === 401 || statusResponse.status === 403) {
           if (hasSession) window.alert('Сесія завершилася. Залогіньтесь знову.');
           setEditAccess('none');
           return;
         }
-        const statusResponse = await request(adminBase + '/admin/schedule-lessons/auth-status');
-        if (!statusResponse.ok) throw new Error('auth status failed');
-        const result = await statusResponse.json();
-        setEditAccess(result.canEdit ? 'allowed' : 'none');
+        throw new Error('auth status failed');
       })
       .catch(() => setEditAccess('none'));
   }, []);
