@@ -371,11 +371,15 @@ export default function SchedulePage() {
     setSavingEdit(true);
     try {
       const adminBase = (import.meta.env.VITE_STRAPI_API_URL || '/api').replace(/\/api\/?$/, '');
+      const payload = {
+        ...editForm,
+        order: editForm.order === '' ? (editingLesson.order ?? '') : Number(editForm.order),
+      };
       const response = await fetch(`${adminBase}/admin/schedule-lessons/${encodeURIComponent(editingLesson.documentId)}`, {
         method: 'PUT',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editForm),
+        body: JSON.stringify(payload),
       });
       if (response.status === 401 || response.status === 403) {
         window.alert('Сесія завершилася. Залогіньтесь знову.');
@@ -383,7 +387,7 @@ export default function SchedulePage() {
       }
       if (!response.ok) throw new Error('update failed');
       setLessons((current) => current.map((lesson) => lesson.documentId === editingLesson.documentId
-        ? { ...lesson, ...editForm, order: editForm.order === '' ? null : Number(editForm.order) }
+        ? { ...lesson, ...editForm, order: payload.order === '' ? null : Number(payload.order) }
         : lesson));
       closeEditForm();
     } catch {
