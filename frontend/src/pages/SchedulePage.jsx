@@ -128,31 +128,40 @@ export default function SchedulePage() {
       || localStorage.getItem('strapi_jwt')
       || localStorage.getItem('strapi-admin-jwt')
       || '';
-    // Strapi commonly stores the admin session in an HttpOnly cookie. It cannot
-    // be read by JavaScript, but fetch sends it with credentials: include.
     const hasSession = Boolean(jwtToken) || /(?:^|;\s*)(?:sessionId|strapi[_-]admin[_-]session|admin[_-]auth|strapi[_-]jwt)=/i.test(document.cookie);
     const headers = jwtToken ? { Authorization: `Bearer ${jwtToken}` } : {};
     const request = (url) => fetch(url, { credentials: 'include', headers });
+    const roleCanEdit = (payload) => {
+      const user = payload?.data || payload || {};
+      const roles = [
+        ...(Array.isArray(user.roles) ? user.roles : user.roles ? [user.roles] : []),
+        ...(user.role ? [user.role] : []),
+      ];
+      if (!roles.length) return true;
+      return roles.some((role) => {
+        const value = `${role?.code || ''} ${role?.name || ''}`.toLowerCase().replace(/[^a-zа-яіїєґ]+/g, '');
+        return value.includes('superadmin') || value.includes('editor');
+      });
+    };
 
-    request(adminBase + '/admin/schedule-lessons/auth-status')
-      .then(async (response) => {
-        if (response.status === 404 || response.status === 405) {
-          // Fallback for a server that has not rebuilt the custom route yet.
-          const meResponse = await request(adminBase + '/admin/users/me');
-          if (meResponse.ok) return { authenticated: true, canEdit: true };
-          return { status: meResponse.status };
+    // Strapi admin sessions are often HttpOnly cookies with an /admin path.
+    // Calling the standard endpoint directly lets the browser send that cookie.
+    request(adminBase + '/admin/users/me')
+      .then(async (meResponse) => {
+        if (meResponse.ok) {
+          const me = await meResponse.json();
+          setEditAccess(roleCanEdit(me) ? 'allowed' : 'none');
+          return;
         }
-        if (response.status === 401 || response.status === 403) return { status: response.status };
-        if (!response.ok) throw new Error('auth status failed');
-        return response.json();
-      })
-      .then((result) => {
-        if (result?.status === 401 || result?.status === 403) {
+        if (meResponse.status === 401 || meResponse.status === 403) {
           if (hasSession) window.alert('Сесія завершилася. Залогіньтесь знову.');
           setEditAccess('none');
           return;
         }
-        setEditAccess(result?.canEdit ? 'allowed' : 'none');
+        const statusResponse = await request(adminBase + '/admin/schedule-lessons/auth-status');
+        if (!statusResponse.ok) throw new Error('auth status failed');
+        const result = await statusResponse.json();
+        setEditAccess(result.canEdit ? 'allowed' : 'none');
       })
       .catch(() => setEditAccess('none'));
   }, []);
