@@ -77,6 +77,16 @@ export function youtubeEmbedUrl(value) {
   }
 }
 
+export function isFacebookVerticalVideo(value) {
+  try {
+    const url = new URL(String(value || '').trim());
+    const host = url.hostname.toLowerCase().replace(/^www\./, '');
+    return (host === 'facebook.com' || host === 'fb.watch') && /(^|\/)(reel|share\/v)(\/|$)/i.test(url.pathname);
+  } catch {
+    return false;
+  }
+}
+
 export function eventVideoEmbedUrl(value) {
   const youtube = youtubeEmbedUrl(value);
   if (youtube) return youtube;

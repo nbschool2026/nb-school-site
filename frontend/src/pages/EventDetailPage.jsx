@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { eventPhotos, eventVideoEmbedUrl, fetchEventBySlug } from '../lib/events.js';
+import { eventPhotos, eventVideoEmbedUrl, fetchEventBySlug, isFacebookVerticalVideo } from '../lib/events.js';
 import { useLocale } from '../lib/locale.jsx';
 
 export default function EventDetailPage() {
@@ -25,6 +25,7 @@ export default function EventDetailPage() {
 
   const photos = eventPhotos(event);
   const video = eventVideoEmbedUrl(event?.youtubeUrl);
+  const verticalVideo = isFacebookVerticalVideo(event?.youtubeUrl);
 
   return (
     <main className="page-main">
@@ -47,7 +48,7 @@ export default function EventDetailPage() {
           </div>}
           {event.summary && <p className="event-summary">{event.summary}</p>}
           {event.content && <div className="event-article">{event.content.split(/\n+/).filter(Boolean).map((paragraph, index) => <p key={index}>{paragraph}</p>)}</div>}
-          {video && <div className="event-video"><iframe src={video} title={`${t('Відео')}: ${event.title}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div>}
+          {video && <div className={`event-video${verticalVideo ? ' is-vertical' : ''}`}><iframe src={video} title={`${t('Відео')}: ${event.title}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div>}
         </>}
       </article>
     </main>

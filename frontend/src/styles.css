@@ -1042,6 +1042,12 @@ img {
   border-radius: 12px;
 }
 
+.event-video.is-vertical {
+  width: min(420px, 100%);
+  aspect-ratio: 9 / 16;
+  margin-inline: auto;
+}
+
 .calendar-grid {
   grid-template-columns: repeat(7, 1fr);
   gap: 6px;
