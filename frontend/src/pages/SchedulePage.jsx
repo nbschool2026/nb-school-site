@@ -360,6 +360,10 @@ export default function SchedulePage() {
 
   async function saveLesson(force = false) {
     if ((!editingLesson && !creatingLesson) || !editForm || savingEdit) return;
+    if (!editForm.className || !editForm.startTime || !editForm.endTime || !editForm.subject) {
+      window.alert('Заповніть клас, час і предмет.');
+      return;
+    }
     const duplicate = lessons.find((lesson) => lesson.documentId !== editingLesson?.documentId
       && lesson.className === editForm.className
       && lesson.weekday === editForm.weekday
