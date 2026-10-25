@@ -191,6 +191,15 @@ export default function SchedulePage() {
   }, []);
 
   useEffect(() => {
+    const handleOutsidePointer = (event) => {
+      if (event.target.closest('.lesson-edit-menu, .lesson-edit-icon')) return;
+      setOpenEditKey(null);
+    };
+    document.addEventListener('pointerdown', handleOutsidePointer);
+    return () => document.removeEventListener('pointerdown', handleOutsidePointer);
+  }, []);
+
+  useEffect(() => {
     const timer = window.setInterval(() => setCurrentTime(new Date()), 30000);
     return () => window.clearInterval(timer);
   }, []);
