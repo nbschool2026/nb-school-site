@@ -326,7 +326,6 @@ export default function SchedulePage() {
   }
 
   function closeEditForm() {
-    if (savingEdit) return;
     setEditingLesson(null);
     setEditForm(null);
     setConflictPrompt(null);
