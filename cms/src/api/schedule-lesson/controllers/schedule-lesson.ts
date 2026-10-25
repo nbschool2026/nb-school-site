@@ -146,7 +146,7 @@ export default factories.createCoreController(uid, ({ strapi }) => ({
       const secret = strapi.config.get('admin.auth.secret');
       if (token && secret) {
         try {
-          const payload = jwt.verify(token, secret) as { id?: number; userId?: number };
+          const payload = jwt.verify(token, String(secret)) as { id?: number; userId?: number };
           const userId = payload.id || payload.userId;
           if (userId) {
             sessionUser = await strapi.db.query('admin::user').findOne({ where: { id: userId } });
@@ -247,3 +247,4 @@ export default factories.createCoreController(uid, ({ strapi }) => ({
     ctx.body = buffer;
   },
 }));
+
