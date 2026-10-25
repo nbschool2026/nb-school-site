@@ -124,11 +124,13 @@ export default function SchedulePage() {
 
   useEffect(() => {
     const adminBase = (import.meta.env.VITE_STRAPI_API_URL || '/api').replace(/\/api\/?$/, '');
-    const hasSessionCookie = /(?:^|;\s*)(?:sessionId|strapi_admin_session|admin_auth)=/i.test(document.cookie);
-    fetch(adminBase + '/admin/schedule-lessons/auth-status', { credentials: 'include' })
+    const jwtToken = localStorage.getItem('jwtToken') || '';
+    const hasSession = Boolean(jwtToken) || /(?:^|;\s*)(?:sessionId|strapi_admin_session|admin_auth)=/i.test(document.cookie);
+    const headers = jwtToken ? { Authorization: `Bearer ${jwtToken}` } : {};
+    fetch(adminBase + '/admin/schedule-lessons/auth-status', { credentials: 'include', headers })
       .then(async (response) => {
         if (response.status === 401 || response.status === 403) {
-          if (hasSessionCookie) window.alert('Сесія завершилася. Залогіньтесь знову.');
+          if (hasSession) window.alert('Сесія завершилася. Залогіньтесь знову.');
           setEditAccess('none');
           return null;
         }
