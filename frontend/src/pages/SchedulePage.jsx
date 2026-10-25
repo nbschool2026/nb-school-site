@@ -137,6 +137,11 @@ export default function SchedulePage() {
           if (/(jwt|token|session)/i.test(key) && value.split('.').length === 3) return value;
         }
       }
+      // Strapi's admin panel stores jwtToken in a non-HttpOnly cookie in some
+      // versions and then sends it as an Authorization header.
+      const cookieToken = document.cookie.split(';').map((part) => part.trim())
+        .find((part) => part.startsWith('jwtToken='));
+      if (cookieToken) return decodeURIComponent(cookieToken.slice('jwtToken='.length));
       return '';
     };
     const jwtToken = findStoredToken();
