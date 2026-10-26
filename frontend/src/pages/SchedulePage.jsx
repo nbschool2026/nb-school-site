@@ -469,7 +469,12 @@ export default function SchedulePage() {
             <button type="button" className="lesson-delete-action" onClick={() => deleteLesson(item.lesson, item.key)} disabled={deletingKey === item.key}>{deletingKey === item.key ? t('Видалення…') : t('Видалити')}</button>
           </div>}
         </>}
-        <span>{formatTime(item.lesson.startTime)} – {formatTime(item.lesson.endTime)}</span>
+        <div className="lesson-time-row">
+          {Number(item.lesson.lessonNumber || item.lesson.order || 0) > 0 && <span className="lesson-number" aria-label={`${t('Номер уроку')} ${item.lesson.lessonNumber || item.lesson.order}`}>
+            {item.lesson.lessonNumber || item.lesson.order}
+          </span>}
+          <span className="lesson-time">{formatTime(item.lesson.startTime)} – {formatTime(item.lesson.endTime)}</span>
+        </div>
         {showClassOnCard && <p className="lesson-class">{item.lesson.className}</p>}
         <h4>{item.lesson.subject}</h4>
         {!showClassOnCard && item.lesson.teacher && <p>{item.lesson.teacher}</p>}
@@ -530,16 +535,16 @@ export default function SchedulePage() {
         {status === 'ready' && <div className="schedule-conflicts-action">
           <button type="button" className="soft-button" onClick={() => setShowConflicts((shown) => !shown)} aria-expanded={showConflicts}>
             <MaterialIcon name={showConflicts ? 'expand_less' : 'warning'} />
-            {showConflicts ? t('Приховати конфлікти') : t('Показати конфлікти')}
+            {showConflicts ? t('Приховати перетини') : t('Показати перетини')}
             {conflicts.length > 0 && <span className="schedule-conflict-count">{conflicts.length}</span>}
           </button>
         </div>}
         {showConflicts && <section className="schedule-conflicts" aria-live="polite">
-          <h2>{t('Конфлікти розкладу')}</h2>
-          {!conflicts.length && <p>{t('Конфліктів не знайдено.')}</p>}
+          <h2>{t('Перетини розкладу')}</h2>
+          {!conflicts.length && <p>{t('Перетинів не знайдено.')}</p>}
           {!!conflicts.length && <div className="schedule-conflict-list">
             {conflicts.map((conflict, index) => <article className="schedule-conflict" key={`${conflict.type}-${conflict.key}-${conflict.day}-${index}`}>
-              <strong>{t(`Конфлікт: ${conflict.type}`)} — {conflict.key}</strong>
+              <strong>{t(`Перетин: ${conflict.type}`)} — {conflict.key}</strong>
               <span>{t(weekdayLabels[conflict.day])}, {formatTime(conflict.first.startTime)} – {formatTime(conflict.first.endTime)}</span>
               <p>{conflict.first.className} · {conflict.first.subject}{conflict.first.teacher ? ` · ${conflict.first.teacher}` : ''}</p>
               <p>{conflict.second.className} · {conflict.second.subject}{conflict.second.teacher ? ` · ${conflict.second.teacher}` : ''}</p>
@@ -604,7 +609,7 @@ export default function SchedulePage() {
         </div>}
         {conflictPrompt && <div className="schedule-modal-backdrop" role="presentation">
           <section className="schedule-edit-modal schedule-conflict-modal" role="dialog" aria-modal="true" aria-labelledby="schedule-conflict-title">
-            <h2 id="schedule-conflict-title">{t('Конфлікт розкладу')}</h2>
+            <h2 id="schedule-conflict-title">{t('Перетин розкладу')}</h2>
             <p>{t('Вибраний час і день тижня співпадає або накладається з уроком:')}</p>
             <div className="schedule-conflict-list">
               {conflictPrompt.map((lesson, index) => <p key={`${lesson.documentId || index}-conflict`}><strong>{t(weekdayLabels[lesson.weekday])} {formatTime(lesson.startTime)} – {formatTime(lesson.endTime)}</strong> · {lesson.subject}{lesson.teacher ? ` · ${lesson.teacher}` : ''}</p>)}

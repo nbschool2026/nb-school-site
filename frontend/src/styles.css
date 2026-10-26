@@ -608,12 +608,36 @@ img {
   outline: 2px solid rgba(239, 107, 138, 0.2);
 }
 
+.lesson-time-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 28px;
+}
+
 .lesson-card span {
   color: var(--muted);
   font-size: 0.72rem;
   font-weight: 900;
 }
 
+.lesson-time-row .lesson-number {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  place-items: center;
+  border: 1px solid rgba(100, 116, 139, .16);
+  border-radius: 50%;
+  color: #aeb8c5;
+  background: #f8fafc;
+  font-size: .7rem;
+  line-height: 1;
+}
+
+.lesson-time-row .lesson-time {
+  white-space: nowrap;
+}
 .lesson-card h4,
 .lesson-card p {
   margin: 4px 0 0;
