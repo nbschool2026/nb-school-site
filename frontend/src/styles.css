@@ -1638,6 +1638,8 @@ img {
 .power-chart-wrap { width: 100%; overflow-x: auto; }
 .power-chart { display: block; width: 100%; min-width: 560px; height: auto; }
 .power-chart-axis { stroke: #d7dee8; stroke-width: 1; }
+.power-chart-grid { stroke: #d7dee8; stroke-width: 1; stroke-dasharray: 5 5; }
+.power-chart-y-label { fill: #70809a; font-size: 12px; }
 .power-chart-line { fill: none; stroke: #e56f00; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
 .power-chart-area { fill: #e56f00; opacity: .12; }
 .power-chart-dot { fill: #fff; stroke: #e56f00; stroke-width: 2; }
