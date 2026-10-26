@@ -518,15 +518,19 @@ export default function SchedulePage() {
             </select>
           </label>
         </div>
-        {showGapOption && <label className="schedule-gap-toggle">
-          <span>{t('Показати вікна')}</span>
-          <input type="checkbox" checked={showGaps} onChange={(event) => setShowGaps(event.target.checked)} />
-        </label>}
-
-        <label className="schedule-gap-toggle">
-          <span>{t('Показати номери уроків')}</span>
-          <input type="checkbox" checked={showLessonNumbers} onChange={(event) => setShowLessonNumbers(event.target.checked)} />
-        </label>
+        <details className="schedule-extra-filters">
+          <summary>{t('Фільтри')}</summary>
+          <div className="schedule-extra-filters-body">
+            {showGapOption && <label className="schedule-gap-toggle">
+              <span>{t('Показати вікна')}</span>
+              <input type="checkbox" checked={showGaps} onChange={(event) => setShowGaps(event.target.checked)} />
+            </label>}
+            <label className="schedule-gap-toggle">
+              <span>{t('Показати номери уроків')}</span>
+              <input type="checkbox" checked={showLessonNumbers} onChange={(event) => setShowLessonNumbers(event.target.checked)} />
+            </label>
+          </div>
+        </details>
         {status === 'loading' && <p>{t('Завантаження розкладу…')}</p>}
         {status === 'ready' && !visibleLessons.length && <p>{t('Для цього класу розклад ще не додано.')}</p>}
         {status === 'ready' && !!visibleLessons.length && <div className="schedule-scroll">
