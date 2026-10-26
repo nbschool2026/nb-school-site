@@ -509,17 +509,18 @@ img {
 .schedule-filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .schedule-extra-filters {
   width: fit-content;
-  margin-top: 14px;
+  margin-top: -1px;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-top: 0;
+  border-radius: 0 0 10px 10px;
   background: #fff;
 }
 
 .schedule-extra-filters summary {
-  padding: 9px 14px;
+  padding: 4px 14px;
   color: var(--ink);
   cursor: pointer;
-  font-size: .9rem;
+  font-size: .6rem;
   font-weight: 800;
   list-style-position: inside;
 }
