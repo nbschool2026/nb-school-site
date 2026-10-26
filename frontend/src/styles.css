@@ -568,7 +568,7 @@ img {
 .schedule-conflict p { margin: 2px 0 0; color: var(--ink); }
 
 .schedule-scroll {
-  margin-top: 26px;
+  margin-top: 8px;
   overflow-x: auto;
   padding-bottom: 4px;
 }
