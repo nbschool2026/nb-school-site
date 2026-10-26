@@ -1608,3 +1608,27 @@ img {
   .distance-learning-pinned-banner strong { max-width: 100%; white-space: normal; }
   .distance-learning-pinned-banner button { width: 100%; justify-content: center; }
 }
+
+
+.power-hero { background: linear-gradient(135deg, #fff4e5 0%, #f7f8fb 62%, #e5f6ff 100%); }
+.power-page { max-width: 960px; }
+.power-message { display: flex; align-items: center; gap: 12px; min-height: 120px; padding: 24px; border: 1px solid #f0dcc8; border-radius: 18px; background: #fff; color: #536987; }
+.power-message p { margin: 0; }
+.power-message-error { color: #b42318; flex-wrap: wrap; }
+.power-message-error .soft-button { margin-left: auto; }
+.power-status-card { display: flex; align-items: center; gap: 16px; padding: 24px; border-radius: 22px; color: #fff; box-shadow: 0 14px 32px rgba(22, 34, 58, .12); }
+.power-status-card .material-symbols-rounded { font-size: 42px; }
+.power-status-card div { display: grid; gap: 4px; }
+.power-status-card strong { font-size: clamp(1.45rem, 3vw, 2.2rem); }
+.power-status-card span { opacity: .86; }
+.power-status-card.is-online { background: linear-gradient(110deg, #139c5a, #22c55e); }
+.power-status-card.is-offline { background: linear-gradient(110deg, #d34b28, #ef7d42); }
+.power-status-card.is-unknown { background: linear-gradient(110deg, #68758a, #94a3b8); }
+.power-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 18px; }
+.power-metrics article { display: grid; gap: 8px; padding: 20px; border: 1px solid #eadfd5; border-radius: 18px; background: #fff; }
+.power-metrics .material-symbols-rounded { color: #e56f00; font-size: 30px; }
+.power-metrics span { color: #536987; }
+.power-metrics strong { font-size: 1.4rem; color: #14213a; }
+.power-updated { color: #70809a; font-size: .9rem; }
+@media (max-width: 760px) { .power-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 420px) { .power-metrics { grid-template-columns: 1fr; } }

@@ -10,6 +10,7 @@ const links = [
   { to: '/about', label: 'Про нас' },
   { to: '/events', label: 'Події' },
   { to: '/schedule', label: 'Розклад' },
+  { to: '/power', label: 'Світло' },
   { to: '/public-info', label: 'Публічна інформація' },
   { to: '/distance-learning', label: 'Дистанційне навчання' },
 ];
