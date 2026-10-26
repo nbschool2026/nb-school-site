@@ -3,6 +3,14 @@ import crypto from 'node:crypto';
 let tokenCache: { token: string; expiresAt: number } | null = null;
 function env(name: string) { return String(process.env[name] || '').trim(); }
 function numberFrom(value: unknown) { const number = Number(value); return Number.isFinite(number) ? number : null; }
+function powerKw(value: unknown) { const number = numberFrom(value); return number == null ? null : number / 1000; }
+function timestampIso(value: unknown) {
+  if (value == null || value === '') return new Date().toISOString();
+  const number = Number(value);
+  if (Number.isFinite(number)) return new Date(number < 1e12 ? number * 1000 : number).toISOString();
+  const parsed = Date.parse(String(value));
+  return Number.isFinite(parsed) ? new Date(parsed).toISOString() : new Date().toISOString();
+}
 function findValue(source: unknown, names: string[]): unknown {
   if (!source || typeof source !== 'object') return undefined;
   const wanted = new Set(names.map((name) => name.toLowerCase()));
@@ -32,9 +40,12 @@ export default {
       if (!response.ok) throw new Error(payload?.msg || 'Deye status request failed');
       const raw = payload?.data || payload;
       const gridRaw = findValue(raw, ['gridStatus', 'gridState', 'onGrid', 'gridConnected', 'gridOnline']);
-      const gridPower = numberFrom(findValue(raw, ['gridPower', 'grid_power', 'pgrid', 'gridW']));
-      const gridStatus = typeof gridRaw === 'boolean' ? (gridRaw ? 'online' : 'offline') : gridRaw != null ? (String(gridRaw).toLowerCase().match(/off|out|disconnect|false/) ? 'offline' : 'online') : gridPower != null ? (gridPower > 0 ? 'online' : 'offline') : 'unknown';
-      ctx.body = { data: { stationName: findValue(raw, ['stationName', 'name']) || '', gridStatus, gridPower, solarPower: numberFrom(findValue(raw, ['solarPower', 'generationPower', 'pvPower', 'ppv'])), loadPower: numberFrom(findValue(raw, ['loadPower', 'consumptionPower', 'pload'])), batteryPower: numberFrom(findValue(raw, ['batteryPower', 'batteryW', 'pbattery'])), batterySoc: numberFrom(findValue(raw, ['batterySoc', 'batterySOC', 'soc'])), updatedAt: findValue(raw, ['lastUpdateTime', 'updateTime']) || new Date().toISOString() } };
+      const gridValue = numberFrom(findValue(raw, ['gridPower', 'grid_power', 'pgrid', 'gridW']));
+      const wireValue = numberFrom(findValue(raw, ['wirePower', 'wire_power']));
+      const purchaseValue = numberFrom(findValue(raw, ['purchasePower', 'purchase_power']));
+      const gridWatts = gridValue && gridValue !== 0 ? gridValue : (wireValue && wireValue !== 0 ? wireValue : purchaseValue);
+      const gridStatus = typeof gridRaw === 'boolean' ? (gridRaw ? 'online' : 'offline') : gridRaw != null ? (String(gridRaw).toLowerCase().match(/off|out|disconnect|false/) ? 'offline' : 'online') : gridWatts != null ? (Math.abs(gridWatts) > 1 ? 'online' : 'offline') : 'unknown';
+      ctx.body = { data: { stationName: findValue(raw, ['stationName', 'name']) || '', gridStatus, gridPower: powerKw(gridWatts), solarPower: powerKw(findValue(raw, ['solarPower', 'generationPower', 'pvPower', 'ppv'])), loadPower: powerKw(findValue(raw, ['loadPower', 'consumptionPower', 'usePower', 'pload'])), batteryPower: powerKw(findValue(raw, ['batteryPower', 'batteryW', 'pbattery'])), batterySoc: numberFrom(findValue(raw, ['batterySoc', 'batterySOC', 'soc'])), updatedAt: timestampIso(findValue(raw, ['lastUpdateTime', 'updateTime'])) } };
     } catch { ctx.status = 502; ctx.body = { code: 'deye_error', error: { message: 'Deye Cloud request failed.' } }; }
   },
 };
