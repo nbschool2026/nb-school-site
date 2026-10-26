@@ -986,6 +986,13 @@ img {
   background: transparent;
   font-weight: 800;
   text-align: left;
+  cursor: pointer;
+  transition: background-color .18s ease, color .18s ease;
+}
+
+.category-list button:not(.selected):hover,
+.category-list button:not(.selected):focus-visible {
+  background: rgba(221, 109, 6, .1);
 }
 
 .category-list .selected {
