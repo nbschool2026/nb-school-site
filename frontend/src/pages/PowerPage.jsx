@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import MaterialIcon from '../components/MaterialIcon.jsx';
-import SectionTitle from '../components/SectionTitle.jsx';
 import { useLocale } from '../lib/locale.jsx';
 
 const API_BASE = import.meta.env.VITE_STRAPI_API_URL || '/api';
@@ -30,7 +29,7 @@ export default function PowerPage() {
   const powerUnknown = data.gridStatus === 'unknown';
   return <main>
     <section className="info-hero power-hero"><div className="container"><div className="pill"><MaterialIcon name="bolt" /> {t('Світло')}</div><h1>{t('Електропостачання школи')}</h1><p>{t('Стан електромережі та сонячної станції в реальному часі.')}</p></div></section>
-    <section className="page-section"><div className="container power-page"><SectionTitle title={t('Електропостачання школи')} />
+    <section className="page-section"><div className="container power-page">
       {state.status === 'loading' && <div className="power-message" role="status"><MaterialIcon name="sync" /> Завантаження…</div>}
       {state.status === 'not-configured' && <div className="power-message" role="status"><MaterialIcon name="settings" /><p>{t('Інтеграцію Deye Cloud ще не налаштовано на сервері.')}</p></div>}
       {state.status === 'error' && <div className="power-message power-message-error" role="alert"><MaterialIcon name="cloud_off" /><p>{t('Не вдалося отримати дані Deye Cloud.')}</p><button type="button" className="soft-button" onClick={load}>{t('Оновити')}</button></div>}
