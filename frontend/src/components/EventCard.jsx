@@ -28,7 +28,7 @@ export default function EventCard({ event, compact = false }) {
   const image = mediaUrl(event.cover) || mediaUrl(event.photos?.[0] || event.photos?.data?.[0]);
 
   return (
-    <article className={`event-card ${compact ? 'compact' : ''}`}>
+    <Link className={`event-card ${compact ? 'compact' : ''}`} to={`/events/${encodeURIComponent(event.slug)}`} aria-label={event.title}>
       <div className="event-image">
         {image ? <img src={image} alt={event.title} /> : <div className="event-placeholder" aria-hidden="true"><MaterialIcon name="event" /></div>}
         {!compact && <span className={`event-tag ${categoryClasses[category] || categoryClasses.other}`}>{t(categoryLabels[category] || categoryLabels.other)}</span>}
@@ -42,11 +42,8 @@ export default function EventCard({ event, compact = false }) {
           {formatDate(event.date, dateLocale)}
         </p>
         {!compact && <p className="muted">{event.summary}</p>}
-        <Link className="text-link" to={`/events/${encodeURIComponent(event.slug)}`}>
-          {t('Читати далі')} <MaterialIcon name="arrow_forward" />
-        </Link>
       </div>
-    </article>
+    </Link>
   );
 }
 

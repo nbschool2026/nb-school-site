@@ -379,6 +379,19 @@ img {
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
 }
 
+.event-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transition: box-shadow .22s ease, transform .22s ease;
+}
+
+.event-card:hover,
+.event-card:focus-visible {
+  box-shadow: 0 14px 30px rgba(15, 23, 42, .14);
+  transform: translateY(-2px);
+}
+
 .event-image {
   position: relative;
   height: 205px;
