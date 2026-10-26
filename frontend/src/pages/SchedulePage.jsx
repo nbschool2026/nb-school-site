@@ -134,6 +134,7 @@ export default function SchedulePage() {
   const [selectedTeacher, setSelectedTeacher] = useState(() => searchParams.get('teacher') || savedFilters.teacher || '');
   const [selectedSubject, setSelectedSubject] = useState(() => searchParams.get('subject') || savedFilters.subject || '');
   const [showGaps, setShowGaps] = useState(() => savedFilters.showGaps === true);
+  const [showLessonNumbers, setShowLessonNumbers] = useState(() => savedFilters.showLessonNumbers === true);
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const [editAccess, setEditAccess] = useState('checking');
   const [editingEnabled, setEditingEnabled] = useState(false);
@@ -269,7 +270,7 @@ export default function SchedulePage() {
     } catch {
       // Storage can be unavailable in private or restricted browser contexts.
     }
-  }, [selectedClass, selectedSubject, selectedTeacher, showGaps]);
+  }, [selectedClass, selectedSubject, selectedTeacher, showGaps, showLessonNumbers]);
 
   const visibleLessons = useMemo(() => lessons
     .filter((lesson) => (!selectedClass || lesson.className === selectedClass)
@@ -470,7 +471,7 @@ export default function SchedulePage() {
           </div>}
         </>}
         <div className="lesson-time-row">
-          {Number(item.lesson.lessonNumber || item.lesson.order || 0) > 0 && <span className="lesson-number" aria-label={`${t('Номер уроку')} ${item.lesson.lessonNumber || item.lesson.order}`}>
+          {showLessonNumbers && Number(item.lesson.lessonNumber || item.lesson.order || 0) > 0 && <span className="lesson-number" aria-label={`${t('Номер уроку')} ${item.lesson.lessonNumber || item.lesson.order}`}>
             {item.lesson.lessonNumber || item.lesson.order}
           </span>}
           <span className="lesson-time">{formatTime(item.lesson.startTime)} – {formatTime(item.lesson.endTime)}</span>
@@ -522,6 +523,10 @@ export default function SchedulePage() {
           <input type="checkbox" checked={showGaps} onChange={(event) => setShowGaps(event.target.checked)} />
         </label>}
 
+        <label className="schedule-gap-toggle">
+          <span>{t('Показати номери уроків')}</span>
+          <input type="checkbox" checked={showLessonNumbers} onChange={(event) => setShowLessonNumbers(event.target.checked)} />
+        </label>
         {status === 'loading' && <p>{t('Завантаження розкладу…')}</p>}
         {status === 'ready' && !visibleLessons.length && <p>{t('Для цього класу розклад ще не додано.')}</p>}
         {status === 'ready' && !!visibleLessons.length && <div className="schedule-scroll">
