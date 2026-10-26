@@ -8,7 +8,7 @@ function valueWithUnit(value, unit = 'кВт') { if (value == null || value === 
 function ConsumptionChart({ rows, dateLocale, t }) {
   const points = rows.map((row) => ({ ...row, value: Number(row.consumptionPower) })).filter((row) => Number.isFinite(row.value));
   if (!points.length) return <p className="power-chart-empty">{t('Немає історичних даних.')}</p>;
-  const width = 900; const height = 260; const padX = 38; const padY = 26; const max = Math.max(1, ...points.map((row) => row.value));
+  const width = 900; const height = 260; const padX = 72; const padY = 26; const max = Math.max(1, ...points.map((row) => row.value));
   const x = (index) => padX + (points.length === 1 ? 0 : index * (width - padX * 2) / (points.length - 1));
   const y = (value) => height - padY - (value / max) * (height - padY * 2);
   const path = points.map((row, index) => `${index ? 'L' : 'M'} ${x(index).toFixed(1)} ${y(row.value).toFixed(1)}`).join(' ');
