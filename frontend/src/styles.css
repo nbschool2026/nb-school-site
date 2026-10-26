@@ -1632,3 +1632,14 @@ img {
 .power-updated { color: #70809a; font-size: .9rem; }
 @media (max-width: 760px) { .power-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 420px) { .power-metrics { grid-template-columns: 1fr; } }
+
+.power-chart-card { margin-top: 24px; padding: 24px; border: 1px solid #eadfd5; border-radius: 20px; background: #fff; }
+.power-chart-card h2 { margin: 0 0 16px; color: #14213a; font-size: 1.2rem; }
+.power-chart-wrap { width: 100%; overflow-x: auto; }
+.power-chart { display: block; width: 100%; min-width: 560px; height: auto; }
+.power-chart-axis { stroke: #d7dee8; stroke-width: 1; }
+.power-chart-line { fill: none; stroke: #e56f00; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.power-chart-area { fill: #e56f00; opacity: .12; }
+.power-chart-dot { fill: #fff; stroke: #e56f00; stroke-width: 2; }
+.power-chart-label, .power-chart-value { fill: #70809a; font-size: 13px; }
+.power-chart-empty { margin: 0; color: #70809a; }

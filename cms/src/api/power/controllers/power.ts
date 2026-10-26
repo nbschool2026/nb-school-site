@@ -29,6 +29,26 @@ async function deyeToken(baseUrl: string) {
   return tokenCache.token;
 }
 export default {
+  async history(ctx: any) {
+    const baseUrl = (env('DEYE_BASE_URL') || 'https://eu1-developer.deyecloud.com/v1.0').replace(/\/$/, '');
+    const stationId = env('DEYE_STATION_ID');
+    if (!env('DEYE_APP_ID') || !env('DEYE_APP_SECRET') || !env('DEYE_EMAIL') || !env('DEYE_PASSWORD') || !stationId) { ctx.status = 503; ctx.body = { code: 'not_configured', error: { message: 'Deye Cloud is not configured.' } }; return; }
+    try {
+      const hours = Math.min(24, Math.max(1, Number(ctx.query?.hours || 6) || 6));
+      const endTimestamp = Math.floor(Date.now() / 1000);
+      const startTimestamp = endTimestamp - hours * 3600;
+      const token = await deyeToken(baseUrl);
+      const response = await fetch(`${baseUrl}/station/history/power`, { method: 'POST', headers: { Authorization: token.startsWith('Bearer ') ? token : `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ stationId: Number(stationId) || stationId, startTimestamp, endTimestamp }) });
+      const payload: any = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload?.msg || 'Deye history request failed');
+      const rows = payload?.stationDataItems || payload?.data?.stationDataItems || payload?.data || [];
+      ctx.body = { data: (Array.isArray(rows) ? rows : []).map((row: any) => ({
+        timestamp: timestampIso(row.timeStamp || row.timestamp || row.dateTime || row.lastUpdateTime),
+        consumptionPower: powerKw(row.consumptionPower ?? row.usePower),
+      })).filter((row: any) => row.timestamp) };
+    } catch { ctx.status = 502; ctx.body = { code: 'deye_error', error: { message: 'Deye Cloud history request failed.' } }; }
+  },
+
   async status(ctx: any) {
     const baseUrl = (env('DEYE_BASE_URL') || 'https://eu1-developer.deyecloud.com/v1.0').replace(/\/$/, '');
     const stationId = env('DEYE_STATION_ID');
