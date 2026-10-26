@@ -506,7 +506,7 @@ img {
   color: var(--ink);
 }
 
-.schedule-filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.schedule-filters { grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom-left-radius: 0; }
 .schedule-extra-filters {
   width: fit-content;
   margin-top: -1px;
