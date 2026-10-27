@@ -73,18 +73,6 @@ export default function AppLayout() {
         )}
       </header>
 
-      {profile?.announcementEnabled && (profile?.announcementTitle || profile?.announcementText) && (
-        <aside className="site-announcement" role="status">
-          <div className="site-announcement-icon" aria-hidden="true">
-            <MaterialIcon name="event" />
-          </div>
-          <div className="site-announcement-content">
-            {profile.announcementTitle && <strong>{profile.announcementTitle}</strong>}
-            {profile.announcementText && <span>{profile.announcementText}</span>}
-          </div>
-        </aside>
-      )}
-
       <Outlet context={{ profile, profileStatus }} />
 
       <footer className="site-footer">

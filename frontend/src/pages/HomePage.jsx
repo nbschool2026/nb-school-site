@@ -40,6 +40,18 @@ export default function HomePage() {
           {heroImage && heroMedium && <source media="(max-width: 1100px)" srcSet={heroMedium} />}
           {heroImage && <img className={heroLoaded ? 'is-loaded' : ''} src={heroImage} alt="" fetchPriority="high" decoding="async" onLoad={() => setHeroLoaded(true)} />}
         </picture>
+        {profile?.announcementEnabled && (profile?.announcementTitle || profile?.announcementText) && (
+          <aside className="site-announcement site-announcement--hero" role="status">
+            <div className="site-announcement-icon" aria-hidden="true">
+              <MaterialIcon name="event" />
+            </div>
+            <div className="site-announcement-content">
+              {profile.announcementTitle && <strong>{profile.announcementTitle}</strong>}
+              {profile.announcementText && <span>{profile.announcementText}</span>}
+            </div>
+          </aside>
+        )}
+
         <div className="hero-content">
           <h1>{profile?.heroTitle || profile?.schoolName || t('Новобілоуський ліцей')}</h1>
           {locale === 'en' && profile?._fallbackLocale && <small>{t('Показано українською')}</small>}
