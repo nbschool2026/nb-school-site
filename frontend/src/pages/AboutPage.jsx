@@ -21,8 +21,20 @@ export default function AboutPage() {
     const gallery = Array.isArray(profile?.aboutHeroImages)
       ? profile.aboutHeroImages
       : profile?.aboutHeroImages?.data || [];
-    const urls = gallery.map((image) => mediaFormatUrl(image, 'large', mediaUrl(image))).filter(Boolean);
-    return urls.length ? urls.slice(0, 20) : [mediaUrl(profile?.aboutImage)].filter(Boolean);
+    const images = gallery.map((image) => ({
+      src: mediaFormatUrl(image, 'large', mediaUrl(image)),
+      small: mediaFormatUrl(image, 'small'),
+      medium: mediaFormatUrl(image, 'medium'),
+      large: mediaFormatUrl(image, 'large'),
+    })).filter((image) => image.src);
+    if (images.length) return images.slice(0, 20);
+    const fallback = profile?.aboutImage;
+    return fallback ? [{
+      src: mediaUrl(fallback),
+      small: mediaFormatUrl(fallback, 'small'),
+      medium: mediaFormatUrl(fallback, 'medium'),
+      large: mediaFormatUrl(fallback, 'large'),
+    }] : [];
   }, [profile]);
 
   useEffect(() => {
@@ -56,7 +68,7 @@ export default function AboutPage() {
       {status === 'error' && <p className="container" role="alert">{t('Не вдалося завантажити сторінку «Про нас» із CMS.')}</p>}
       <section className={`subhero${aboutHeroImages.length ? ' subhero-with-image' : ''}`}>
         <div className="subhero-media" aria-hidden="true">
-          {aboutHeroImages.map((image, index) => <img key={image} className={'subhero-slide' + (index === aboutSlide ? ' is-active' : '') + (loadedAboutImages.has(image) ? ' is-loaded' : '')} src={image} alt="" loading={index === 0 ? 'eager' : 'lazy'} decoding="async" onLoad={() => setLoadedAboutImages((current) => { if (current.has(image)) return current; const next = new Set(current); next.add(image); return next; })} />)}
+          {aboutHeroImages.map((image, index) => <img key={image.src} className={'subhero-slide' + (index === aboutSlide ? ' is-active' : '') + (loadedAboutImages.has(image.src) ? ' is-loaded' : '')} src={image.medium || image.src} srcSet={aboutImageSrcSet(image)} sizes="(max-width: 640px) 100vw, (max-width: 1200px) calc(100vw - 32px), 1180px" alt="" loading={index === 0 ? 'eager' : 'lazy'} fetchPriority={index === 0 ? 'high' : 'auto'} decoding="async" onLoad={() => setLoadedAboutImages((current) => { if (current.has(image.src)) return current; const next = new Set(current); next.add(image.src); return next; })} />)}
         </div>
         <div>
           <h1>{t('Про Наш Ліцей')}</h1>
@@ -111,4 +123,11 @@ export default function AboutPage() {
       </section>
     </main>
   );
+}
+
+function aboutImageSrcSet(image) {
+  return [['small', 500], ['medium', 750], ['large', 1000]]
+    .map(([format, width]) => image[format] ? image[format] + ' ' + width + 'w' : '')
+    .filter(Boolean)
+    .join(', ');
 }
