@@ -132,7 +132,10 @@
       "default": "#ffffff",
       "description": "Колір тексту hero дистанційного навчання у форматі HEX, наприклад #ffffff",
       "pluginOptions": { "i18n": { "localized": false } }
-    }
+    },
+    "announcementEnabled": { "type": "boolean", "default": false },
+    "announcementTitle": { "type": "string" },
+    "announcementText": { "type": "text" }
   },
   "pluginOptions": {
     "i18n": {
