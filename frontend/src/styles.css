@@ -220,8 +220,7 @@ img {
   transition: opacity 0.2s ease;
 }
 
-.hero-media img.is-loaded,
-.subhero-media img.is-loaded {
+.hero-media img.is-loaded {
   opacity: 1;
 }
 
@@ -231,11 +230,19 @@ img {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 800ms ease;
+  filter: blur(16px);
+  transform: scale(1.04);
+  transition: opacity 800ms ease, filter 800ms ease, transform 800ms ease;
 }
 
 .subhero-media .subhero-slide.is-active {
+  opacity: 0;
+}
+
+.subhero-media .subhero-slide.is-active.is-loaded {
   opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
 }
 
 .hero-content {

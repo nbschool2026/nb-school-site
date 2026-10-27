@@ -14,7 +14,7 @@ export default function AboutPage() {
   const [staffMembers, setStaffMembers] = useState([]);
   const [staffVisibleCount, setStaffVisibleCount] = useState(4);
   const [status, setStatus] = useState('loading');
-  const [aboutImageLoaded, setAboutImageLoaded] = useState(false);
+  const [loadedAboutImages, setLoadedAboutImages] = useState(() => new Set());
   const [aboutSlide, setAboutSlide] = useState(0);
 
   const aboutHeroImages = useMemo(() => {
@@ -27,7 +27,7 @@ export default function AboutPage() {
 
   useEffect(() => {
     setAboutSlide(0);
-    setAboutImageLoaded(false);
+    setLoadedAboutImages(new Set());
     if (aboutHeroImages.length < 2) return undefined;
     const timer = window.setInterval(() => setAboutSlide((current) => (current + 1) % aboutHeroImages.length), 3000);
     return () => window.clearInterval(timer);
@@ -56,7 +56,7 @@ export default function AboutPage() {
       {status === 'error' && <p className="container" role="alert">{t('Не вдалося завантажити сторінку «Про нас» із CMS.')}</p>}
       <section className={`subhero${aboutHeroImages.length ? ' subhero-with-image' : ''}`}>
         <div className="subhero-media" aria-hidden="true">
-          {aboutHeroImages.map((image, index) => <img key={image} className={`subhero-slide${index === aboutSlide ? ' is-active' : ''}${aboutImageLoaded && index === aboutSlide ? ' is-loaded' : ''}`} style={{ opacity: index === aboutSlide ? 1 : 0 }} src={image} alt="" loading={index === 0 ? 'eager' : 'lazy'} decoding="async" onLoad={() => index === aboutSlide && setAboutImageLoaded(true)} />)}
+          {aboutHeroImages.map((image, index) => <img key={image} className={'subhero-slide' + (index === aboutSlide ? ' is-active' : '') + (loadedAboutImages.has(image) ? ' is-loaded' : '')} src={image} alt="" loading={index === 0 ? 'eager' : 'lazy'} decoding="async" onLoad={() => setLoadedAboutImages((current) => { if (current.has(image)) return current; const next = new Set(current); next.add(image); return next; })} />)}
         </div>
         <div>
           <h1>{t('Про Наш Ліцей')}</h1>
