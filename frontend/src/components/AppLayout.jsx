@@ -84,6 +84,7 @@ export default function AppLayout() {
           <p>© {new Date().getFullYear()} {schoolName}. {t('Всі права захищені.')}</p>
           <div className="footer-social">
             {profile?.email && <a href={`mailto:${profile.email}`} aria-label="Email"><MaterialIcon name="mail" /></a>}
+            <a href="https://drive.google.com/drive/folders/1LESn7nOjElzd90g120_5E4uEychCS8VX?usp=drive_link" target="_blank" rel="noreferrer" aria-label={t('Відвідування')} title={t('Відвідування')}><MaterialIcon name="table_view" /></a>
             <NavLink to="/power" aria-label={t('Світло')}><MaterialIcon name="lightbulb" /></NavLink>
             {profile?.mapUrl && <a href={profile.mapUrl} aria-label="Map"><MaterialIcon name="public" /></a>}
           </div>
