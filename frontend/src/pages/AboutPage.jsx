@@ -84,7 +84,7 @@ export default function AboutPage() {
           <div className="timeline">
             {historyItems.map((item, index) => {
               const isCollapsedMiddle = !historyExpanded && historyItems.length > 2 && index > 0 && index < historyItems.length - 1;
-              if (isCollapsedMiddle) return index === 1 ? <li key="history-more" className="timeline-more"><button type="button" onClick={() => setHistoryExpanded(true)} aria-label={t('Показати всю історію')}>…</button></li> : null;
+              if (isCollapsedMiddle) return index === 1 ? <div key="history-more" className="timeline-more"><button type="button" onClick={() => setHistoryExpanded(true)} aria-expanded="false">{t('Показати всю історію')} <MaterialIcon name="expand_more" /></button></div> : null;
               return (
               <article key={item.documentId || item.id} className="timeline-item">
                 <div className="timeline-year">{item.year}</div>
@@ -97,6 +97,7 @@ export default function AboutPage() {
               );
             })}
           </div>
+          {historyExpanded && historyItems.length > 2 && <div className="timeline-collapse"><button type="button" onClick={() => setHistoryExpanded(false)} aria-expanded="true">{t('Згорнути')} <MaterialIcon name="expand_less" /></button></div>}
         </div>
       </section>
 
