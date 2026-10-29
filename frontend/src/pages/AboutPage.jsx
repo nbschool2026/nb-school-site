@@ -87,10 +87,9 @@ export default function AboutPage() {
               if (isCollapsedMiddle) return index === 1 ? <li key="history-more" className="timeline-more"><button type="button" onClick={() => setHistoryExpanded(true)} aria-label={t('Показати всю історію')}>…</button></li> : null;
               return (
               <article key={item.documentId || item.id} className="timeline-item">
-                <div className="timeline-icon"><MaterialIcon name={item.icon || 'history_edu'} /></div>
-                <div>
-                  <h3>{item.year}</h3>
-                  <h4>{item.title}</h4>
+                <div className="timeline-year">{item.year}</div>
+                <div className="timeline-content">
+                  <h3>{item.title}</h3>
                   <p>{item.text}</p>
                   {locale === 'en' && item._fallbackLocale && <small>{t('Показано українською')}</small>}
                 </div>
