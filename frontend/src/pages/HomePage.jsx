@@ -57,7 +57,11 @@ export default function HomePage() {
           {locale === 'en' && profile?._fallbackLocale && <small>{t('Показано українською')}</small>}
           {profile?.heroSubtitle && <p>{profile.heroSubtitle}</p>}
           <div className="hero-actions">
-            <Link className="ghost-button" to="/about">{t('Віртуальний тур')}</Link>
+            <a className="ghost-button" href="https://nbschool2026.github.io/school-3d/" target="_blank" rel="noreferrer">
+              <span aria-hidden="true">⛏️</span>
+              {t('Віртуальний тур')}
+            </a>
+            <Link className="ghost-button" to="/about">{t('Про нас')}</Link>
           </div>
         </div>
       </section>
