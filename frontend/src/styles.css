@@ -919,8 +919,13 @@ img {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.about-history-section { padding-bottom: 28px; }
+.about-staff-section { padding-top: 28px; }
+.staff-card { min-width: 0; }
+
 .staff-card img,
 .staff-photo-placeholder {
+  display: block;
   width: 100%;
   aspect-ratio: 3 / 4;
   border-radius: 12px;
@@ -938,14 +943,19 @@ img {
   font-size: 5rem;
 }
 
+.staff-card-content { padding: 16px 4px 0; }
+
 .staff-card h3 {
-  margin-top: 14px;
+  font-size: 1.05rem;
+  overflow-wrap: anywhere;
 }
 
-.staff-card p {
+.staff-card .staff-position {
   margin: 6px 0 0;
-  color: var(--primary);
-  font-weight: 800;
+  color: var(--primary-dark);
+  font-size: .92rem;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .staff-card .staff-bio {
@@ -1660,6 +1670,9 @@ img {
   .contact-band {
     padding: 54px 0;
   }
+
+  .about-history-section { padding-bottom: 20px; }
+  .about-staff-section { padding-top: 20px; }
 
   .compact-grid,
   .event-grid,

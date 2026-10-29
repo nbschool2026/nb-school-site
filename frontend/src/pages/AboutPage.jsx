@@ -77,7 +77,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="page-section white-band">
+      <section className="page-section white-band about-history-section">
         <div className="container narrow">
           <SectionTitle title={t('Наша історія')} center />
           {status === 'ready' && !historyItems.length && <p>{t('Історію закладу ще не додано.')}</p>}
@@ -101,7 +101,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="page-section white-band">
+      <section className="page-section white-band about-staff-section">
         <div className="container">
           <SectionTitle title={t('Вчителі та адміністрація')} center />
           {status === 'ready' && !staffMembers.length && <p>{t('Інформацію про працівників ще не додано.')}</p>}
@@ -111,10 +111,12 @@ export default function AboutPage() {
                 {mediaUrl(person.photo)
                   ? <img src={mediaUrl(person.photo)} alt={person.name} loading="lazy" decoding="async" />
                   : <div className="staff-photo-placeholder" aria-hidden="true"><MaterialIcon name="person" /></div>}
-                <h3>{person.name}</h3>
-                <p>{person.position}</p>
-                {person.bio && <p className="staff-bio">{person.bio}</p>}
-                {locale === 'en' && person._fallbackLocale && <small>{t('Показано українською')}</small>}
+                <div className="staff-card-content">
+                  <h3>{person.name}</h3>
+                  {person.position && <p className="staff-position">{person.position}</p>}
+                  {person.bio && <p className="staff-bio">{person.bio}</p>}
+                  {locale === 'en' && person._fallbackLocale && <small>{t('Показано українською')}</small>}
+                </div>
               </article>
             ))}
           </div>
