@@ -21,7 +21,7 @@ function ConsumptionChart({ rows, dateLocale, t }) {
     return `${segment} L ${coordinates[coordinates.length - 1][1]} ${y(0)} L ${coordinates[0][1]} ${y(0)} Z`;
   }).join(' ');
   const gridSteps = [0, 1, 2, 3, 4].map((step) => ({ value: max * step / 4, y: y(max * step / 4) }));
-  const labels = [...new Set([points[0], points[Math.floor((points.length - 1) / 2)], points[points.length - 1]])];
+  const labels = Array.from({ length: duration ? 7 : 1 }, (_, index) => ({ time: points[0].time + duration * index / 6 }));
   const timeLabel = (row) => new Date(row.time).toLocaleTimeString(dateLocale, { hour: '2-digit', minute: '2-digit' });
   return <>
     <div className="power-chart-legend"><span><i className="power-chart-swatch" />{t('Споживання')}</span><span><i className="power-chart-swatch is-grid" />{t('Обмін з мережею')}</span></div>
