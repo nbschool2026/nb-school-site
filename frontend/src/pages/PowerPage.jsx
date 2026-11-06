@@ -35,7 +35,6 @@ function ConsumptionChart({ rows, dateLocale, t }) {
       {points.filter((row) => row.gridPower != null).map((row, index) => <circle key={index} cx={x(row)} cy={y(row.gridPower)} r="3" className="power-chart-dot power-chart-grid-dot"><title>{timeLabel(row)} — {t('Обмін з мережею')}: {valueWithUnit(row.gridPower)}</title></circle>)}
       {labels.map((row, index) => <text key={index} x={x(row)} y={height - 7} textAnchor={index === 0 ? 'start' : index === labels.length - 1 ? 'end' : 'middle'} className="power-chart-label">{timeLabel(row)}</text>)}
     </svg></div>
-    <p className="power-chart-note">{t('Зелена лінія — потужність обміну з мережею. Під час відключення — 0. Нуль також можливий, коли сонце й батарея повністю покривають споживання. Розриви — немає даних.')}</p>
   </>;
 }
 
