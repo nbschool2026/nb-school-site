@@ -19,7 +19,7 @@ test('history preserves missing values and uses signed wire exchange before impo
   ];
   globalThis.fetch = async (url) => ({ ok: true, json: async () => String(url).includes('/account/token')
     ? { accessToken: 'test-token' }
-    : { stationDataItems: samples.map((row) => ({ timeStamp: 1793952000, consumptionPower: null, ...row })) } });
+    : { stationDataItems: samples.map((row, index) => ({ timeStamp: 1793952000 + index * 300, consumptionPower: null, ...row })) } });
   try {
     const ctx = { query: { hours: 6 } };
     await controller.history(ctx);
@@ -66,6 +66,35 @@ test('current grid status preserves measured zero while keeping absent telemetry
 });
 
 const x = (row) => row.time / 60_000;
+test('weekly API fetches seven bounded days, deduplicates boundaries and caches the result', async () => {
+  const originalFetch = globalThis.fetch;
+  const names = ['DEYE_APP_ID', 'DEYE_APP_SECRET', 'DEYE_EMAIL', 'DEYE_PASSWORD', 'DEYE_STATION_ID'];
+  const originalEnv = names.map((name) => process.env[name]);
+  names.forEach((name) => { process.env[name] = 'weekly-test'; });
+  const requests = [];
+  globalThis.fetch = async (url, options) => {
+    if (String(url).includes('/account/token')) return { ok: true, json: async () => ({ accessToken: 'test-token' }) };
+    const body = JSON.parse(options.body);
+    requests.push(body);
+    return { ok: true, json: async () => ({ stationDataItems: [body.startTimestamp, body.endTimestamp].map((timeStamp) => ({ timeStamp, wirePower: 0 })) }) };
+  };
+  try {
+    const ctx = { query: { hours: 168 } };
+    await controller.history(ctx);
+    assert.equal(requests.length, 7);
+    assert.ok(requests.every((request) => request.endTimestamp - request.startTimestamp === 86400));
+    assert.equal(ctx.body.data.length, 8);
+    for (let index = 1; index < requests.length; index += 1) assert.equal(requests[index].startTimestamp, requests[index - 1].endTimestamp);
+    const again = { query: { hours: 168 } };
+    await controller.history(again);
+    assert.deepEqual(again.body, ctx.body);
+    assert.equal(requests.length, 7);
+  } finally {
+    globalThis.fetch = originalFetch;
+    names.forEach((name, index) => { if (originalEnv[index] === undefined) delete process.env[name]; else process.env[name] = originalEnv[index]; });
+  }
+});
+
 const y = (value) => 100 - value * 10;
 test('grid outage stays flat at zero with vertical transitions', () => {
   const points = [2, 0, 0, 3].map((gridPower, index) => ({ time: index * 300_000, gridPower }));

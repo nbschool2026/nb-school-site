@@ -4,6 +4,11 @@ import { useLocation } from 'react-router-dom';
 const LocaleContext = createContext(null);
 
 const english = {
+  'Відключення за останні 7 днів': 'Outages over the last 7 days',
+  'День': 'Day', 'Проміжки відключень': 'Outage intervals', 'Кількість': 'Count', 'Загалом': 'Total',
+  'Немає даних': 'No data', 'Не зафіксовано': 'None recorded', 'год': 'h', 'хв': 'min',
+  'Не вдалося завантажити історію відключень.': 'Could not load outage history.',
+  'За нульовою потужністю мережі; час київський. Пропуски даних не враховано. Сьогодні — до останнього виміру.': 'Based on zero grid power; Kyiv time. Missing data is excluded. Today runs up to the latest measurement.',
   'Період': 'Period', '6 годин': '6 hours', '12 годин': '12 hours', '24 години': '24 hours',
   'Споживання за останні 12 годин': 'Consumption for the last 12 hours',
   'Споживання за останні 24 години': 'Consumption for the last 24 hours',

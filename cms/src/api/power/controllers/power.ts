@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 
 let tokenCache: { token: string; expiresAt: number } | null = null;
+let weeklyCache: { key: string; expiresAt: number; data: any[] } | null = null;
 function env(name: string) { return String(process.env[name] || '').trim(); }
 function numberFrom(value: unknown) { if (value == null || value === '' || typeof value === 'boolean') return null; const number = Number(value); return Number.isFinite(number) ? number : null; }
 function powerKw(value: unknown) { const number = numberFrom(value); return number == null ? null : number / 1000; }
@@ -42,19 +43,30 @@ export default {
     const stationId = env('DEYE_STATION_ID');
     if (!env('DEYE_APP_ID') || !env('DEYE_APP_SECRET') || !env('DEYE_EMAIL') || !env('DEYE_PASSWORD') || !stationId) { ctx.status = 503; ctx.body = { code: 'not_configured', error: { message: 'Deye Cloud is not configured.' } }; return; }
     try {
-      const hours = Math.min(24, Math.max(1, Number(ctx.query?.hours || 6) || 6));
+      const hours = Math.min(168, Math.max(1, Number(ctx.query?.hours || 6) || 6));
+      const cacheKey = `${baseUrl}:${stationId}:${env('DEYE_APP_ID')}`;
+      if (hours === 168 && weeklyCache?.key === cacheKey && weeklyCache.expiresAt > Date.now()) {
+        ctx.body = { data: weeklyCache.data }; return;
+      }
       const endTimestamp = Math.floor(Date.now() / 1000);
       const startTimestamp = endTimestamp - hours * 3600;
       const token = await deyeToken(baseUrl);
-      const response = await fetch(`${baseUrl}/station/history/power`, { method: 'POST', headers: { Authorization: token.startsWith('Bearer ') ? token : `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ stationId: Number(stationId) || stationId, startTimestamp, endTimestamp }) });
-      const payload: any = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload?.msg || 'Deye history request failed');
-      const rows = payload?.stationDataItems || payload?.data?.stationDataItems || payload?.data || [];
-      ctx.body = { data: (Array.isArray(rows) ? rows : []).map((row: any) => ({
+      const rows: any[] = [];
+      // Keep vendor requests bounded to one day, including for weekly history.
+      for (let start = startTimestamp; start < endTimestamp; start += 86400) {
+        const response = await fetch(`${baseUrl}/station/history/power`, { method: 'POST', headers: { Authorization: token.startsWith('Bearer ') ? token : `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ stationId: Number(stationId) || stationId, startTimestamp: start, endTimestamp: Math.min(start + 86400, endTimestamp) }) });
+        const payload: any = await response.json().catch(() => ({}));
+        if (!response.ok || payload?.success === false) throw new Error(payload?.msg || 'Deye history request failed');
+        const items = payload?.stationDataItems || payload?.data?.stationDataItems || payload?.data || [];
+        if (Array.isArray(items)) rows.push(...items);
+      }
+      const normalized = rows.map((row: any) => ({
         timestamp: timestampIso(row.timeStamp || row.timestamp || row.dateTime || row.lastUpdateTime),
         consumptionPower: powerKw(row.consumptionPower ?? row.usePower),
         gridPower: gridExchangeKw(row),
-      })).filter((row: any) => row.timestamp) };
+      }));
+      ctx.body = { data: [...new Map(normalized.map((row) => [row.timestamp, row])).values()].sort((a, b) => a.timestamp.localeCompare(b.timestamp)) };
+      if (hours === 168) weeklyCache = { key: cacheKey, expiresAt: Date.now() + 5 * 60_000, data: ctx.body.data };
     } catch { ctx.status = 502; ctx.body = { code: 'deye_error', error: { message: 'Deye Cloud history request failed.' } }; }
   },
 
