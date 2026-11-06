@@ -4,6 +4,9 @@ import { useLocation } from 'react-router-dom';
 const LocaleContext = createContext(null);
 
 const english = {
+  'Споживання': 'Consumption', 'Обмін з мережею': 'Grid exchange',
+  'Споживання та мережа за останні 6 годин': 'Consumption and grid for the last 6 hours',
+  'Зелена лінія — потужність обміну з мережею. Під час відключення — 0. Нуль також можливий, коли сонце й батарея повністю покривають споживання. Розриви — немає даних.': 'The green line shows grid exchange power. During an outage it is 0. Zero is also possible when solar and battery fully cover consumption. Gaps mean no data.',
   'Головна': 'Home', 'Про нас': 'About', 'Події': 'Events', 'Публічна інформація': 'Public information',
   'Дистанційне навчання': 'Distance learning', 'Матеріали дистанційного навчання': 'Distance learning materials',
   'Матеріали, теми та завдання для учнів за класами й предметами.': 'Materials, topics and assignments for students by grade and subject.',

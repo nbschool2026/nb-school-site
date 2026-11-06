@@ -2,8 +2,16 @@ import crypto from 'node:crypto';
 
 let tokenCache: { token: string; expiresAt: number } | null = null;
 function env(name: string) { return String(process.env[name] || '').trim(); }
-function numberFrom(value: unknown) { const number = Number(value); return Number.isFinite(number) ? number : null; }
+function numberFrom(value: unknown) { if (value == null || value === '' || typeof value === 'boolean') return null; const number = Number(value); return Number.isFinite(number) ? number : null; }
 function powerKw(value: unknown) { const number = numberFrom(value); return number == null ? null : number / 1000; }
+// wirePower is the signed exchange with the grid. Keep missing measurements
+// distinct from a measured zero; import/export counters are fallbacks only.
+function gridExchangeKw(row: any) {
+  const wire = numberFrom(row.wirePower);
+  if (wire != null) return Math.abs(wire) / 1000;
+  const values = [numberFrom(row.purchasePower), numberFrom(row.gridPower)].filter((value): value is number => value != null);
+  return values.length ? Math.max(...values.map(Math.abs)) / 1000 : null;
+}
 function timestampIso(value: unknown) {
   if (value == null || value === '') return new Date().toISOString();
   const number = Number(value);
@@ -45,6 +53,7 @@ export default {
       ctx.body = { data: (Array.isArray(rows) ? rows : []).map((row: any) => ({
         timestamp: timestampIso(row.timeStamp || row.timestamp || row.dateTime || row.lastUpdateTime),
         consumptionPower: powerKw(row.consumptionPower ?? row.usePower),
+        gridPower: gridExchangeKw(row),
       })).filter((row: any) => row.timestamp) };
     } catch { ctx.status = 502; ctx.body = { code: 'deye_error', error: { message: 'Deye Cloud history request failed.' } }; }
   },

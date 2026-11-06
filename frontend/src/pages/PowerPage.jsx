@@ -1,20 +1,42 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import { useLocale } from '../lib/locale.jsx';
+import { chartNumber, seriesPath } from '../lib/power-chart.js';
 
 const API_BASE = import.meta.env.VITE_STRAPI_API_URL || '/api';
 function valueWithUnit(value, unit = 'кВт') { if (value == null || value === '') return '—'; const number = Number(value); return Number.isFinite(number) ? `${number.toFixed(2)} ${unit}` : `${value} ${unit}`; }
 
 function ConsumptionChart({ rows, dateLocale, t }) {
-  const points = rows.map((row) => ({ ...row, value: Number(row.consumptionPower) })).filter((row) => Number.isFinite(row.value));
-  if (!points.length) return <p className="power-chart-empty">{t('Немає історичних даних.')}</p>;
-  const width = 900; const height = 260; const padX = 72; const padY = 26; const max = Math.max(1, ...points.map((row) => row.value));
-  const x = (index) => padX + (points.length === 1 ? 0 : index * (width - padX * 2) / (points.length - 1));
+  const points = rows.map((row) => ({ ...row, time: Date.parse(row.timestamp), consumptionPower: chartNumber(row.consumptionPower), gridPower: chartNumber(row.gridPower) }))
+    .filter((row) => Number.isFinite(row.time)).sort((a, b) => a.time - b.time);
+  if (!points.some((row) => row.consumptionPower != null || row.gridPower != null)) return <p className="power-chart-empty">{t('Немає історичних даних.')}</p>;
+  const width = 900; const height = 260; const padX = 72; const padY = 26;
+  const max = Math.max(1, ...points.flatMap((row) => [row.consumptionPower ?? 0, row.gridPower ?? 0]));
+  const duration = points[points.length - 1].time - points[0].time;
+  const x = (row) => padX + (duration ? (row.time - points[0].time) / duration : 0) * (width - padX * 2);
   const y = (value) => height - padY - (value / max) * (height - padY * 2);
-  const path = points.map((row, index) => `${index ? 'L' : 'M'} ${x(index).toFixed(1)} ${y(row.value).toFixed(1)}`).join(' ');
+  const consumptionPath = seriesPath(points, 'consumptionPower', x, y);
+  const consumptionArea = consumptionPath.split(/(?=M )/).filter(Boolean).map((segment) => {
+    const coordinates = [...segment.matchAll(/[ML] ([\d.-]+) ([\d.-]+)/g)];
+    return `${segment} L ${coordinates[coordinates.length - 1][1]} ${y(0)} L ${coordinates[0][1]} ${y(0)} Z`;
+  }).join(' ');
   const gridSteps = [0, 1, 2, 3, 4].map((step) => ({ value: max * step / 4, y: y(max * step / 4) }));
-  const labels = [points[0], points[Math.floor((points.length - 1) / 2)], points[points.length - 1]];
-  return <div className="power-chart-wrap"><svg className="power-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label={t('Споживання за останні 6 годин')}>{gridSteps.map((step) => <g key={step.value}><line x1={padX} y1={step.y} x2={width - padX} y2={step.y} className="power-chart-grid" /><text x={padX - 8} y={step.y + 4} textAnchor="end" className="power-chart-y-label">{step.value.toFixed(1)} кВт</text></g>)}<line x1={padX} y1={height - padY} x2={width - padX} y2={height - padY} className="power-chart-axis" /><line x1={padX} y1={padY} x2={padX} y2={height - padY} className="power-chart-axis" /><path d={path} className="power-chart-line" /><path d={`${path} L ${x(points.length - 1)} ${height - padY} L ${x(0)} ${height - padY} Z`} className="power-chart-area" />{points.map((row, index) => <circle key={`${row.timestamp}-${index}`} cx={x(index)} cy={y(row.value)} r="3" className="power-chart-dot" />)}{labels.map((row, index) => <text key={`${row.timestamp}-${index}`} x={x(points.indexOf(row))} y={height - 7} textAnchor={index === 0 ? 'start' : index === labels.length - 1 ? 'end' : 'middle'} className="power-chart-label">{new Date(row.timestamp).toLocaleTimeString(dateLocale, { hour: '2-digit', minute: '2-digit' })}</text>)}</svg></div>;
+  const labels = [...new Set([points[0], points[Math.floor((points.length - 1) / 2)], points[points.length - 1]])];
+  const timeLabel = (row) => new Date(row.time).toLocaleTimeString(dateLocale, { hour: '2-digit', minute: '2-digit' });
+  return <>
+    <div className="power-chart-legend"><span><i className="power-chart-swatch" />{t('Споживання')}</span><span><i className="power-chart-swatch is-grid" />{t('Обмін з мережею')}</span></div>
+    <div className="power-chart-wrap"><svg className="power-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label={t('Споживання та мережа за останні 6 годин')}>
+      {gridSteps.map((step) => <g key={step.value}><line x1={padX} y1={step.y} x2={width - padX} y2={step.y} className="power-chart-grid" /><text x={padX - 8} y={step.y + 4} textAnchor="end" className="power-chart-y-label">{step.value.toFixed(1)} кВт</text></g>)}
+      <line x1={padX} y1={height - padY} x2={width - padX} y2={height - padY} className="power-chart-axis" /><line x1={padX} y1={padY} x2={padX} y2={height - padY} className="power-chart-axis" />
+      <path d={consumptionArea} className="power-chart-area" />
+      <path d={consumptionPath} className="power-chart-line" />
+      {points.filter((row) => row.consumptionPower != null).map((row, index) => <circle key={index} cx={x(row)} cy={y(row.consumptionPower)} r="3" className="power-chart-dot" />)}
+      <path d={seriesPath(points, 'gridPower', x, y, true)} className="power-chart-line power-chart-grid-line" />
+      {points.filter((row) => row.gridPower != null).map((row, index) => <circle key={index} cx={x(row)} cy={y(row.gridPower)} r="3" className="power-chart-dot power-chart-grid-dot"><title>{timeLabel(row)} — {t('Обмін з мережею')}: {valueWithUnit(row.gridPower)}</title></circle>)}
+      {labels.map((row, index) => <text key={index} x={x(row)} y={height - 7} textAnchor={index === 0 ? 'start' : index === labels.length - 1 ? 'end' : 'middle'} className="power-chart-label">{timeLabel(row)}</text>)}
+    </svg></div>
+    <p className="power-chart-note">{t('Зелена лінія — потужність обміну з мережею. Під час відключення — 0. Нуль також можливий, коли сонце й батарея повністю покривають споживання. Розриви — немає даних.')}</p>
+  </>;
 }
 
 export default function PowerPage() {
