@@ -1,12 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import { useLocale } from '../lib/locale.jsx';
 import { chartNumber, seriesPath } from '../lib/power-chart.js';
 
+const PERIODS = [
+  { hours: 6, label: '6 годин', title: 'Споживання за останні 6 годин', description: 'Споживання та мережа за останні 6 годин' },
+  { hours: 12, label: '12 годин', title: 'Споживання за останні 12 годин', description: 'Споживання та мережа за останні 12 годин' },
+  { hours: 24, label: '24 години', title: 'Споживання за останні 24 години', description: 'Споживання та мережа за останні 24 години' },
+];
 const API_BASE = import.meta.env.VITE_STRAPI_API_URL || '/api';
 function valueWithUnit(value, unit = 'кВт') { if (value == null || value === '') return '—'; const number = Number(value); return Number.isFinite(number) ? `${number.toFixed(2)} ${unit}` : `${value} ${unit}`; }
 
-function ConsumptionChart({ rows, dateLocale, t }) {
+function ConsumptionChart({ rows, dateLocale, t, description }) {
   const points = rows.map((row) => ({ ...row, time: Date.parse(row.timestamp), consumptionPower: chartNumber(row.consumptionPower), gridPower: chartNumber(row.gridPower) }))
     .filter((row) => Number.isFinite(row.time)).sort((a, b) => a.time - b.time);
   if (!points.some((row) => row.consumptionPower != null || row.gridPower != null)) return <p className="power-chart-empty">{t('Немає історичних даних.')}</p>;
@@ -25,7 +30,7 @@ function ConsumptionChart({ rows, dateLocale, t }) {
   const timeLabel = (row) => new Date(row.time).toLocaleTimeString(dateLocale, { hour: '2-digit', minute: '2-digit' });
   return <>
     <div className="power-chart-legend"><span><i className="power-chart-swatch" />{t('Споживання')}</span><span><i className="power-chart-swatch is-grid" />{t('Мережа')}</span></div>
-    <div className="power-chart-wrap"><svg className="power-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label={t('Споживання та мережа за останні 6 годин')}>
+    <div className="power-chart-wrap"><svg className="power-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label={t(description)}>
       {gridSteps.map((step) => <g key={step.value}><line x1={padX} y1={step.y} x2={width - padX} y2={step.y} className="power-chart-grid" /><text x={padX - 8} y={step.y + 4} textAnchor="end" className="power-chart-y-label">{step.value.toFixed(1)} кВт</text></g>)}
       <line x1={padX} y1={height - padY} x2={width - padX} y2={height - padY} className="power-chart-axis" /><line x1={padX} y1={padY} x2={padX} y2={height - padY} className="power-chart-axis" />
       <path d={consumptionArea} className="power-chart-area" />
@@ -40,25 +45,30 @@ function ConsumptionChart({ rows, dateLocale, t }) {
 
 export default function PowerPage() {
   const { t, dateLocale } = useLocale();
-  const [state, setState] = useState({ status: 'loading', data: null, history: [] });
+  const [hours, setHours] = useState(6);
+  const requestId = useRef(0);
+  const period = PERIODS.find((item) => item.hours === hours);
+  const [state, setState] = useState({ status: 'loading', data: null, history: [], refreshing: false });
   const load = useCallback(async () => {
-    setState((current) => ({ ...current, status: 'loading' }));
+    const id = ++requestId.current;
+    setState((current) => ({ ...current, status: current.data ? 'ready' : 'loading', refreshing: true }));
     try {
-      const [statusResponse, historyResponse] = await Promise.all([fetch(`${API_BASE}/power/status`, { headers: { Accept: 'application/json' } }), fetch(`${API_BASE}/power/history?hours=6`, { headers: { Accept: 'application/json' } })]);
+      const [statusResponse, historyResponse] = await Promise.all([fetch(`${API_BASE}/power/status`, { headers: { Accept: 'application/json' } }), fetch(`${API_BASE}/power/history?hours=${hours}`, { headers: { Accept: 'application/json' } })]);
       const payload = await statusResponse.json().catch(() => ({}));
       const historyPayload = await historyResponse.json().catch(() => ({}));
+      if (id !== requestId.current) return;
       if (statusResponse.status === 503 && payload?.code === 'not_configured') { setState({ status: 'not-configured', data: null, history: [] }); return; }
-      if (!statusResponse.ok || !payload?.data) throw new Error(payload?.error?.message || 'power');
+      if (!statusResponse.ok || !historyResponse.ok || !payload?.data) throw new Error(payload?.error?.message || 'power');
       setState({ status: 'ready', data: payload.data, history: Array.isArray(historyPayload?.data) ? historyPayload.data : [] });
-    } catch { setState({ status: 'error', data: null, history: [] }); }
-  }, []);
-  useEffect(() => { load(); const timer = window.setInterval(load, 60_000); return () => window.clearInterval(timer); }, [load]);
+    } catch { if (id === requestId.current) setState({ status: 'error', data: null, history: [] }); }
+  }, [hours]);
+  useEffect(() => { load(); const timer = window.setInterval(load, 60_000); return () => { window.clearInterval(timer); requestId.current += 1; }; }, [load]);
   const data = state.data || {};
   const powerOn = data.gridStatus === 'online'; const powerUnknown = data.gridStatus === 'unknown';
   return <main><section className="info-hero power-hero"><div className="container"><div className="pill"><MaterialIcon name="bolt" /> {t('Світло')}</div><h1>{t('Електропостачання школи')}</h1><p>{t('Стан електромережі та сонячної станції в реальному часі.')}</p></div></section><section className="page-section"><div className="container power-page">
     {state.status === 'loading' && <div className="power-message" role="status"><MaterialIcon name="sync" /> Завантаження…</div>}
     {state.status === 'not-configured' && <div className="power-message" role="status"><MaterialIcon name="settings" /><p>{t('Інтеграцію Deye Cloud ще не налаштовано на сервері.')}</p></div>}
     {state.status === 'error' && <div className="power-message power-message-error" role="alert"><MaterialIcon name="cloud_off" /><p>{t('Не вдалося отримати дані Deye Cloud.')}</p><button type="button" className="soft-button" onClick={load}>{t('Оновити')}</button></div>}
-    {state.status === 'ready' && <><div className={`power-status-card ${powerUnknown ? 'is-unknown' : powerOn ? 'is-online' : 'is-offline'}`}><MaterialIcon name={powerOn ? 'check_circle' : 'warning'} /><div><strong>{t(powerUnknown ? 'Стан невідомий' : powerOn ? 'Є світло' : 'Немає світла')}</strong><span>{data.stationName || 'Deye Cloud'}</span></div></div><div className="power-metrics"><article><MaterialIcon name="solar_power" /><span>{t('Генерація')}</span><strong>{valueWithUnit(data.solarPower)}</strong></article><article><MaterialIcon name="electric_bolt" /><span>{t('Мережа')}</span><strong>{valueWithUnit(data.gridPower)}</strong></article><article><MaterialIcon name="home" /><span>{t('UPS-навантаження')}</span><strong>{valueWithUnit(data.loadPower)}</strong></article><article><MaterialIcon name="battery_full" /><span>{t('Батарея')}</span><strong>{data.batterySoc == null ? '—' : `${data.batterySoc}%`}</strong></article></div><p className="power-updated">{t('Оновлено')}: {data.updatedAt ? new Date(data.updatedAt).toLocaleString(dateLocale) : '—'}</p><section className="power-chart-card"><h2>{t('Споживання за останні 6 годин')}</h2><ConsumptionChart rows={state.history} dateLocale={dateLocale} t={t} /></section></>}
+    {state.status === 'ready' && <><div className={`power-status-card ${powerUnknown ? 'is-unknown' : powerOn ? 'is-online' : 'is-offline'}`}><MaterialIcon name={powerOn ? 'check_circle' : 'warning'} /><div><strong>{t(powerUnknown ? 'Стан невідомий' : powerOn ? 'Є світло' : 'Немає світла')}</strong><span>{data.stationName || 'Deye Cloud'}</span></div></div><div className="power-metrics"><article><MaterialIcon name="solar_power" /><span>{t('Генерація')}</span><strong>{valueWithUnit(data.solarPower)}</strong></article><article><MaterialIcon name="electric_bolt" /><span>{t('Мережа')}</span><strong>{valueWithUnit(data.gridPower)}</strong></article><article><MaterialIcon name="home" /><span>{t('UPS-навантаження')}</span><strong>{valueWithUnit(data.loadPower)}</strong></article><article><MaterialIcon name="battery_full" /><span>{t('Батарея')}</span><strong>{data.batterySoc == null ? '—' : `${data.batterySoc}%`}</strong></article></div><p className="power-updated">{t('Оновлено')}: {data.updatedAt ? new Date(data.updatedAt).toLocaleString(dateLocale) : '—'}</p><section className="power-chart-card" aria-busy={state.refreshing || false}><div className="power-chart-header"><h2>{t(period.title)}</h2><label className="power-chart-period">{t('Період')}<select value={hours} onChange={(event) => setHours(Number(event.target.value))}>{PERIODS.map((item) => <option key={item.hours} value={item.hours}>{t(item.label)}</option>)}</select></label></div>{state.refreshing ? <p className="power-chart-empty" role="status">{t('Завантаження…')}</p> : <ConsumptionChart rows={state.history} dateLocale={dateLocale} t={t} description={period.description} />}</section></>}
   </div></section></main>;
 }

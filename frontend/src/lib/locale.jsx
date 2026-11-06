@@ -4,6 +4,11 @@ import { useLocation } from 'react-router-dom';
 const LocaleContext = createContext(null);
 
 const english = {
+  'Період': 'Period', '6 годин': '6 hours', '12 годин': '12 hours', '24 години': '24 hours',
+  'Споживання за останні 12 годин': 'Consumption for the last 12 hours',
+  'Споживання за останні 24 години': 'Consumption for the last 24 hours',
+  'Споживання та мережа за останні 12 годин': 'Consumption and grid for the last 12 hours',
+  'Споживання та мережа за останні 24 години': 'Consumption and grid for the last 24 hours',
   'Споживання': 'Consumption',
   'Споживання та мережа за останні 6 годин': 'Consumption and grid for the last 6 hours',
   'Головна': 'Home', 'Про нас': 'About', 'Події': 'Events', 'Публічна інформація': 'Public information',
