@@ -72,7 +72,10 @@ export default {
       const gridValue = numberFrom(findValue(raw, ['gridPower', 'grid_power', 'pgrid', 'gridW']));
       const wireValue = numberFrom(findValue(raw, ['wirePower', 'wire_power']));
       const purchaseValue = numberFrom(findValue(raw, ['purchasePower', 'purchase_power']));
-      const gridWatts = gridValue && gridValue !== 0 ? gridValue : (wireValue && wireValue !== 0 ? wireValue : purchaseValue);
+      // Prefer a nonzero measurement, but retain a measured zero when other
+      // fields are absent. Zero is valid telemetry, not an unknown value.
+      const gridWatts = [gridValue, wireValue, purchaseValue].find((value) => value != null && value !== 0)
+        ?? gridValue ?? wireValue ?? purchaseValue;
       const gridStatus = typeof gridRaw === 'boolean' ? (gridRaw ? 'online' : 'offline') : gridRaw != null ? (String(gridRaw).toLowerCase().match(/off|out|disconnect|false/) ? 'offline' : 'online') : gridWatts != null ? (Math.abs(gridWatts) > 1 ? 'online' : 'offline') : 'unknown';
       ctx.body = { data: { stationName: findValue(raw, ['stationName', 'name']) || '', gridStatus, gridPower: powerKw(gridWatts), solarPower: powerKw(findValue(raw, ['solarPower', 'generationPower', 'pvPower', 'ppv'])), loadPower: powerKw(findValue(raw, ['loadPower', 'consumptionPower', 'usePower', 'pload'])), batteryPower: powerKw(findValue(raw, ['batteryPower', 'batteryW', 'pbattery'])), batterySoc: numberFrom(findValue(raw, ['batterySoc', 'batterySOC', 'soc'])), updatedAt: timestampIso(findValue(raw, ['lastUpdateTime', 'updateTime'])) } };
     } catch { ctx.status = 502; ctx.body = { code: 'deye_error', error: { message: 'Deye Cloud request failed.' } }; }

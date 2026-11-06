@@ -37,6 +37,34 @@ test('chart does not turn absent measurements into zero', () => {
   assert.equal(chartNumber('2.5'), 2.5);
 });
 
+test('current grid status preserves measured zero while keeping absent telemetry unknown', async () => {
+  const originalFetch = globalThis.fetch;
+  const names = ['DEYE_APP_ID', 'DEYE_APP_SECRET', 'DEYE_EMAIL', 'DEYE_PASSWORD', 'DEYE_STATION_ID'];
+  const originalEnv = names.map((name) => process.env[name]);
+  names.forEach((name) => { process.env[name] = 'test'; });
+  const cases = [
+    [{ gridPower: null, wirePower: 0, purchasePower: null }, 'offline', 0],
+    [{ gridPower: 0, wirePower: null, purchasePower: null }, 'offline', 0],
+    [{ gridPower: null, wirePower: null, purchasePower: 0 }, 'offline', 0],
+    [{ gridPower: 0, wirePower: 1800, purchasePower: null }, 'online', 1.8],
+    [{ gridPower: null, wirePower: -1200, purchasePower: null }, 'online', -1.2],
+    [{ gridPower: null, wirePower: null, purchasePower: null }, 'unknown', null],
+    [{}, 'unknown', null],
+  ];
+  try {
+    for (const [raw, status, power] of cases) {
+      globalThis.fetch = async (url) => ({ ok: true, json: async () => String(url).includes('/account/token') ? { accessToken: 'test-token' } : raw });
+      const ctx = {};
+      await controller.status(ctx);
+      assert.equal(ctx.body.data.gridStatus, status, JSON.stringify(raw));
+      assert.equal(ctx.body.data.gridPower, power, JSON.stringify(raw));
+    }
+  } finally {
+    globalThis.fetch = originalFetch;
+    names.forEach((name, index) => { if (originalEnv[index] === undefined) delete process.env[name]; else process.env[name] = originalEnv[index]; });
+  }
+});
+
 const x = (row) => row.time / 60_000;
 const y = (value) => 100 - value * 10;
 test('grid outage stays flat at zero with vertical transitions', () => {
