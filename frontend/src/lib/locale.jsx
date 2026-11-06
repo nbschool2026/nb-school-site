@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 const LocaleContext = createContext(null);
 
 const english = {
-  'Споживання': 'Consumption', 'Обмін з мережею': 'Grid exchange',
+  'Споживання': 'Consumption',
   'Споживання та мережа за останні 6 годин': 'Consumption and grid for the last 6 hours',
   'Головна': 'Home', 'Про нас': 'About', 'Події': 'Events', 'Публічна інформація': 'Public information',
   'Дистанційне навчання': 'Distance learning', 'Матеріали дистанційного навчання': 'Distance learning materials',

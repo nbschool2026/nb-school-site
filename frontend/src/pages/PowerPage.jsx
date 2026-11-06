@@ -24,7 +24,7 @@ function ConsumptionChart({ rows, dateLocale, t }) {
   const labels = Array.from({ length: duration ? 7 : 1 }, (_, index) => ({ time: points[0].time + duration * index / 6 }));
   const timeLabel = (row) => new Date(row.time).toLocaleTimeString(dateLocale, { hour: '2-digit', minute: '2-digit' });
   return <>
-    <div className="power-chart-legend"><span><i className="power-chart-swatch" />{t('Споживання')}</span><span><i className="power-chart-swatch is-grid" />{t('Обмін з мережею')}</span></div>
+    <div className="power-chart-legend"><span><i className="power-chart-swatch" />{t('Споживання')}</span><span><i className="power-chart-swatch is-grid" />{t('Мережа')}</span></div>
     <div className="power-chart-wrap"><svg className="power-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label={t('Споживання та мережа за останні 6 годин')}>
       {gridSteps.map((step) => <g key={step.value}><line x1={padX} y1={step.y} x2={width - padX} y2={step.y} className="power-chart-grid" /><text x={padX - 8} y={step.y + 4} textAnchor="end" className="power-chart-y-label">{step.value.toFixed(1)} кВт</text></g>)}
       <line x1={padX} y1={height - padY} x2={width - padX} y2={height - padY} className="power-chart-axis" /><line x1={padX} y1={padY} x2={padX} y2={height - padY} className="power-chart-axis" />
@@ -32,7 +32,7 @@ function ConsumptionChart({ rows, dateLocale, t }) {
       <path d={consumptionPath} className="power-chart-line" />
       {points.filter((row) => row.consumptionPower != null).map((row, index) => <circle key={index} cx={x(row)} cy={y(row.consumptionPower)} r="3" className="power-chart-dot" />)}
       <path d={seriesPath(points, 'gridPower', x, y, true)} className="power-chart-line power-chart-grid-line" />
-      {points.filter((row) => row.gridPower != null).map((row, index) => <circle key={index} cx={x(row)} cy={y(row.gridPower)} r="3" className="power-chart-dot power-chart-grid-dot"><title>{timeLabel(row)} — {t('Обмін з мережею')}: {valueWithUnit(row.gridPower)}</title></circle>)}
+      {points.filter((row) => row.gridPower != null).map((row, index) => <circle key={index} cx={x(row)} cy={y(row.gridPower)} r="3" className="power-chart-dot power-chart-grid-dot"><title>{timeLabel(row)} — {t('Мережа')}: {valueWithUnit(row.gridPower)}</title></circle>)}
       {labels.map((row, index) => <text key={index} x={x(row)} y={height - 7} textAnchor={index === 0 ? 'start' : index === labels.length - 1 ? 'end' : 'middle'} className="power-chart-label">{timeLabel(row)}</text>)}
     </svg></div>
   </>;
