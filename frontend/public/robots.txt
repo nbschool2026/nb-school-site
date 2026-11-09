@@ -6,4 +6,4 @@ Disallow: /content-manager
 Disallow: /upload
 Disallow: /i18n
 
-Sitemap: https://nb-school.duckdns.org/sitemap.xml
+Sitemap: https://nbosvita.cn.ua/sitemap.xml
