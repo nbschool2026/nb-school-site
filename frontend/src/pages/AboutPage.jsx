@@ -40,10 +40,16 @@ export default function AboutPage() {
   useEffect(() => {
     setAboutSlide(0);
     setLoadedAboutImages(new Set());
-    if (aboutHeroImages.length < 2) return undefined;
-    const timer = window.setInterval(() => setAboutSlide((current) => (current + 1) % aboutHeroImages.length), 3000);
-    return () => window.clearInterval(timer);
   }, [aboutHeroImages]);
+
+  useEffect(() => {
+    if (aboutHeroImages.length < 2) return undefined;
+    const timer = window.setInterval(() => setAboutSlide((current) => {
+      const next = (current + 1) % aboutHeroImages.length;
+      return loadedAboutImages.has(aboutHeroImages[next].src) ? next : current;
+    }), 3000);
+    return () => window.clearInterval(timer);
+  }, [aboutHeroImages, loadedAboutImages]);
 
   useEffect(() => {
     let active = true;
@@ -68,7 +74,12 @@ export default function AboutPage() {
       {status === 'error' && <p className="container" role="alert">{t('Не вдалося завантажити сторінку «Про нас» із CMS.')}</p>}
       <section className={`subhero${aboutHeroImages.length ? ' subhero-with-image' : ''}`}>
         <div className="subhero-media" aria-hidden="true">
-          {aboutHeroImages.map((image, index) => <img key={image.src} className={'subhero-slide' + (index === aboutSlide ? ' is-active' : '') + (loadedAboutImages.has(image.src) ? ' is-loaded' : '')} src={image.medium || image.src} srcSet={aboutImageSrcSet(image)} sizes="(max-width: 640px) 100vw, (max-width: 1200px) calc(100vw - 32px), 1180px" alt="" loading={index === 0 ? 'eager' : 'lazy'} fetchPriority={index === 0 ? 'high' : 'auto'} decoding="async" onLoad={() => setLoadedAboutImages((current) => { if (current.has(image.src)) return current; const next = new Set(current); next.add(image.src); return next; })} />)}
+          {aboutHeroImages.map((image, index) => {
+            const currentLoaded = loadedAboutImages.has(aboutHeroImages[aboutSlide]?.src);
+            const shouldLoad = index === aboutSlide || loadedAboutImages.has(image.src)
+              || (currentLoaded && index === (aboutSlide + 1) % aboutHeroImages.length);
+            return <img key={image.src} className={'subhero-slide' + (index === aboutSlide ? ' is-active' : '') + (loadedAboutImages.has(image.src) ? ' is-loaded' : '')} src={shouldLoad ? image.medium || image.src : undefined} srcSet={shouldLoad ? aboutImageSrcSet(image) : undefined} sizes="(max-width: 640px) 100vw, (max-width: 1200px) calc(100vw - 32px), 1180px" alt="" loading={index === aboutSlide ? 'eager' : 'lazy'} fetchPriority={index === 0 ? 'high' : 'auto'} decoding="async" onLoad={() => setLoadedAboutImages((current) => { if (current.has(image.src)) return current; const next = new Set(current); next.add(image.src); return next; })} />;
+          })}
         </div>
         <div>
           <h1>{t('Про Наш Ліцей')}</h1>
