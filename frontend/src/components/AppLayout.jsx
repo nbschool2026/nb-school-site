@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import MaterialIcon from './MaterialIcon.jsx';
+import AttendanceAccess from './AttendanceAccess.jsx';
 import { fetchSingleLocalized } from '../lib/api.js';
 import { useLocale } from '../lib/locale.jsx';
 
@@ -84,7 +85,7 @@ export default function AppLayout() {
           <p>© {new Date().getFullYear()} {schoolName}. {t('Всі права захищені.')}</p>
           <div className="footer-social">
             {profile?.email && <a href={`mailto:${profile.email}`} aria-label="Email"><MaterialIcon name="mail" /></a>}
-            <a href="https://drive.google.com/drive/folders/1LESn7nOjElzd90g120_5E4uEychCS8VX?usp=drive_link" target="_blank" rel="noreferrer" aria-label={t('Відвідування')} title={t('Відвідування')}><MaterialIcon name="table_view" /></a>
+            <AttendanceAccess />
             <NavLink to="/power" aria-label={t('Світло')}><MaterialIcon name="lightbulb" /></NavLink>
             {profile?.mapUrl && <a href={profile.mapUrl} aria-label="Map"><MaterialIcon name="public" /></a>}
           </div>

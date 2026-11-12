@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 
 let tokenCache: { token: string; expiresAt: number } | null = null;
 let weeklyCache: { key: string; expiresAt: number; data: any[] } | null = null;
+const attendanceAttempts = new Map<string, { count: number; expiresAt: number }>();
 function env(name: string) { return String(process.env[name] || '').trim(); }
 function numberFrom(value: unknown) { if (value == null || value === '' || typeof value === 'boolean') return null; const number = Number(value); return Number.isFinite(number) ? number : null; }
 function powerKw(value: unknown) { const number = numberFrom(value); return number == null ? null : number / 1000; }
@@ -38,6 +39,39 @@ async function deyeToken(baseUrl: string) {
   return tokenCache.token;
 }
 export default {
+  async attendanceAccess(ctx: any) {
+    ctx.set('Cache-Control', 'no-store');
+    const password = env('ATTENDANCE_PASSWORD');
+    const driveUrl = env('ATTENDANCE_DRIVE_URL');
+    if (!password || !/^https:\/\/drive\.google\.com\/drive\/folders\/[\w-]+(?:\?.*)?$/.test(driveUrl)) {
+      ctx.status = 503;
+      ctx.body = { error: 'attendance_not_configured' };
+      return;
+    }
+
+    // Caddy forwards the original client address to Strapi.
+    const client = String(ctx.get('x-forwarded-for') || ctx.ip || 'unknown').split(',')[0].trim();
+    const now = Date.now();
+    const attempt = attendanceAttempts.get(client);
+    if (attempt && attempt.expiresAt > now && attempt.count >= 5) {
+      ctx.status = 429;
+      ctx.body = { error: 'too_many_attempts' };
+      return;
+    }
+    const submitted = ctx.request.body?.password;
+    const submittedHash = crypto.createHash('sha256').update(typeof submitted === 'string' ? submitted : '').digest();
+    const expectedHash = crypto.createHash('sha256').update(password).digest();
+    if (!crypto.timingSafeEqual(submittedHash, expectedHash)) {
+      const count = attempt && attempt.expiresAt > now ? attempt.count + 1 : 1;
+      attendanceAttempts.set(client, { count, expiresAt: now + 15 * 60_000 });
+      ctx.status = 401;
+      ctx.body = { error: 'invalid_password' };
+      return;
+    }
+    attendanceAttempts.delete(client);
+    ctx.body = { url: driveUrl };
+  },
+
   async history(ctx: any) {
     const baseUrl = (env('DEYE_BASE_URL') || 'https://eu1-developer.deyecloud.com/v1.0').replace(/\/$/, '');
     const stationId = env('DEYE_STATION_ID');
