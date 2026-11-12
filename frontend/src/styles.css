@@ -1584,6 +1584,21 @@ img {
   color: #e2e8f0;
 }
 
+.attendance-trigger { display: inline-flex; align-items: center; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }
+.attendance-trigger:hover, .attendance-trigger:focus-visible { color: var(--primary); }
+.attendance-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 16px; background: rgba(15, 23, 42, .65); }
+.attendance-dialog { position: relative; display: grid; gap: 12px; width: min(400px, 100%); padding: 28px; border-radius: 16px; background: #fff; color: var(--ink); box-shadow: 0 24px 60px rgba(0, 0, 0, .3); }
+.attendance-dialog h2, .attendance-dialog p { margin: 0; }
+.attendance-dialog p { color: var(--muted); }
+.attendance-dialog label { font-weight: 700; }
+.attendance-dialog input { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #b8c0cc; border-radius: 8px; font: inherit; }
+.attendance-dialog input:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.attendance-dialog .attendance-error { color: #b42318; }
+.attendance-close { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+.attendance-submit { min-height: 44px; border: 0; border-radius: 8px; background: var(--primary); color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+.attendance-submit:hover { background: var(--primary-dark); }
+.attendance-submit:disabled { opacity: .6; cursor: wait; }
+
 @media (max-width: 980px) {
   .desktop-nav,
   .desktop-lang {
