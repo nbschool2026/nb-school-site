@@ -66,15 +66,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="page-section school-intro">
-        <div className="container narrow">
-          <h2>{locale === 'en' ? 'A school in Novyi Bilous' : 'Школа в селі Новий Білоус'}</h2>
-          <p>{locale === 'en'
-            ? 'Novobilouskyi Lyceum is a school of the Novobilouska rural council in Novyi Bilous, Chernihiv district. Find school news, the class schedule, distance learning materials and contact details here.'
-            : 'Новобілоуський ліцей Новобілоуської сільської ради — школа в селі Новий Білоус Чернігівського району. Тут зібрані новини ліцею, розклад уроків, матеріали дистанційного навчання та контакти.'}</p>
-        </div>
-      </section>
-
       <section className="page-section">
         <div className="container">
           <SectionTitle eyebrow={t('Останні новини')} title={t('Події')} />
