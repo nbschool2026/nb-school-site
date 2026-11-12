@@ -488,7 +488,7 @@ export default function SchedulePage() {
   return (
     <main className="page-main">
       <div className="container">
-        <SectionTitle title={t('Розклад уроків')} subtitle={t('Розклад занять за класами та днями тижня.')} center />
+        <SectionTitle title={t('Розклад уроків')} subtitle={t('Розклад занять за класами та днями тижня.')} center level={1} />
         {editAccess === 'allowed' && <div className="schedule-edit-action">
           <button type="button" className="soft-button" onClick={() => setEditingEnabled((enabled) => !enabled)} aria-pressed={editingEnabled}>
             <MaterialIcon name={editingEnabled ? 'visibility_off' : 'edit'} />

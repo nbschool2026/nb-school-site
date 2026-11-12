@@ -212,7 +212,7 @@ nb-school.duckdns.org {
 
     handle {
         root * /opt/nb-school-site/frontend/dist
-        try_files {path} /index.html
+        try_files {path} {path}/index.html /index.html
         file_server
     }
 }
