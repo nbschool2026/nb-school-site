@@ -74,9 +74,6 @@ export default function AboutPage() {
           <h1>{t('Про Наш Ліцей')}</h1>
           {locale === 'en' && profile?._fallbackLocale && <small>{t('Показано українською')}</small>}
           {profile?.mission && <p>{profile.mission}</p>}
-          <p>{locale === 'en'
-            ? 'The lyceum is located in Novyi Bilous, Chernihiv region.'
-            : 'Новобілоуська школа — поширена назва Новобілоуського ліцею в с. Новий Білоус Чернігівської області.'}</p>
         </div>
       </section>
 
