@@ -7,10 +7,8 @@
     <!-- SEO_HEAD -->
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <style>
-      html.js-loading { background: #f6f6f8; }
-      html.js-loading .seo-fallback { visibility: hidden; }
-      html.js-loading #root::before {
-        content: "";
+      .seo-fallback { display: none; }
+      .loading-indicator {
         position: fixed;
         top: 50%;
         left: 50%;
@@ -24,20 +22,17 @@
       }
       @keyframes loading-spin { to { transform: rotate(360deg); } }
       @media (prefers-reduced-motion: reduce) {
-        html.js-loading #root::before { animation: none; }
+        .loading-indicator { animation: none; }
       }
     </style>
-    <script>
-      document.documentElement.classList.add('js-loading');
-      window.setTimeout(() => document.documentElement.classList.remove('js-loading'), 6000);
-    </script>
+    <noscript><style>.seo-fallback { display: block; }.loading-indicator { display: none; }</style></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <div id="root"><!-- SEO_FALLBACK --></div>
+    <div id="root"><div class="loading-indicator" role="status" aria-label="Завантаження"></div><!-- SEO_FALLBACK --></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

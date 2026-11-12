@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import AppLayout from './components/AppLayout.jsx';
@@ -24,17 +24,9 @@ function ScrollToTop() {
   return null;
 }
 
-function AppReady() {
-  useLayoutEffect(() => {
-    document.documentElement.classList.remove('js-loading');
-  }, []);
-  return null;
-}
-
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <AppReady />
       <ScrollToTop />
       <LocaleProvider>
       <SeoManager />
