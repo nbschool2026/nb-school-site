@@ -91,8 +91,7 @@ export function LocaleProvider({ children }) {
   const [locale, updateLocale] = useState(() => {
     const fromUrl = new URLSearchParams(window.location.search).get('lang');
     if (fromUrl === 'uk' || fromUrl === 'en') return fromUrl;
-    try { return localStorage.getItem('school-locale') === 'en' ? 'en' : 'uk'; }
-    catch { return 'uk'; }
+    return 'uk';
   });
 
   function setLocale(next) {
@@ -103,16 +102,33 @@ export function LocaleProvider({ children }) {
     document.documentElement.lang = locale;
     try { localStorage.setItem('school-locale', locale); } catch { /* storage may be disabled */ }
     const url = new URL(window.location.href);
-    if (url.searchParams.get('lang') !== locale) {
-      url.searchParams.set('lang', locale);
+    if ((locale === 'uk' && url.searchParams.has('lang')) || (locale === 'en' && url.searchParams.get('lang') !== 'en')) {
+      if (locale === 'en') url.searchParams.set('lang', 'en');
+      else url.searchParams.delete('lang');
       window.history.replaceState(window.history.state, '', url);
     }
+    const canonical = new URL(location.pathname, 'https://nbosvita.cn.ua');
+    if (locale === 'en') canonical.searchParams.set('lang', 'en');
+    const setLink = (selector, attributes) => {
+      let link = document.head.querySelector(selector);
+      if (!link) {
+        link = document.createElement('link');
+        document.head.appendChild(link);
+      }
+      Object.entries(attributes).forEach(([name, value]) => link.setAttribute(name, value));
+    };
+    setLink('link[rel="canonical"]', { rel: 'canonical', href: canonical.href });
+    const ukrainian = new URL(location.pathname, 'https://nbosvita.cn.ua');
+    const english = new URL(ukrainian);
+    english.searchParams.set('lang', 'en');
+    setLink('link[rel="alternate"][hreflang="uk"]', { rel: 'alternate', hreflang: 'uk', href: ukrainian.href });
+    setLink('link[rel="alternate"][hreflang="en"]', { rel: 'alternate', hreflang: 'en', href: english.href });
   }, [locale, location.pathname, location.search]);
 
   useEffect(() => {
     const onBack = () => {
       const fromUrl = new URLSearchParams(window.location.search).get('lang');
-      if (fromUrl === 'uk' || fromUrl === 'en') updateLocale(fromUrl);
+      updateLocale(fromUrl === 'en' ? 'en' : 'uk');
     };
     window.addEventListener('popstate', onBack);
     return () => window.removeEventListener('popstate', onBack);
