@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import AppLayout from './components/AppLayout.jsx';
+import SeoManager from './components/SeoManager.jsx';
 import HomePage from './pages/HomePage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
 import EventsPage from './pages/EventsPage.jsx';
@@ -28,6 +29,7 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <ScrollToTop />
       <LocaleProvider>
+      <SeoManager />
       <Routes>
         <Route element={<AppLayout />}>
           <Route index element={<HomePage />} />

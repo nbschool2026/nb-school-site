@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { eventPhotos, eventVideoEmbedUrl, fetchEventBySlug, isFacebookVerticalVideo } from '../lib/events.js';
 import { useLocale } from '../lib/locale.jsx';
+import { updateSeo } from '../components/SeoManager.jsx';
+import { SCHOOL_NAME } from '../lib/seo-data.js';
 
 export default function EventDetailPage() {
   const { locale, t, dateLocale } = useLocale();
@@ -26,6 +28,12 @@ export default function EventDetailPage() {
   const photos = eventPhotos(event);
   const video = eventVideoEmbedUrl(event?.youtubeUrl);
   const verticalVideo = isFacebookVerticalVideo(event?.youtubeUrl);
+
+  useEffect(() => {
+    if (!event) return;
+    const description = String(event.summary || event.content || `Подія Новобілоуського ліцею: ${event.title}`).replace(/\s+/g, ' ').slice(0, 165);
+    updateSeo(`/events/${slug}`, { title: `${event.title} | ${SCHOOL_NAME}`, description, heading: event.title }, locale);
+  }, [event, slug, locale]);
 
   return (
     <main className="page-main">

@@ -41,6 +41,7 @@ npm.cmd run dev
 - [Поетапний план реалізації](docs/implementation-plan.md)
 - [Перевірка подій через CMS](docs/events-testing.md)
 - [Плани, відомі прогалини та правила їх запису](docs/roadmap.md)
+- [SEO-аудит і кроки розгортання](docs/seo-audit.md)
 
 ## Поточний стан
 
