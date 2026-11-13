@@ -4,6 +4,7 @@ import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
 import { fetchCollectionLocalizedAll } from '../lib/api.js';
 import { scheduleLessons as fallbackScheduleLessons } from '../lib/fallbackData.js';
+import { clearScheduleCache, readScheduleCache, scheduleHash, writeScheduleCache } from '../lib/scheduleCache.js';
 import { useLocale } from '../lib/locale.jsx';
 
 const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
@@ -128,8 +129,8 @@ export default function SchedulePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const savedFilters = storedFilters();
   const hasSavedFilters = Object.keys(savedFilters).length > 0;
-  const [lessons, setLessons] = useState([]);
-  const [status, setStatus] = useState('loading');
+  const [lessons, setLessons] = useState(() => readScheduleCache(locale)?.records || []);
+  const [status, setStatus] = useState(() => readScheduleCache(locale) ? 'ready' : 'loading');
   const [selectedClass, setSelectedClass] = useState(() => searchParams.get('class') || (hasSavedFilters ? savedFilters.className || '' : '5 Клас'));
   const [selectedTeacher, setSelectedTeacher] = useState(() => searchParams.get('teacher') || savedFilters.teacher || '');
   const [selectedSubject, setSelectedSubject] = useState(() => searchParams.get('subject') || savedFilters.subject || '');
@@ -228,16 +229,21 @@ export default function SchedulePage() {
 
   useEffect(() => {
     let active = true;
-    setStatus('loading');
+    const cached = readScheduleCache(locale);
+    setLessons(cached?.records || []);
+    setStatus(cached ? 'ready' : 'loading');
     fetchCollectionLocalizedAll('/schedule-lessons', 'sort=order:asc', locale)
       .then((records) => {
         if (!active) return;
-        setLessons(records.length ? uniqueLessons(records) : fallbackScheduleLessons);
+        const next = records.length ? uniqueLessons(records) : fallbackScheduleLessons;
+        if (!cached || scheduleHash(next) !== cached.hash) setLessons(next);
+        if (records.length) writeScheduleCache(locale, next);
+        else clearScheduleCache(locale);
         setStatus('ready');
       })
       .catch(() => {
         if (!active) return;
-        setLessons(fallbackScheduleLessons);
+        if (!cached) setLessons(fallbackScheduleLessons);
         setStatus('ready');
       });
     return () => { active = false; };
@@ -405,6 +411,7 @@ export default function SchedulePage() {
       }
       if (!response.ok) throw new Error('update failed');
       const result = await response.json();
+      clearScheduleCache(locale);
       if (creatingLesson) {
         const created = result?.data || {};
         setLessons((current) => [...current, { ...payload, documentId: created.documentId || `created-${Date.now()}`, order: payload.order === '' ? null : Number(payload.order) }]);
@@ -436,6 +443,7 @@ export default function SchedulePage() {
         return;
       }
       if (!response.ok) throw new Error('delete failed');
+      clearScheduleCache(locale);
       setLessons((current) => current.filter((item) => item.documentId !== lesson.documentId));
       setOpenEditKey(null);
     } catch {
