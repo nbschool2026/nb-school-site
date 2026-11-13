@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import MaterialIcon from './MaterialIcon.jsx';
-import { mediaUrl } from '../lib/api.js';
+import { mediaFormatUrl, mediaUrl } from '../lib/api.js';
 import { useLocale } from '../lib/locale.jsx';
 
 const categoryLabels = {
@@ -25,12 +25,13 @@ const categoryClasses = {
 export default function EventCard({ event, compact = false }) {
   const { locale, t, dateLocale } = useLocale();
   const category = event.category || 'other';
-  const image = mediaUrl(event.cover) || mediaUrl(event.photos?.[0] || event.photos?.data?.[0]);
+  const media = event.cover || event.photos?.[0] || event.photos?.data?.[0];
+  const image = compact ? mediaFormatUrl(media, 'small', mediaUrl(media)) : mediaUrl(media);
 
   return (
     <Link className={`event-card ${compact ? 'compact' : ''}`} to={`/events/${encodeURIComponent(event.slug)}`} aria-label={event.title}>
       <div className="event-image">
-        {image ? <img src={image} alt={event.title} /> : <div className="event-placeholder" aria-hidden="true"><MaterialIcon name="event" /></div>}
+        {image ? <img src={image} alt={event.title} loading="lazy" decoding="async" /> : <div className="event-placeholder" aria-hidden="true"><MaterialIcon name="event" /></div>}
         {!compact && <span className={`event-tag ${categoryClasses[category] || categoryClasses.other}`}>{t(categoryLabels[category] || categoryLabels.other)}</span>}
       </div>
       <div className="event-body">
