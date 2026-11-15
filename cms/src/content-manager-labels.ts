@@ -64,6 +64,7 @@ const labels: Record<string, Record<string, string>> = {
     aboutHeroImages: 'Слайдер hero «Про нас» (до 20 фото)',
     distanceLearningImage: 'Hero дистанційного навчання',
     distanceLearningTextColor: 'Колір тексту hero дистанційного навчання',
+    announcementContent: 'Текст оголошення',
   },
   'api::staff-member.staff-member': {
     name: 'ПІБ',
@@ -112,6 +113,17 @@ export async function ensureUkrainianContentManagerLabels(strapi: any) {
           metadata[view].label = label;
           changed = true;
         }
+      }
+    }
+    if (uid === 'api::school-profile.school-profile') {
+      if (configuration.metadatas?.announcementText?.edit?.visible !== false) {
+        configuration.metadatas.announcementText.edit.visible = false;
+        changed = true;
+      }
+      const editLayout = configuration.layouts?.edit;
+      if (Array.isArray(editLayout) && editLayout.some((row) => row.some((field) => field.name === 'announcementText'))) {
+        configuration.layouts.edit = editLayout.map((row) => row.filter((field) => field.name !== 'announcementText')).filter((row) => row.length);
+        changed = true;
       }
     }
     if (changed) await service.updateConfiguration(contentType, configuration);

@@ -22,6 +22,7 @@ export default {
         'content-manager.content-types.api::school-profile.school-profile.announcementEnabled': 'Показувати оголошення',
         'content-manager.content-types.api::school-profile.school-profile.announcementTitle': 'Заголовок оголошення',
         'content-manager.content-types.api::school-profile.school-profile.announcementText': 'Текст оголошення',
+        'content-manager.content-types.api::school-profile.school-profile.announcementContent': 'Текст оголошення',
         'HomePage.header.title': 'Вітаємо, {name}',
         'HomePage.header.subtitle': 'Ласкаво просимо до панелі керування',
         'HomePage.widget.loading': 'Завантаження вмісту віджета',

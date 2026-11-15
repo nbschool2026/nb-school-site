@@ -3,6 +3,7 @@ import { ensureSeedMedia } from './seed-media';
 import { ensureContentLocales } from './content-locales';
 import { registerDocumentPreviewConversion } from './document-preview-conversion';
 import scheduleImportRoutes from './admin/routes/schedule-import';
+import { migrateAnnouncementToBlocks } from './announcement-migration';
 
 export default {
   register({ strapi }) {
@@ -11,6 +12,7 @@ export default {
   },
 
   async bootstrap({ strapi }) {
+    await migrateAnnouncementToBlocks(strapi);
     await ensureContentLocales(strapi);
     await seedCollection(strapi, 'api::staff-member.staff-member', staffMembers);
     await seedCollection(strapi, 'api::history-item.history-item', historyItems);

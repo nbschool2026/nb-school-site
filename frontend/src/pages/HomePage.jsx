@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import EventCard from '../components/EventCard.jsx';
 import MaterialIcon from '../components/MaterialIcon.jsx';
+import { renderBlocks } from '../components/RichBlocks.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
 import { fetchCollectionLocalized, mediaFormatUrl, mediaUrl } from '../lib/api.js';
 import { fetchAllEvents } from '../lib/events.js';
@@ -40,14 +41,15 @@ export default function HomePage() {
           {heroImage && heroMedium && <source media="(max-width: 1100px)" srcSet={heroMedium} />}
           {heroImage && <img className={heroLoaded ? 'is-loaded' : ''} src={heroImage} alt="" fetchPriority="high" decoding="async" onLoad={() => setHeroLoaded(true)} />}
         </picture>
-        {profile?.announcementEnabled && (profile?.announcementTitle || profile?.announcementText) && (
+        {profile?.announcementEnabled && (profile?.announcementTitle || profile?.announcementContent?.length || profile?.announcementText) && (
           <aside className="site-announcement site-announcement--hero" role="status">
             <div className="site-announcement-icon" aria-hidden="true">
               <MaterialIcon name="event" />
             </div>
             <div className="site-announcement-content">
               {profile.announcementTitle && <strong>{profile.announcementTitle}</strong>}
-              {profile.announcementText && <span>{profile.announcementText}</span>}
+              {profile.announcementContent?.length ? <div className="site-announcement-body">{renderBlocks(profile.announcementContent, 'announcement')}</div>
+                : profile.announcementText && <div className="site-announcement-body"><p>{profile.announcementText}</p></div>}
             </div>
           </aside>
         )}

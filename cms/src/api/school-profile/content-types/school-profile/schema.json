@@ -135,7 +135,8 @@
     },
     "announcementEnabled": { "type": "boolean", "default": false },
     "announcementTitle": { "type": "string" },
-    "announcementText": { "type": "text" }
+    "announcementText": { "type": "text" },
+    "announcementContent": { "type": "blocks", "pluginOptions": { "i18n": { "localized": true } } }
   },
   "pluginOptions": {
     "i18n": {
