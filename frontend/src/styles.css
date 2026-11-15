@@ -252,7 +252,7 @@ img {
   color: #fff;
 }
 
-.hero h1,
+.hero-content > h1,
 .subhero h1,
 .info-hero h1,
 .page-heading h1 {
@@ -263,7 +263,7 @@ img {
   letter-spacing: 0;
 }
 
-.hero p {
+.hero-content > p {
   width: min(720px, 100%);
   margin: 24px auto 0;
   color: rgba(255, 255, 255, 0.9);
