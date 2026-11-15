@@ -20,6 +20,7 @@ export default function AppLayout() {
   const [open, setOpen] = useState(false);
   const [profile, setProfile] = useState(null);
   const [profileStatus, setProfileStatus] = useState('loading');
+  const [announcementDismissed, setAnnouncementDismissed] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -74,7 +75,7 @@ export default function AppLayout() {
         )}
       </header>
 
-      <Outlet context={{ profile, profileStatus }} />
+      <Outlet context={{ profile, profileStatus, announcementDismissed, setAnnouncementDismissed }} />
 
       <footer className="site-footer">
         <div className="footer-inner">

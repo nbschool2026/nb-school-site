@@ -11,7 +11,7 @@ import { useLocale } from '../lib/locale.jsx';
 
 export default function HomePage() {
   const { locale, t } = useLocale();
-  const { profile, profileStatus } = useOutletContext();
+  const { profile, profileStatus, announcementDismissed, setAnnouncementDismissed } = useOutletContext();
   const [principal, setPrincipal] = useState(null);
   const [events, setEvents] = useState([]);
   const [eventsStatus, setEventsStatus] = useState('loading');
@@ -41,8 +41,11 @@ export default function HomePage() {
           {heroImage && heroMedium && <source media="(max-width: 1100px)" srcSet={heroMedium} />}
           {heroImage && <img className={heroLoaded ? 'is-loaded' : ''} src={heroImage} alt="" fetchPriority="high" decoding="async" onLoad={() => setHeroLoaded(true)} />}
         </picture>
-        {profile?.announcementEnabled && (profile?.announcementTitle || profile?.announcementContent?.length || profile?.announcementText) && (
+        {!announcementDismissed && profile?.announcementEnabled && (profile?.announcementTitle || profile?.announcementContent?.length || profile?.announcementText) && (
           <aside className="site-announcement site-announcement--hero" role="status">
+            <button type="button" className="site-announcement-close" aria-label={t('Закрити оголошення')} title={t('Закрити оголошення')} onClick={() => setAnnouncementDismissed(true)}>
+              <MaterialIcon name="close" />
+            </button>
             <div className="site-announcement-icon" aria-hidden="true">
               <MaterialIcon name="event" />
             </div>

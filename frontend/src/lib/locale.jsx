@@ -23,6 +23,7 @@ const english = {
   'Завантаження матеріалів…': 'Loading materials…', 'Не вдалося завантажити матеріали з CMS.': 'Could not load materials from the CMS.', 'Показати більше': 'Show more',
   'Матеріалів за цими умовами не знайдено.': 'No materials match these filters.', 'Відкрити відео': 'Open video',
   'Мова': 'Language', 'Відкрити меню': 'Open menu', 'Закрити меню': 'Close menu',
+  'Закрити оголошення': 'Close announcement',
   'Всі права захищені.': 'All rights reserved.',
   'Новобілоуський ліцей': 'Novobilouskyi Lyceum',
   'Відкрити нашу програму': 'Explore our curriculum', 'Віртуальний тур': 'Virtual tour',
