@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import MaterialIcon from '../components/MaterialIcon.jsx';
 import SectionTitle from '../components/SectionTitle.jsx';
@@ -146,6 +146,8 @@ export default function SchedulePage() {
   const [editForm, setEditForm] = useState(null);
   const [savingEdit, setSavingEdit] = useState(false);
   const [conflictPrompt, setConflictPrompt] = useState(null);
+  const scheduleScrollRef = useRef(null);
+  const [stickyDays, setStickyDays] = useState({ visible: false, top: 0, left: 0, width: 0, gridWidth: 0, scrollLeft: 0 });
 
   useEffect(() => {
     const adminBase = (import.meta.env.VITE_STRAPI_API_URL || '/api').replace(/\/api\/?$/, '');
@@ -291,6 +293,50 @@ export default function SchedulePage() {
   const conflicts = useMemo(() => findConflicts(lessons), [lessons]);
   const [showConflicts, setShowConflicts] = useState(false);
   const showClassOnCard = !selectedClass && !!selectedTeacher;
+
+  useEffect(() => {
+    const scroll = scheduleScrollRef.current;
+    if (!scroll) return undefined;
+    const grid = scroll.querySelector('.schedule-grid');
+    const firstHeading = grid?.querySelector('.schedule-day h3');
+    const siteHeader = document.querySelector('.site-header');
+    if (!grid || !firstHeading || !siteHeader) return undefined;
+
+    const update = () => {
+      const mobile = window.matchMedia('(max-width: 760px)').matches;
+      const scrollRect = scroll.getBoundingClientRect();
+      const headerBottom = siteHeader.getBoundingClientRect().bottom;
+      const headingHeight = firstHeading.getBoundingClientRect().height;
+      const visible = mobile && firstHeading.getBoundingClientRect().top < headerBottom
+        && scrollRect.bottom > headerBottom + headingHeight;
+      setStickyDays((previous) => {
+        const next = {
+          visible,
+          top: headerBottom,
+          left: scrollRect.left,
+          width: scroll.clientWidth,
+          gridWidth: grid.offsetWidth,
+          scrollLeft: scroll.scrollLeft,
+        };
+        return Object.keys(next).every((key) => previous[key] === next[key]) ? previous : next;
+      });
+    };
+
+    const observer = new ResizeObserver(update);
+    observer.observe(siteHeader);
+    observer.observe(scroll);
+    observer.observe(grid);
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    scroll.addEventListener('scroll', update, { passive: true });
+    update();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+      scroll.removeEventListener('scroll', update);
+    };
+  }, [status, visibleLessons.length]);
 
   function selectClass(event) {
     const next = event.target.value;
@@ -493,6 +539,13 @@ export default function SchedulePage() {
     ) : item);
   }
 
+  function renderDayHeading(day, sticky = false) {
+    return <h3 key={day} aria-hidden={sticky ? undefined : (stickyDays.visible || undefined)}>
+      {t(weekdayLabels[day])}
+      {editingEnabled && <button type="button" className="schedule-add-lesson" tabIndex={!sticky && stickyDays.visible ? -1 : undefined} title={t('Створити урок')} aria-label={`${t('Створити урок')} — ${t(weekdayLabels[day])}`} onClick={() => openCreateForm(day)}><MaterialIcon name="add" /></button>}
+    </h3>;
+  }
+
   return (
     <main className="page-main">
       <div className="container">
@@ -541,12 +594,17 @@ export default function SchedulePage() {
         </details>
         {status === 'loading' && <p>{t('Завантаження розкладу…')}</p>}
         {status === 'ready' && !visibleLessons.length && <p>{t('Для цього класу розклад ще не додано.')}</p>}
-        {status === 'ready' && !!visibleLessons.length && <div className="schedule-scroll">
+        {status === 'ready' && !!visibleLessons.length && <div className="schedule-scroll" ref={scheduleScrollRef}>
           <div className="schedule-grid">
             {weekdays.map((day) => <section className="schedule-day" key={day}>
-              <h3>{t(weekdayLabels[day])}{editingEnabled && <button type="button" className="schedule-add-lesson" title={t('Створити урок')} aria-label={`${t('Створити урок')} — ${t(weekdayLabels[day])}`} onClick={() => openCreateForm(day)}><MaterialIcon name="add" /></button>}</h3>
+              {renderDayHeading(day)}
               <div className="lesson-list">{renderDayLessons(day)}</div>
             </section>)}
+          </div>
+        </div>}
+        {stickyDays.visible && <div className="schedule-sticky-head" style={{ top: stickyDays.top, left: stickyDays.left, width: stickyDays.width }}>
+          <div className="schedule-sticky-grid" style={{ width: stickyDays.gridWidth, transform: `translateX(${-stickyDays.scrollLeft}px)` }}>
+            {weekdays.map((day) => <div className="schedule-day" key={day}>{renderDayHeading(day, true)}</div>)}
           </div>
         </div>}
         {status === 'ready' && <div className="schedule-conflicts-action">
