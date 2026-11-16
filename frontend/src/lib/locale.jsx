@@ -109,22 +109,6 @@ export function LocaleProvider({ children }) {
       else url.searchParams.delete('lang');
       window.history.replaceState(window.history.state, '', url);
     }
-    const canonical = new URL(location.pathname, 'https://nbosvita.cn.ua');
-    if (locale === 'en') canonical.searchParams.set('lang', 'en');
-    const setLink = (selector, attributes) => {
-      let link = document.head.querySelector(selector);
-      if (!link) {
-        link = document.createElement('link');
-        document.head.appendChild(link);
-      }
-      Object.entries(attributes).forEach(([name, value]) => link.setAttribute(name, value));
-    };
-    setLink('link[rel="canonical"]', { rel: 'canonical', href: canonical.href });
-    const ukrainian = new URL(location.pathname, 'https://nbosvita.cn.ua');
-    const english = new URL(ukrainian);
-    english.searchParams.set('lang', 'en');
-    setLink('link[rel="alternate"][hreflang="uk"]', { rel: 'alternate', hreflang: 'uk', href: ukrainian.href });
-    setLink('link[rel="alternate"][hreflang="en"]', { rel: 'alternate', hreflang: 'en', href: english.href });
   }, [locale, location.pathname, location.search]);
 
   useEffect(() => {

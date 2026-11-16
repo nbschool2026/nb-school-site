@@ -29,7 +29,10 @@ export function updateSeo(path, page, locale = 'uk') {
   }
   canonical.href = url;
   setMeta('description', description);
-  setMeta('robots', 'index, follow, max-image-preview:large');
+  // English is a client-side, partly translated view of the Ukrainian page.
+  // Keep its query URL usable, but do not present it as a separate indexable page.
+  setMeta('robots', locale === 'en' ? 'noindex, follow' : 'index, follow, max-image-preview:large');
+  document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((node) => node.remove());
   setMeta('og:type', 'website', 'property');
   setMeta('og:site_name', SCHOOL_NAME, 'property');
   setMeta('og:locale', locale === 'en' ? 'en_GB' : 'uk_UA', 'property');
