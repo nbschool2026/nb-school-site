@@ -64,6 +64,7 @@ const labels: Record<string, Record<string, string>> = {
     aboutHeroImages: 'Слайдер hero «Про нас» (до 20 фото)',
     distanceLearningImage: 'Hero дистанційного навчання',
     distanceLearningTextColor: 'Колір тексту hero дистанційного навчання',
+    showDistanceLearningInMenu: 'Показувати «Дистанційне навчання» в меню',
     announcementContent: 'Текст оголошення',
   },
   'api::staff-member.staff-member': {

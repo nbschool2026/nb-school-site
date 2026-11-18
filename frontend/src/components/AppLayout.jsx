@@ -32,6 +32,9 @@ export default function AppLayout() {
   }, [locale]);
 
   const schoolName = profile?.schoolName || t('Новобілоуський ліцей');
+  const visibleLinks = links.filter((link) =>
+    link.to !== '/distance-learning' || (profileStatus !== 'loading' && profile?.showDistanceLearningInMenu !== false)
+  );
 
   return (
     <div className="app-shell">
@@ -43,7 +46,7 @@ export default function AppLayout() {
           </NavLink>
 
           <nav className="desktop-nav">
-            {links.map((link) => (
+            {visibleLinks.map((link) => (
               <NavLink key={link.to} to={link.to} className={({ isActive }) => (isActive ? 'active' : '')}>
                 {t(link.label)}
               </NavLink>
@@ -62,7 +65,7 @@ export default function AppLayout() {
 
         {open && (
           <nav className="mobile-nav">
-            {links.map((link) => (
+            {visibleLinks.map((link) => (
               <NavLink key={link.to} to={link.to} onClick={() => setOpen(false)} className={({ isActive }) => (isActive ? 'active' : '')}>
                 {t(link.label)}
               </NavLink>
